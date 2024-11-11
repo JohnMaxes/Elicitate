@@ -78,7 +78,7 @@ export default function App() {
       ) : isMember ? (
         <LoginForm handleLogin={handleLogin} togglePage={togglePage} />
       ) : (
-        <RegisterForm togglePage={togglePage} />
+        <RegisterForm togglePage={togglePage} handleLogin={handleLogin} />
       )}
     </View>
   );

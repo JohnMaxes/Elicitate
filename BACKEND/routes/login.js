@@ -9,7 +9,7 @@ var encryption = require('../functions/passwordEncrypt');
 var createToken = require('../functions/token')
 
 router.post('/', async(req, res, next) => { 
-  const { usernameOrEmail, password } = req.query;
+  const { usernameOrEmail, password } = req.body;
   try {
       const usersRef = collection(db, 'users');
       const q1 = query(

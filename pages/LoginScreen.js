@@ -1,5 +1,6 @@
 import {React, useState}from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image} from 'react-native';
+import axios from 'axios';
 import styles from "../stylesheet";
 import CustomInput from '../components/customInput';
 
@@ -8,11 +9,43 @@ const LoginForm = ({ togglePage, handleLogin }) => {
     const [password, setPassword] = useState('');
   
     const onLoginPress = () => {
+      const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    let a = email;
+    let b = password;
+
       if (!email || !password) {
-        Alert.alert('Incorrect email or password');
+        Alert.alert('Please fill out all fields.');
         return;
       }
-      handleLogin();
+      else
+      {
+        axios.post(
+          'https://f8b7-116-109-144-43.ngrok-free.app/login',
+          {
+            usernameOrEmail: email,
+            password: password
+          },
+          config
+        )
+        .then(response => {
+          if(response.status == 200)
+          {
+            handleLogin();
+          }
+          else
+          {
+            Alert.alert('Wrong credentials!');
+          }
+        })
+        .catch(error => {
+          alert(error);
+        })
+      }
     };
   
     return (
