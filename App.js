@@ -1,18 +1,10 @@
 import React, { useState } from "react";
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
+import { View } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Icon from 'react-native-vector-icons/Ionicons';
+
 import FavouritesScreen from "./pages/FavouritesScreen";
 import HomeScreen from "./pages/HomeScreen";
 import CategoriesScreen from "./pages/CategoriesScreen";
@@ -41,10 +33,10 @@ const Home = ({ handleLogout }) => {
             }
             return <Icon name={iconName} size={size} color={color} />;
           },
-          tabBarActiveTintColor: '#2096f0',
+          tabBarActiveTintColor: 'blue',
           tabBarInactiveTintColor: 'black',
-          tabBarStyle: { margin: 0, padding: 0, height: 60 },
-          tabBarLabelStyle: { paddingBottom: 4, fontSize: 12 },
+          tabBarStyle: {margin: 20, height: 80, width: '90%', alignSelf:'center', borderRadius: 30, position:'absolute'},
+          tabBarShowLabel: false,
           headerShown: false,
         })}
       >
@@ -72,7 +64,7 @@ export default function App() {
   const handleLogout = () => setIsLoggedIn(false);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {padding: 0, margin: 0}]}>
       {isLoggedIn ? (
         <Home handleLogout={handleLogout} />
       ) : isMember ? (

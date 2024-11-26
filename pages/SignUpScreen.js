@@ -41,13 +41,11 @@ const RegisterForm = ({ togglePage, handleLogin }) => {
     };
 
     return (
-        <ScrollView>
+        <ScrollView style={{backgroundColor: '#CCE6FA',}}>
             <View style={styles.header}>
                 <Image
                     style={styles.headerImg}
-                    source={{
-                        uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlt-TGjHVh4qzymsShj8a9dkNKBG7rfq2wTg&s",
-                    }}
+                    source={require('../assets/logoElicitate.png')}
                 />
                 <Text style={styles.heading}>Create New Account</Text>
             </View>
@@ -86,7 +84,7 @@ const RegisterForm = ({ togglePage, handleLogin }) => {
             <TouchableOpacity style={styles.button} onPress={processRequest}>
                 <Text style={styles.buttonText}>CREATE</Text>
             </TouchableOpacity>
-            <View style={styles.toogleTextContainer}>
+            <View style={[styles.toogleTextContainer, {marginTop: -10}]}>
                 <Text style={[styles.toggleText, { fontWeight: "normal", color: "black" }]}>
                     Already have an account?{" "}
                 </Text>

@@ -3,7 +3,6 @@ import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image} from 'react
 import axios from 'axios';
 import styles from "../stylesheet";
 import CustomInput from '../components/customInput';
-
 const LoginForm = ({ togglePage, handleLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -14,16 +13,14 @@ const LoginForm = ({ togglePage, handleLogin }) => {
             'Content-Type': 'application/json'
         }
     };
-
-    let a = email;
-    let b = password;
-
-      if (!email || !password) {
-        Alert.alert('Please fill out all fields.');
-        return;
-      }
-      else
-      {
+    if (!email || !password) {
+      alert('Please fill out all fields.');
+      return;
+    }
+    else 
+    {
+      handleLogin();
+    /* enabling API enquiry to backend
         axios.post(
           'https://f8b7-116-109-144-43.ngrok-free.app/login',
           {
@@ -33,26 +30,21 @@ const LoginForm = ({ togglePage, handleLogin }) => {
           config
         )
         .then(response => {
-          if(response.status == 200)
-          {
-            handleLogin();
-          }
-          else
-          {
-            Alert.alert('Wrong credentials!');
-          }
+          if(response.status == 200) handleLogin();
+          else alert('Wrong credentials!');
         })
         .catch(error => {
           alert(error);
         })
       }
+    */
     };
-  
+  }
     return (
-      <ScrollView>
+      <ScrollView style={{backgroundColor:'#CCE6FA', margin:0, padding:0}}>
         <View style={styles.header}>
-          <Image style={styles.headerImg} source={{ uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlt-TGjHVh4qzymsShj8a9dkNKBG7rfq2wTg&s" }} />
-          <Text style={styles.heading}>Welcome</Text>
+          <Image style={styles.headerImg} source={require('../assets/logoElicitate.png')}/>
+          <Text style={styles.heading}>Elicitate</Text>
         </View>
         <CustomInput placeholder="Email" placeholderTextColor="grey" iconUri="https://img.icons8.com/?id=63&format=png" value={email} onChangeText={setEmail}/>
         <CustomInput placeholder="Password" placeholderTextColor="grey" secureTextEntry iconUri="https://img.icons8.com/?id=94&format=png" value={password} onChangeText={setPassword} />
@@ -75,7 +67,7 @@ const LoginForm = ({ togglePage, handleLogin }) => {
             <Image style={[styles.socialImg, { width: 65, height: 68 }]} source={{ uri: "https://img.icons8.com/?size=512&id=17949&format=png" }} />
           </TouchableOpacity>
         </View>
-        <View style={styles.toogleTextContainer}>
+        <View style={[styles.toogleTextContainer, {marginTop:-10}]}>
           <Text style={[styles.toggleText, { fontWeight: "normal", color: "black" }]}>
             Don't have an account?{" "}
           </Text>
@@ -86,6 +78,5 @@ const LoginForm = ({ togglePage, handleLogin }) => {
       </ScrollView>
     );
   };
-
 export default LoginForm;
   
