@@ -25,9 +25,9 @@ const Home = ({ handleLogout }) => {
             if (route.name === 'Home') {
               iconName = 'home';
             } else if (route.name === 'Course') {
-              iconName = 'grid';
+              iconName = 'book';
             } else if (route.name === 'Dictionary') {
-              iconName = 'heart';
+              iconName = 'search';
             } else if (route.name === 'Profile') {
               iconName = 'person';
             }
@@ -42,11 +42,7 @@ const Home = ({ handleLogout }) => {
       >
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Course" component={CourseScreen} />
-        <Tab.Screen name="Dictionary" component={DictionaryScreen}
-          options={{
-            tabBarBadge: 3,
-          }}
-        />
+        <Tab.Screen name="Dictionary" component={DictionaryScreen} />
         <Tab.Screen name="Profile"
           children={() => <ProfileScreen handleLogout={handleLogout} />}
         />
