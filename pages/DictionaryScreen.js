@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheetm, ScrollView } from 'react-native';
-import CustomSearchBar from '../components/customSearchBar'; // Adjust the path as needed
-import styles from '../stylesheet';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import CustomSearchBar from '../components/customSearchBar';
 
 function DictionaryScreen() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -24,5 +23,17 @@ function DictionaryScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    justifyContent: "center",
+    backgroundColor: "#CCE6FA",
+  },
+  contentScroll: {
+    paddingHorizontal: 25,
+    paddingBottom: 200,
+  },
+});
 
 export default DictionaryScreen;
