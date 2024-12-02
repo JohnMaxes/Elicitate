@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet} from 'react-native';
 
-function FavouritesScreen() {
+function DictionaryScreen() {
     return (
       <View style={styles.screen}>
-        <Text>Favourites Screen</Text>
+        <Text>Dictionary Screen</Text>
       </View>
     );
 }
@@ -18,4 +18,4 @@ const styles = StyleSheet.create({
     }
 )
 
-export default FavouritesScreen;
+export default DictionaryScreen;
