@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import CustomSearchBar from '../components/customSearchBar';
-import styles from '../stylesheet';
 import CourseCard from '../components/courseCard';
 
 function CourseScreen() {
@@ -83,15 +82,7 @@ function CourseScreen() {
         onChangeText={handleSearch}
         
       />
-      <Text style={[styles.heading,
-              {
-                textAlign: 'flex-start',
-                fontSize: 20,
-                marginLeft: 5,
-                marginTop: -20,
-              },
-            ]}
-      >My courses</Text>
+      <Text style={styles.heading}>My courses</Text>
       <FlatList
         data={testCourses}
         renderItem={renderItem}
@@ -101,5 +92,19 @@ function CourseScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  heading: {
+    fontSize: 25,
+    textAlign: 'flex-start',
+    paddingLeft: 20,
+    fontWeight: "bold",
+  },
+  container: {
+    flexGrow: 1,
+    justifyContent: "center",
+    backgroundColor: "#CCE6FA",
+  },
+});
 
 export default CourseScreen;
