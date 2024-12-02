@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Dimensions } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -31,11 +32,11 @@ const Home = ({ handleLogout }) => {
             } else if (route.name === 'Profile') {
               iconName = 'person';
             }
-            return <Icon name={iconName} size={size} color={color} />;
+            return <Icon name={iconName} size={35} color={color} />;
           },
-          tabBarActiveTintColor: 'blue',
+          tabBarActiveTintColor: '#007AFF',
           tabBarInactiveTintColor: 'black',
-          tabBarStyle: {margin: 20, height: 80, width: '90%', alignSelf:'center', borderRadius: 30, position:'absolute'},
+          tabBarStyle: {elevation: 0, shadowOpacity: 0, marginLeft: Dimensions.get('window').width/20, height: 90, marginBottom: 25, width: '90%', alignSelf:'center', borderRadius: 45, position:'absolute'},
           tabBarShowLabel: false,
           headerShown: false,
         })}
@@ -60,7 +61,7 @@ export default function App() {
   const handleLogout = () => setIsLoggedIn(false);
 
   return (
-    <View style={[styles.container, {padding: 0, margin: 0}]}>
+    <View style={[{flex:1, justifyContent:'center'}]}>
       {isLoggedIn ? (
         <Home handleLogout={handleLogout} />
       ) : isMember ? (
