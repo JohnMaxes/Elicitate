@@ -2,12 +2,12 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import styles from '../stylesheet';
 
-function CategoriesScreen() {
+function CourseScreen() {
     return (
       <View style={styles.screen}>
-        <Text>Categories Screen</Text>
+        <Text>Course Screen</Text>
       </View>
     );
 }
  
-export default CategoriesScreen;
+export default CourseScreen;
