@@ -9,8 +9,9 @@ const styles = StyleSheet.create({
     },
     screen: {
       flex: 1,
-      justifyContent: 'center',
+      paddingTop: 50,
       alignItems: 'center',
+      backgroundColor: '#CCE6FA',
     },
     header: {
       marginTop: 40,
