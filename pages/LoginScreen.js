@@ -21,6 +21,38 @@ const LoginScreen = ({ togglePage, handleLogin }) => {
   {
     handleLogin();
   };
+  /*
+  const onLoginPress = () => {
+      const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    if (!email || !password) {
+      alert('Please fill out all fields.');
+      return;
+    }
+    else 
+    {
+      handleLogin();
+    /* enabling API enquiry to backend
+        axios.post(
+          'https://f8b7-116-109-144-43.ngrok-free.app/login',
+          {
+            usernameOrEmail: email,
+            password: password
+          },
+          config
+        )
+        .then(response => {
+          if(response.status == 200) handleLogin();
+          else alert('Wrong credentials!');
+        })
+        .catch(error => {
+          alert(error);
+        })
+      }
+    */
 }
   return (
     <ScrollView contentContainerStyle={styles.container}>
