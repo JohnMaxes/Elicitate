@@ -68,9 +68,9 @@ export default function App() {
       {isLoggedIn ? (
         <Home handleLogout={handleLogout} />
       ) : isMember ? (
-        <LoginForm handleLogin={handleLogin} togglePage={togglePage} />
+        <LoginScreen handleLogin={handleLogin} togglePage={togglePage} />
       ) : (
-        <RegisterForm togglePage={togglePage} handleLogin={handleLogin} />
+        <SignUpScreen togglePage={togglePage} handleLogin={handleLogin} />
       )}
     </View>
   );
