@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Dimensions } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Dimensions } from 'react-native'
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
-
 import DictionaryScreen from "./pages/DictionaryScreen";
 import HomeScreen from "./pages/HomeScreen";
 import CourseScreen from "./pages/CourseScreen";
 import ProfileScreen from "./pages/ProfileScreen";
 import SignUpScreen from "./pages/SignUpScreen";
 import LoginScreen from "./pages/LoginScreen";
-import styles from "./stylesheet";
+import * as Progress from 'react-native-progress';
+import initDatabase from "./components/initDatabase";
+
 
 const Tab = createBottomTabNavigator();
 const Home = ({ handleLogout }) => {
@@ -32,7 +32,7 @@ const Home = ({ handleLogout }) => {
             } else if (route.name === 'Profile') {
               iconName = 'person';
             }
-            return <Icon name={iconName} size={35} color={color} />;
+            return <Icon name={iconName} size={35} color={color}/>;
           },
           tabBarActiveTintColor: '#007AFF',
           tabBarInactiveTintColor: 'black',
@@ -55,10 +55,42 @@ const Home = ({ handleLogout }) => {
 export default function App() {
   const [isMember, setIsMember] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const setup = async () => {
+      try {
+        await AsyncStorage.removeItem('init')
+        const init = await AsyncStorage.getItem('init');
+        if (init === null) {
+          await initDatabase(); // Your database initialization function
+          await AsyncStorage.setItem('init', 'true');
+        }
+      } catch (error) {
+        AsyncStorage.removeItem('init');
+        console.error('Error during setup:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    setup();
+  }, []);
 
   const togglePage = () => setIsMember(!isMember);
   const handleLogin = () => setIsLoggedIn(true);
   const handleLogout = () => setIsLoggedIn(false);
+
+  if(isLoading){
+    return(
+      <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
+        <Progress.Circle
+          indeterminate={true}
+          color="#3A94E7"
+          size={30}
+        />
+      </View>
+    )
+  }
 
   return (
     <View style={[{flex:1, justifyContent:'center'}]}>
