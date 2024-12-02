@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-  const initDatabase = async () => {
+export const initDatabase = async () => {
     SQLite.deleteDatabaseAsync('elicitate');
     const db = await SQLite.openDatabaseAsync('elicitate');
     try { 
@@ -122,11 +122,43 @@ import * as SQLite from 'expo-sqlite';
         (2, 27);
     `);
     console.log('Course vocabulary table initialized');
+    await db.closeAsync();
     }
     catch (error) {
         console.log('Failed to execute SQL command', error);
     }
   };
 
-export default initDatabase;
-  
+export const queryVocabToDatabase = async (string) => {
+    try {
+        const db = await SQLite.openDatabaseAsync('elicitate');
+        let query = 'SELECT * FROM vocabulary where word LIKE ?';
+        let object = await db.getAllAsync(query, '%' + string + '%');
+        return object;
+    }
+    catch (error) {
+        console.log('Failed to execute SQL command', error);
+    }
+}
+
+export const queryCourseToDatabase = async (string) => {
+    try {
+        const db = await SQLite.openDatabaseAsync('elicitate');
+        let query = "SELECT * FROM courses WHERE title LIKE ?";
+        return(await db.getAllAsync(query, '%' + string + '%'));
+    }
+    catch (error) {
+        console.log('Failed to execute SQL command', error);
+    }
+}
+
+export const AddWordToLearned = async (vocabulary_id) => {
+    try {
+        const db = await SQLite.openDatabaseAsync('elicitate');
+        let query = 'INSERT INTO learned_vocabulary (vocabulary_id) VALUES (?)';
+        console.log(await db.getAllAsync(query, vocabulary_id));
+    }
+    catch (error) {
+        console.log('Failed to execute SQL command', error);
+    }
+}

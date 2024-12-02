@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import CustomSearchBar from '../components/customSearchBar';
 import CourseCard from '../components/courseCard';
+import { queryCourseToDatabase } from '../components/Database';
 
 function CourseScreen() {
   const [searchQuery, setSearchQuery] = useState('');
-
-  const handleSearch = (query) => {
+  const [courses, setCourses] = useState([]);
+  const handleSearch = async (query) => {
     setSearchQuery(query);
-    // Add logic to handle the search query, e.g., filter courses
+    let result = await queryCourseToDatabase(query);
+    console.log(result);
+    setCourses(result);
   };
 
   // Test data
+  /*
   const testCourses = [
     {
       title: "Introduction to React Native",
@@ -62,15 +66,17 @@ function CourseScreen() {
       onPress: () => alert("Course clicked!")
     }
   ];
-
+  */
   const renderItem = ({ item }) => (
     <CourseCard
       title={item.title}
-      subtitle={item.subtitle}
+      subtitle={item.description}
+      /*
       enrolledCount={item.enrolledCount}
       level={item.level}
       imageSource={item.imageSource}
       onPress={item.onPress}
+      */
     />
   );
 
@@ -80,13 +86,12 @@ function CourseScreen() {
         placeholder="Find courses..."
         iconUri="https://img.icons8.com/ios-filled/50/000000/search.png"
         onChangeText={handleSearch}
-        
       />
       <Text style={styles.heading}>My courses</Text>
       <FlatList
-        data={testCourses}
+        data={courses}
         renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id}
         contentContainerStyle={{ padding: 16, paddingBottom: 200 }}
       />
     </View>

@@ -11,8 +11,7 @@ import ProfileScreen from "./pages/ProfileScreen";
 import SignUpScreen from "./pages/SignUpScreen";
 import LoginScreen from "./pages/LoginScreen";
 import * as Progress from 'react-native-progress';
-import initDatabase from "./components/initDatabase";
-
+import { initDatabase } from "./components/Database.js";
 
 const Tab = createBottomTabNavigator();
 const Home = ({ handleLogout }) => {
@@ -63,7 +62,7 @@ export default function App() {
         await AsyncStorage.removeItem('init')
         const init = await AsyncStorage.getItem('init');
         if (init === null) {
-          await initDatabase(); // Your database initialization function
+          await initDatabase();
           await AsyncStorage.setItem('init', 'true');
         }
       } catch (error) {
