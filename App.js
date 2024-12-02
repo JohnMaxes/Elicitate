@@ -5,12 +5,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import FavouritesScreen from "./pages/FavouritesScreen";
+import DictionaryScreen from "./pages/DictionaryScreen";
 import HomeScreen from "./pages/HomeScreen";
-import CategoriesScreen from "./pages/CategoriesScreen";
+import CourseScreen from "./pages/CourseScreen";
 import ProfileScreen from "./pages/ProfileScreen";
-import RegisterForm from "./pages/SignUpScreen";
-import LoginForm from "./pages/LoginScreen";
+import SignUpScreen from "./pages/SignUpScreen";
+import LoginScreen from "./pages/LoginScreen";
 import styles from "./stylesheet";
 
 const Tab = createBottomTabNavigator();
@@ -24,9 +24,9 @@ const Home = ({ handleLogout }) => {
 
             if (route.name === 'Home') {
               iconName = 'home';
-            } else if (route.name === 'Categories') {
+            } else if (route.name === 'Course') {
               iconName = 'grid';
-            } else if (route.name === 'Favourites') {
+            } else if (route.name === 'Dictionary') {
               iconName = 'heart';
             } else if (route.name === 'Profile') {
               iconName = 'person';
@@ -41,8 +41,8 @@ const Home = ({ handleLogout }) => {
         })}
       >
         <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Categories" component={CategoriesScreen} />
-        <Tab.Screen name="Favourites" component={FavouritesScreen}
+        <Tab.Screen name="Course" component={CourseScreen} />
+        <Tab.Screen name="Dictionary" component={DictionaryScreen}
           options={{
             tabBarBadge: 3,
           }}
