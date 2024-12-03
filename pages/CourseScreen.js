@@ -93,6 +93,7 @@ function CourseScreen() {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ padding: 16, paddingBottom: 200 }}
+        style={{marginBottom: 115}}
       />
     </View>
   );

@@ -8,7 +8,9 @@ import * as Progress from 'react-native-progress';
 const loadFonts = async () => {
   await Font.loadAsync({
     'Poppins-Bold': require('../assets/fonts/Poppins-Bold.ttf'),
-    'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf')
+    'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
+    'Inter-Bold': require('../assets/fonts/Inter Bold 700.otf'),
+    'Inter-Regular': require('../assets/fonts/Inter Regular 400.otf'),
   });
 };
 

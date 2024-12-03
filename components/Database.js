@@ -219,7 +219,7 @@ export const initDatabase = async () => {
 export const queryVocabToDatabase = async (string) => {
     try {
         const db = await SQLite.openDatabaseAsync('elicitate');
-        let query = 'SELECT * FROM vocabulary where word LIKE ?';
+        let query = 'SELECT * FROM vocabulary where word LIKE ? LIMIT 10';
         let object = await db.getAllAsync(query, '%' + string + '%');
         return object;
     }
@@ -231,7 +231,7 @@ export const queryVocabToDatabase = async (string) => {
 export const queryCourseToDatabase = async (string) => {
     try {
         const db = await SQLite.openDatabaseAsync('elicitate');
-        let query = "SELECT * FROM courses WHERE title LIKE ?";
+        let query = "SELECT * FROM courses WHERE title LIKE ? LIMIT 10";
         return(await db.getAllAsync(query, '%' + string + '%'));
     }
     catch (error) {
