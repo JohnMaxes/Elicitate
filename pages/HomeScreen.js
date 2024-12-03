@@ -57,7 +57,7 @@ function HomeScreen() {
     loadFonts().then(() => {
       const timer = setTimeout(() => {
         setProgressValue(0.7);
-      }, 250);
+      }, 100);
       setFontsLoaded(true)
       return () => clearTimeout(timer);
     });
