@@ -51,15 +51,21 @@ const CourseCard = ({ item }) => (
 const streak_count = 0;
 function HomeScreen() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [progressValue, setProgressValue] = useState(0);
 
   useEffect(() => {
-    loadFonts().then(() => setFontsLoaded(true));
+    loadFonts().then(() => {
+      const timer = setTimeout(() => {
+        setProgressValue(0.7);
+      }, 250);
+      setFontsLoaded(true)
+      return () => clearTimeout(timer);
+    });
   }, []);
 
   if (!fontsLoaded) {
     return null;
   }
-
   return (
     <View style={styles.screen}>
 
@@ -80,7 +86,7 @@ function HomeScreen() {
         <View style={{backgroundColor: 'white', borderRadius: 32, height: Dimensions.get('window').height*0.23, padding: 20, marginTop: 7}}>
           <View style={{flexDirection: 'row', alignItems:'center'}}>
             <View>
-              <Progress.Circle showsText={true} size={100} progress={0.7} color={'#3A94E7'} unfilledColor={'#D0EFFF'} borderWidth={0} thickness={12} direction={'counter-clockwise'} strokeCap={'round'}
+              <Progress.Circle showsText={true} size={100} progress={progressValue} color={'#3A94E7'} unfilledColor={'#D0EFFF'} borderWidth={0} thickness={12} direction={'counter-clockwise'} strokeCap={'round'}
               textStyle={{fontWeight:'bold', fontSize: 20}}/>
             </View>
             <View style={{paddingLeft: 10}}>
