@@ -98,9 +98,9 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
                 <Text style={styles.buttonText}>SIGN UP</Text>
             </TouchableOpacity>
             <View style={styles.signupContainer}>
-                <Text style={{fontSize: 16, fontStyle: 'italic'}}>Don't have an account? </Text>
+                <Text style={{fontSize: 16, fontStyle: 'italic'}}>Already have an account? </Text>
                 <TouchableOpacity onPress={togglePage}>
-                    <Text style={[styles.signupText, {fontSize: 16}]}>Sign up here!</Text>
+                    <Text style={[styles.signupText, {fontSize: 16}]}>Log in</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>
