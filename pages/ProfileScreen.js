@@ -1,7 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, Switch, TouchableOpacity, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 const ProfileScreen = ({ handleLogout }) => {
+  const navigation = useNavigation();
+
   // Test data
   const user = {
     name: 'Thinh dep trai vai',
@@ -18,20 +22,19 @@ const ProfileScreen = ({ handleLogout }) => {
   return (
     <View style={styles.container}>
       
-      <View style={styles.profileCard}>
+      <TouchableOpacity style={styles.profileCard} onPress={() => navigation.navigate('ProfileDetails')}>
         <Image source={{ uri: 'https://scontent.fsgn5-14.fna.fbcdn.net/v/t39.30808-6/416318714_3478120982442872_833039280433233648_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGeZz5n0X4YJNG9z10vFLzpxOEqWgQf_gTE4SpaBB_-BPymO5lmMUJjoFaQpHfUpqaGzj0TSAEOi_kb8XJlPq-n&_nc_ohc=GTaI0W_q73kQ7kNvgHvR2Bx&_nc_zt=23&_nc_ht=scontent.fsgn5-14.fna&_nc_gid=AVbKqsYpfdQNzofEMP9ucMr&oh=00_AYD24X4fsHI076DFj3GVxE0AHrVogR9ot3E8oBCJJqjFUg&oe=6756650E' }} style={styles.avatar} />
         <View>
           <Text style={styles.name}>{user.name}</Text>
           <Text style={styles.username}>{user.username}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
 
-      
       <View style={styles.metrics}>
         <View style={styles.metricBox}>
           <Text style={styles.metricValue}>{user.timeSpent}</Text>
           <Text style={styles.metricLabel}>Time spent</Text>
-          <View style={{ height: "10" }} />
+          <View style={{ height: 10 }} />
           <Text style={styles.metricValue}>{user.wordsLearned}</Text>
           <Text style={styles.metricLabel}>Words learned</Text>
         </View>
@@ -43,12 +46,7 @@ const ProfileScreen = ({ handleLogout }) => {
         </View>
       </View>
 
-      
       <View style={styles.settings}>
-        <TouchableOpacity style={styles.settingRow}>
-          <View style={styles.settingIcon} />
-          <Text style={styles.settingText}>My Account</Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.settingRow}>
           <View style={styles.settingIcon} />
           <Text style={styles.settingText}>deo biet</Text>
