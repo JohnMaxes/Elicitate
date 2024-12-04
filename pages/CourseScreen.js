@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   courseViewContainer: {
     width:'85%', 
     height:'50%', 
-    backgroundColor: 'white', 
+    backgroundColor: "white", 
     borderRadius: 25, 
     padding: 20
   }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, FlatList, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, FlatList, Dimensions, Pressable } from 'react-native';
 import CustomSearchBar from '../components/customSearchBar';
 import VocabCard from '../components/vocabCard';
 import { queryVocabToDatabase } from '../components/Database';
@@ -20,16 +20,25 @@ function DictionaryScreen() {
   );
 }
 
-const DictionarySearchScreen = ({ navigation }) => { // phải truyền prop navigation vào dictionarySearchScreen này
+const DictionarySearchScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [vocab, setVocab] = useState([]);
+  const [learned, setLearned] = useState(0);
+
   const handleSearch = async (query) => {
     setSearchQuery(query);
-    let result = await queryVocabToDatabase(query);
-    console.log(result);
-    setVocab(result);
-    console.log(vocab);
+    await reSearch(query);
   };
+
+  const reSearch = async (query) => {
+    let result = await queryVocabToDatabase(query, learned);
+    setVocab(result);
+  };
+
+  useEffect(() => {
+    reSearch(searchQuery);
+  }, [learned, searchQuery]);
+
   return (
     <View style={styles.container}>
       <CustomSearchBar
@@ -37,21 +46,36 @@ const DictionarySearchScreen = ({ navigation }) => { // phải truyền prop nav
         iconUri="https://img.icons8.com/ios-filled/50/000000/search.png"
         onChangeText={handleSearch}
       />
+      <View style={{flexDirection: 'row', height: 40, marginHorizontal: 25, marginTop: -25}}>
+        <Pressable
+          style={{flex: 1, borderTopLeftRadius: 25, borderBottomLeftRadius: 25, alignItems: 'center', justifyContent: 'center', backgroundColor: !learned ? '#3A94E7' : '#5BB6FF'}}
+          onPress={() => setLearned(0)}
+        >
+          <Text style={{color: 'white', fontSize: 20, fontFamily: !learned ? 'Inter-Bold' : 'Inter-Regular'}}>New</Text>
+        </Pressable>
+        <Pressable
+          style={{flex: 1, borderTopRightRadius: 25, borderBottomRightRadius: 25, alignItems: 'center', justifyContent: 'center', backgroundColor: learned ? '#3A94E7' : '#5BB6FF'}}
+          onPress={() => setLearned(1)}
+        >
+          <Text style={{color: 'white', fontSize: 20, fontFamily: learned ? 'Inter-Bold' : 'Inter-Regular'}}>Learned</Text>
+        </Pressable>
+      </View>
+      
       <FlatList
         data={vocab}
-        renderItem={({item}) => {
-          return (<VocabCard word={item.word} type={item.type} definition={item.definition} navigation={navigation}></VocabCard>)
-        }}
-        keyExtractor={(item) => item.id}
+        renderItem={({item}) => (
+          <VocabCard id={item.id} word={item.word} type={item.type} definition={item.definition} navigation={navigation} />
+        )}
+        keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.contentScroll}
-        style={{marginBottom: 115}}
-        />
+        style={{marginBottom: 135, marginTop: 10}}
+      />
     </View>
   );
-}
+};
 
 const DictionaryVocabScreen = ({route}) => {
-  const { word, type, definition } = route.params;
+  const { id, word, type, definition } = route.params;
   return (
     <View style={styles.vocabScreen}>
         <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 55 }}>{word}</Text>
@@ -62,6 +86,7 @@ const DictionaryVocabScreen = ({route}) => {
 
         <View style = {{paddingLeft:30, paddingRight: 30}}>
           <Text style={{textAlign:'center', marginTop: 10, fontFamily: 'Inter-Regular', fontSize: 20}}>{definition}</Text>
+          <Text style={{textAlign:'center', marginTop: 10, fontFamily: 'Inter-Regular', fontSize: 20}}>{id}</Text>
         </View>
     </View>
   );

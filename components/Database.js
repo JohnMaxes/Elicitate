@@ -12,10 +12,11 @@ export const initDatabase = async () => {
             type TEXT NOT NULL,
             definition TEXT NOT NULL,
             example_sentence TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            learned_at DATETIME,         -- Nullable
+            reviewed_at DATETIME         -- Nullable
         );`
-    );
-    console.log('vocab table processed');
+    );    console.log('vocab table processed');
     
     await db.execAsync(`
         CREATE TABLE IF NOT EXISTS courses (
@@ -38,17 +39,6 @@ export const initDatabase = async () => {
         );`
     );
     console.log('courses_vocabular table processed');
-
-    await db.execAsync(`
-        CREATE TABLE IF NOT EXISTS learned_vocabulary (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            vocabulary_id INTEGER NOT NULL,
-            learned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            reviewed_at DATETIME,
-            FOREIGN KEY (vocabulary_id) REFERENCES vocabulary(id)
-        );`
-    )
-    console.log('learned_vocabulary table processed');
 
     // Inserting vocabulary
     await db.execAsync(`
@@ -216,10 +206,12 @@ export const initDatabase = async () => {
     }
   };
 
-export const queryVocabToDatabase = async (string) => {
+export const queryVocabToDatabase = async (string, learned) => {
     try {
         const db = await SQLite.openDatabaseAsync('elicitate');
-        let query = 'SELECT * FROM vocabulary where word LIKE ? LIMIT 10';
+        let query;
+        if(learned) query = 'SELECT * FROM vocabulary WHERE word LIKE ? AND learned_at IS NOT NULL LIMIT 10';
+        else query = 'SELECT * FROM vocabulary WHERE word LIKE ? AND learned_at IS NULL LIMIT 10'
         let object = await db.getAllAsync(query, '%' + string + '%');
         return object;
     }
