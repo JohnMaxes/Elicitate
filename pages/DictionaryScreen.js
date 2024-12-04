@@ -1,23 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, FlatList, Dimensions, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, FlatList, Dimensions, Pressable, TouchableOpacity, Alert } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import CustomSearchBar from '../components/customSearchBar';
 import VocabCard from '../components/vocabCard';
-import { queryVocabToDatabase } from '../components/Database';
+import { queryVocabToDatabase, addWordToLearned } from '../components/Database';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const VocabStack = createNativeStackNavigator();
 
 function DictionaryScreen() {
   return (
     <VocabStack.Navigator>
-      <VocabStack.Screen name="DictionarySearchScreen" component={DictionarySearchScreen}
-      options={{headerShown:false}}/>
-      <VocabStack.Screen name="DictionaryVocabScreen" component={DictionaryVocabScreen}
-      options={{
-        headerTransparent: true,
-        headerTitle: '',
-      }}/>
+      <VocabStack.Screen name="DictionarySearchScreen" component={DictionarySearchScreen} options={{ headerShown: false }} />
+      <VocabStack.Screen 
+        name="DictionaryVocabScreen" 
+        component={DictionaryVocabScreen}
+        options={({ route }) => ({
+          headerTransparent: true,
+          headerTitle: '',
+          headerRight: () => (
+            <DictionaryVocabScreenAddButton id={route.params.id} learned={route.params.learned} />
+          ),
+        })}
+      />
     </VocabStack.Navigator>
   );
+}
+
+const DictionaryVocabScreenAddButton = ({id, learned }) => {
+  const handleAddWord = async () => {
+    if(await addWordToLearned(id)) {
+      alert('Word added successfully');
+      learned == 1;
+    }
+    else alert('Something has gone wrong');
+  };
+  if(!learned)
+  return (
+    <TouchableOpacity onPress={handleAddWord} style={{ marginRight: 15 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Ionicons name="add" size={24} color="black" />
+        <Text style={{ marginLeft: 5 }}>Add</Text>
+      </View>
+    </TouchableOpacity>
+  );
+  else return null;
 }
 
 const DictionarySearchScreen = ({ navigation }) => {
@@ -32,6 +58,7 @@ const DictionarySearchScreen = ({ navigation }) => {
 
   const reSearch = async (query) => {
     let result = await queryVocabToDatabase(query, learned);
+    console.log(result);
     setVocab(result);
   };
 
@@ -64,7 +91,7 @@ const DictionarySearchScreen = ({ navigation }) => {
       <FlatList
         data={vocab}
         renderItem={({item}) => (
-          <VocabCard id={item.id} word={item.word} type={item.type} definition={item.definition} navigation={navigation} />
+          <VocabCard id={item.id} word={item.word} type={item.type} definition={item.definition} learned={item.learned_at} navigation={navigation} />
         )}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.contentScroll}
@@ -75,7 +102,8 @@ const DictionarySearchScreen = ({ navigation }) => {
 };
 
 const DictionaryVocabScreen = ({route}) => {
-  const { id, word, type, definition } = route.params;
+  const { id, word, type, definition, learned } = route.params;
+
   return (
     <View style={styles.vocabScreen}>
         <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 55 }}>{word}</Text>
