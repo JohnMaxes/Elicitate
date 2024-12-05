@@ -50,16 +50,15 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <View style={styles.header}>
-                <Image
-                    style={styles.logo}
-                    source={{ uri: 'https://i.ibb.co/HxXVqfS/image-removebg-preview.png' }}
-                />
+            <Image
+                style={styles.logo}
+                source={{ uri: 'https://i.ibb.co/HxXVqfS/image-removebg-preview.png' }}
+            />
+
                 <View style={styles.textContainer}>
                     <Text style={styles.title}>Sign Up</Text>
                     <Text style={styles.subtitle}>Your journey starts here!</Text>
                 </View>
-            </View>
             <CustomInput
                 placeholder="Username"
                 placeholderTextColor="grey"
@@ -84,6 +83,7 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
                 iconUri="https://img.icons8.com/?id=94&format=png"
                 onChangeText={setRPassword}
                 value={registPassword}
+                
             />
             <CustomInput
                 placeholder="Confirm Password"
@@ -118,14 +118,14 @@ const styles = StyleSheet.create({
     logo: {
       width: 250,
       height: 250,
-      margin: 30,
+      marginTop: '15%',
       alignContent: 'center',
     },
     textContainer: {
-      width: '100%',
-      alignItems: 'flex-start',
-      marginLeft: -15,
-    },
+        width: '100%',
+        alignItems: 'flex-start',
+        marginLeft: 40,
+      },
     title: {
       fontSize: 40,
       fontWeight: 'bold',
