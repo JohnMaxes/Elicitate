@@ -15,26 +15,35 @@ const loadFonts = async () => {
   });
 };
 
-const CourseCard = ({ item, navigation }) => (
-  <View style={{backgroundColor:'white', height: 370, width: 260, borderRadius: 20, paddingTop: 15, paddingLeft: 20, paddingRight: 20, paddingBottom: 15, marginRight: 15}}>
-    <View style={{height: 240}}>
-      <Image style={{borderRadius: 10, width: '100%', height: '100%'}} source={{ uri: 'https://media.istockphoto.com/id/1162167657/photo/hand-painted-background-with-mixed-liquid-blue-and-golden-paints-abstract-fluid-acrylic.jpg?s=612x612&w=0&k=20&c=DiYltrxEBUFjhhltHriX4WVPRxiPqgQhTBC5R7_C6Ik='}}/>
-    </View>
-    <View style={{height: 50}}>
-      <Text style={{fontFamily:'Inter-Bold', fontSize: 18}}>{item.title}</Text>
-      <Text style={{fontFamily:'Poppins-Bold', marginTop: -5,fontSize: 15, color: item.level == 'Beginner' ? 'green' : item.level == 'Intermediate' ? '#FFD700' : 'red'}}>{item.level}</Text>
-    </View>
-    <TouchableOpacity style={{height: 50, borderWidth: 2, borderColor: '#3A94E7', justifyContent: 'center', alignItems: 'center', borderRadius: 15}}>
-      <Text style={{fontFamily:'Poppins-Bold', color:'#3A94E7'}}>View</Text>
-    </TouchableOpacity>
-  </View>
-);
-
 const streak_count = 0;
 function HomeScreen({navigation}) {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
   const [staticCourses, setStaticCourses] = useState([]);
+
+  const CourseCard = ({ item }) => (
+    <View style={{backgroundColor:'white', height: 370, width: 260, borderRadius: 20, paddingTop: 15, paddingLeft: 20, paddingRight: 20, paddingBottom: 15, marginRight: 15}}>
+      <View style={{height: 240}}>
+        <Image style={{borderRadius: 10, width: '100%', height: '100%'}} source={{ uri: 'https://media.istockphoto.com/id/1162167657/photo/hand-painted-background-with-mixed-liquid-blue-and-golden-paints-abstract-fluid-acrylic.jpg?s=612x612&w=0&k=20&c=DiYltrxEBUFjhhltHriX4WVPRxiPqgQhTBC5R7_C6Ik='}}/>
+      </View>
+      <View style={{height: 50}}>
+        <Text style={{fontFamily:'Inter-Bold', fontSize: 18}}>{item.title}</Text>
+        <Text style={{fontFamily:'Poppins-Bold', marginTop: -5,fontSize: 15, color: item.level == 'Beginner' ? 'green' : item.level == 'Intermediate' ? '#FFD700' : 'red'}}>{item.level}</Text>
+      </View>
+      <TouchableOpacity style={{height: 50, borderWidth: 2, borderColor: '#3A94E7', justifyContent: 'center', alignItems: 'center', borderRadius: 15}}
+      onPress={() => navigation.navigate('Course',{
+        screen: 'CourseViewScreen',
+        params: {
+          title: item.title,
+          subtitle: item.description,
+          level: item.level
+        }
+      })}>
+        <Text style={{fontFamily:'Poppins-Bold', color:'#3A94E7'}}>View</Text>
+      </TouchableOpacity>
+    </View>
+  );
+  
 
   useEffect(() => {
     async function init() 

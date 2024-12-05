@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, FlatList, Dimensions, Pressable, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CustomSearchBar from '../components/customSearchBar';
+import Icon from 'react-native-vector-icons/Ionicons';
 import VocabCard from '../components/vocabCard';
 import { queryVocabToDatabase, addWordToLearned } from '../components/Database';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const VocabStack = createNativeStackNavigator();
 
-function DictionaryScreen() {
+function DictionaryScreen({navigation}) {
   return (
     <VocabStack.Navigator>
       <VocabStack.Screen name="DictionarySearchScreen" component={DictionarySearchScreen} options={{ headerShown: false }} />
@@ -17,6 +18,11 @@ function DictionaryScreen() {
         options={({ route }) => ({
           headerTransparent: true,
           headerTitle: '',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.navigate('DictionarySearchScreen')}>
+              <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
+            </TouchableOpacity>
+          ),  
           headerRight: () => (
             <DictionaryVocabScreenAddButton id={route.params.id} learned={route.params.learned} />
           ),

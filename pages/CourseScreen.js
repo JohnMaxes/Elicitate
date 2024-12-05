@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import CustomSearchBar from '../components/customSearchBar';
 import CourseCard from '../components/courseCard';
 import { queryCourseToDatabase } from '../components/Database';
@@ -7,7 +8,7 @@ import * as Progress from 'react-native-progress';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const CourseStack = createNativeStackNavigator();
 
-function CourseScreen() {
+function CourseScreen({navigation}) {
   return(
     <CourseStack.Navigator>
       <CourseStack.Screen name="CourseSearchScreen" component={CourseSearchScreen}
@@ -16,6 +17,11 @@ function CourseScreen() {
       options={{
         headerTransparent: true,
         headerTitle: '',
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => navigation.navigate('CourseSearchScreen')}>
+            <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
+          </TouchableOpacity>
+        )
       }}/>
     </CourseStack.Navigator>
   )
@@ -88,7 +94,7 @@ const CourseViewScreen = ({route}) => {
           <View style={{justifyContent:'center', paddingLeft: 10}}>
             <Text style={{fontFamily:'Poppins-Regular', fontSize: 15, marginBottom: -5}}>Course</Text>
             <Text style={{fontFamily:'Poppins-Bold', fontSize: 20}}>{title}</Text>
-            <Text style={{fontFamily:'Poppins-Bold', marginTop: -5,fontSize: 15, color: level == 'Beginner' ? 'green' : level == 'Intermediate' ? 'yellow' : 'red'}}>{level}</Text>
+            <Text style={{fontFamily:'Poppins-Bold', marginTop: -5,fontSize: 15, color: level == 'Beginner' ? 'green' : level == 'Intermediate' ? '#FFD700' : 'red'}}>{level}</Text>
           </View>
         </View>
 

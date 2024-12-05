@@ -15,7 +15,7 @@ import LoginScreen from "./pages/LoginScreen";
 import * as Progress from 'react-native-progress';
 import { initDatabase } from "./components/Database.js";
 
-const Tab = createBottomTabNavigator();
+const BottomTab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const ProfileStack = ({ handleLogout }) => {
@@ -40,7 +40,7 @@ const ProfileStack = ({ handleLogout }) => {
 const Home = ({ handleLogout }) => {
   return (
     <NavigationContainer>
-      <Tab.Navigator
+      <BottomTab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color, size }) => {
             let iconName;
@@ -73,13 +73,13 @@ const Home = ({ handleLogout }) => {
           headerShown: false,
         })}
       >
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Course" component={CourseScreen} />
-        <Tab.Screen name="Dictionary" component={DictionaryScreen} />
-        <Tab.Screen name="Profile">
+        <BottomTab.Screen name="Home" component={HomeScreen} />
+        <BottomTab.Screen name="Course" component={CourseScreen} />
+        <BottomTab.Screen name="Dictionary" component={DictionaryScreen} />
+        <BottomTab.Screen name="Profile">
           {props => <ProfileStack {...props} handleLogout={handleLogout} />}
-        </Tab.Screen>
-      </Tab.Navigator>
+        </BottomTab.Screen>
+      </BottomTab.Navigator>
     </NavigationContainer>
   );
 };
