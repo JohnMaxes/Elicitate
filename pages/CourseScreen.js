@@ -32,6 +32,10 @@ const CourseSearchScreen = ({ navigation }) =>
     setCourses(result);
   };
 
+  useEffect(() => {
+    handleSearch('');
+  }, [])
+
   // Test data
   /*
   const testCourses = [
@@ -89,6 +93,7 @@ const CourseSearchScreen = ({ navigation }) =>
     <CourseCard
       title={item.title}
       subtitle={item.description}
+      level={item.level}
       navigation={navigation}
       /*
       enrolledCount={item.enrolledCount}
@@ -118,7 +123,8 @@ const CourseSearchScreen = ({ navigation }) =>
   );
 }
 
-const CourseViewScreen = () => {
+const CourseViewScreen = ({route}) => {
+  const {title, subtitle, level} = route.params;
   const [progressValue, setProgressValue] = useState(0);
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -134,12 +140,14 @@ const CourseViewScreen = () => {
           thickness={10} direction={'counter-clockwise'} strokeCap={'round'} textStyle={{fontWeight:'bold', fontSize: 20}}/>
           <View style={{justifyContent:'center', paddingLeft: 10}}>
             <Text style={{fontFamily:'Poppins-Regular', fontSize: 15, marginBottom: -5}}>Course</Text>
-            <Text style={{fontFamily:'Poppins-Bold', fontSize: 20}}>Discovering English</Text>
+            <Text style={{fontFamily:'Poppins-Bold', fontSize: 20}}>{title}</Text>
+            <Text style={{fontFamily:'Poppins-Bold', marginTop: -5,fontSize: 15, color: level == 'Beginner' ? 'green' : level == 'Intermediate' ? 'yellow' : 'red'}}>{level}</Text>
           </View>
         </View>
 
         <View style={{marginTop: 10}}>
           <Text style={{fontFamily:'Poppins-Bold', fontSize: 20}}>Course Details</Text>
+          <Text style={{fontFamily:'Poppins-Regular', fontSize: 15}}>{subtitle}</Text>
         </View>
       </View>
     </View>

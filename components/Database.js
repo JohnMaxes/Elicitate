@@ -23,7 +23,8 @@ export const initDatabase = async () => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
             description TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            level TEXT NOT NULL
         );`
     );
     console.log('courses table processed');
@@ -118,9 +119,9 @@ export const initDatabase = async () => {
     
     // Inserting courses
     await db.execAsync(`
-        INSERT INTO courses (title, description) VALUES
-        ('Basic Vocabulary', 'An introductory course covering essential vocabulary.'),
-        ('Everyday English', 'A course focused on vocabulary used in daily conversations.');
+        INSERT INTO courses (title, description, level) VALUES
+        ('Basic Vocabulary', 'An introductory course covering essential vocabulary.', 'Beginner'),
+        ('Everyday English', 'A course focused on vocabulary used in daily conversations.', 'Beginner');
     `);
     console.log('Courses table initialized');
 

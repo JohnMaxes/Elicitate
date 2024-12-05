@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 const CourseCard = ({ 
   title, 
   subtitle,
+  level,
   navigation
   /* 
   enrolledCount, 
@@ -15,7 +16,7 @@ const CourseCard = ({
   */
 }) => {
     return (
-          <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("CourseViewScreen")}>
+          <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("CourseViewScreen", {title, subtitle, level})}>
             <View style={styles.contentContainer}>
               <Image source={{ uri: 'https://media.istockphoto.com/id/1162167657/photo/hand-painted-background-with-mixed-liquid-blue-and-golden-paints-abstract-fluid-acrylic.jpg?s=612x612&w=0&k=20&c=DiYltrxEBUFjhhltHriX4WVPRxiPqgQhTBC5R7_C6Ik='}} style={styles.image} />
               <View style={styles.textContainer}>
@@ -31,7 +32,7 @@ const CourseCard = ({
               </View>
               <View style={styles.infoItem}>
                 <Ionicons name="location-outline" size={16} color="#666" />
-                <Text style={styles.infoText}>Have not added level!</Text>
+                <Text style={styles.infoText}>{level}</Text>
               </View>
             </View>
           </TouchableOpacity>
