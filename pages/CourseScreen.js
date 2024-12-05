@@ -36,59 +36,6 @@ const CourseSearchScreen = ({ navigation }) =>
     handleSearch('');
   }, [])
 
-  // Test data
-  /*
-  const testCourses = [
-    {
-      title: "Introduction to React Native",
-      subtitle: "Learn the basics of React Native",
-      enrolledCount: 350,
-      level: "Beginner",
-      imageSource: { uri: "https://via.placeholder.com/50" },
-      onPress: () => alert("Course clicked!")
-    },
-    {
-      title: "Mastering JavaScript",
-      subtitle: "Deep dive into JavaScript",
-      enrolledCount: 1200,
-      level: "Intermediate",
-      imageSource: { uri: "https://via.placeholder.com/50" },
-      onPress: () => alert("Course clicked!")
-    },
-    {
-      title: "Advanced React Patterns",
-      subtitle: "Master advanced React techniques",
-      enrolledCount: 520,
-      level: "Advanced",
-      imageSource: { uri: "https://via.placeholder.com/50" },
-      onPress: () => alert("Course clicked!")
-    },
-    {
-      title: "Introduction to React Native",
-      subtitle: "Learn the basics of React Native",
-      enrolledCount: 350,
-      level: "Beginner",
-      imageSource: { uri: "https://via.placeholder.com/50" },
-      onPress: () => alert("Course clicked!")
-    },
-    {
-      title: "Mastering JavaScript",
-      subtitle: "Deep dive into JavaScript",
-      enrolledCount: 1200,
-      level: "Intermediate",
-      imageSource: { uri: "https://via.placeholder.com/50" },
-      onPress: () => alert("Course clicked!")
-    },
-    {
-      title: "Advanced React Patterns",
-      subtitle: "Master advanced React techniques",
-      enrolledCount: 520,
-      level: "Advanced",
-      imageSource: { uri: "https://via.placeholder.com/50" },
-      onPress: () => alert("Course clicked!")
-    }
-  ];
-  */
   const renderItem = ({ item }) => (
     <CourseCard
       title={item.title}
@@ -111,13 +58,13 @@ const CourseSearchScreen = ({ navigation }) =>
         iconUri="https://img.icons8.com/ios-filled/50/000000/search.png"
         onChangeText={handleSearch}
       />
-      <Text style={styles.heading}>My courses</Text>
+      <Text style={[styles.heading, {marginTop:-20}]}>My courses</Text>
       <FlatList
         data={courses}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ padding: 16, paddingBottom: 200 }}
-        style={{marginBottom: 115}}
+        contentContainerStyle={styles.contentScroll}
+        style={{marginBottom: 150}}
       />
     </View>
   );
@@ -155,10 +102,15 @@ const CourseViewScreen = ({route}) => {
 }
 
 const styles = StyleSheet.create({
+  contentScroll: {
+    paddingHorizontal: 25,
+    paddingBottom: 200,
+    marginBottom: 115,
+  },
   heading: {
     fontSize: 25,
     textAlign: 'flex-start',
-    paddingLeft: 20,
+    paddingLeft: 25,
     fontWeight: "bold",
   },
   container: {

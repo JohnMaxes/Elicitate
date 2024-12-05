@@ -74,9 +74,9 @@ export const initDatabase = async () => {
         ("in", "preposition", "Indicating location or position within something.", "The keys are in my bag."),
         ("on", "preposition", "Indicating location or position on a surface.", "The book is on the table."),
         ("under", "preposition", "Indicating location or position beneath something.", "The dog is under the bed."),
-        ("over", "preposition", "Indicating location or position above something.", "The airplane is flying over the city.");
+        ("over", "preposition", "Indicating location or position above something.", "The airplane is flying over the city."),
 
-        INSERT INTO vocabulary (word, type, definition, example_sentence) VALUES
+        -- Course 2
         ("family", "noun", "A group consisting of parents and children living together in a household.", "My family is going on a vacation next month."),
         ("friend", "noun", "A person with whom one has a bond of mutual affection.", "She is my best friend from high school."),
         ("work", "noun", "Activity involving mental or physical effort done in order to achieve a purpose.", "He has a lot of work to do today."),
@@ -113,7 +113,52 @@ export const initDatabase = async () => {
         ("behind", "preposition", "Indicating that something is at the back of something else.", "The car is parked behind the building."),
         ("beside", "preposition", "Next to or at the side of something or someone.", "I sat beside her during the meeting."),
         ("with", "preposition", "Indicating the presence or involvement of something or someone.", "She came with her friends to the party."),
-        ("without", "preposition", "In the absence of something or someone.", "He cannot live without his phone.");
+        ("without", "preposition", "In the absence of something or someone.", "He cannot live without his phone."),
+        
+        -- Vocabulary for Communicating in the Community
+        ("neighbor", "noun", "A person living near or next door.", "My neighbor often helps me with my gardening."),
+        ("community", "noun", "A group of people living in the same place or sharing a particular characteristic.", "Our community organizes events every month."),
+        ("gathering", "noun", "An assembly of people, especially for socializing.", "We had a family gathering last weekend."),
+        ("event", "noun", "An occurrence, especially one of importance.", "The community is hosting a cultural event this Saturday."),
+        ("volunteer", "noun", "A person who offers to take part in an activity without being paid.", "She is a volunteer at the local food bank."),
+        ("meeting", "noun", "A gathering of people for discussion.", "The community meeting is scheduled for Friday evening."),
+        ("support", "verb", "To give assistance or approval.", "It's important to support local businesses."),
+        
+        -- Food and Cooking Vocabulary
+        ("ingredient", "noun", "Any of the foods or substances that are combined to make a dish.", "Make sure to buy all the ingredients for the recipe."),
+        ("recipe", "noun", "A set of instructions for preparing a particular dish.", "I followed the recipe to make the cake."),
+        ("cook", "verb", "To prepare food by heating it.", "She likes to cook Italian dishes."),
+        ("bake", "verb", "To cook food by dry heat without direct exposure to a flame.", "I will bake some cookies for dessert."),
+        ("meal", "noun", "Food that is prepared and eaten at a particular time.", "Dinner is my favorite meal of the day."),
+        ("snack", "noun", "A small amount of food eaten between meals.", "I always have a snack in the afternoon."),
+        ("spice", "noun", "A substance used to flavor food.", "I added some spice to the soup for extra flavor."),
+        
+        -- Vehicles and Transportation Vocabulary
+        ("bicycle", "noun", "A vehicle with two wheels powered by pedaling.", "He rides his bicycle to work every day."),
+        ("bus", "noun", "A large motor vehicle carrying passengers by road.", "The bus arrives every 30 minutes."),
+        ("train", "noun", "A series of connected vehicles traveling on railways.", "We took the train to the city."),
+        ("motorcycle", "noun", "A two-wheeled motor vehicle.", "She loves to ride her motorcycle on weekends."),
+        ("traffic", "noun", "Vehicles moving on a road.", "The traffic was heavy during rush hour."),
+        ("route", "noun", "A way or course taken in getting from a starting point to a destination.", "What route should we take to avoid traffic?"),
+        ("license", "noun", "A legal document permitting a person to drive a vehicle.", "He just got his driver's license."),
+        
+        -- Jobs and Professions Vocabulary
+        ("manager", "noun", "A person responsible for controlling or administering an organization or group of staff.", "The manager oversees all operations at the store."),
+        ("employee", "noun", "A person who is hired to work for another person or organization.", "Every employee must attend the training session."),
+        ("interview", "noun", "A formal meeting to assess a job candidate.", "She has a job interview next week."),
+        ("salary", "noun", "A fixed regular payment made by an employer to an employee.", "He is happy with his salary increase."),
+        ("colleague", "noun", "A person with whom one works, especially in a profession or business.", "My colleague helped me with the project."),
+        ("promotion", "noun", "The advancement of an employee's rank or position.", "She received a promotion after her hard work."),
+        ("skills", "noun", "The ability to do something well, usually gained through training or experience.", "Communication skills are essential for this job."),
+        
+        -- Places and Directions Vocabulary
+        ("street", "noun", "A public road in a city or town.", "The restaurant is located on Main Street."),
+        ("park", "noun", "A large public green area for recreation.", "We often go to the park for picnics."),
+        ("building", "noun", "A structure with a roof and walls.", "That building is the new library."),
+        ("direction", "noun", "A course along which someone or something moves.", "Can you give me directions to the nearest gas station?"),
+        ("corner", "noun", "The point where two streets meet.", "Turn left at the corner to find the shop."),
+        ("landmark", "noun", "A recognizable and often historically or culturally significant object or structure.", "The statue is a famous landmark in the city."),
+        ("map", "noun", "A visual representation of an area.", "I used a map to find my way around the city.");
         `);
     console.log("Vocabulary table initialized");
     
@@ -121,7 +166,12 @@ export const initDatabase = async () => {
     await db.execAsync(`
         INSERT INTO courses (title, description, level) VALUES
         ('Basic Vocabulary', 'An introductory course covering essential vocabulary.', 'Beginner'),
-        ('Everyday English', 'A course focused on vocabulary used in daily conversations.', 'Beginner');
+        ('Everyday English', 'A course focused on vocabulary used in daily conversations.', 'Beginner'),
+        ('Communications', 'Learn essential words and phrases for interactions in your local area.', 'Beginner'),
+        ('Food and Cooking', 'Explore vocabulary related to food, cooking, and dining out.', 'Beginner'),
+        ('Vehicles and Transport', 'Master vocabulary related to cars, public transport, and travel.', 'Intermediate'),
+        ('Jobs and Professions', 'Build vocabulary related to various professions and workplace interactions.', 'Intermediate'),
+        ('Places and Directions', 'Learn vocabulary for asking for and giving directions in different settings.', 'Beginner');
     `);
     console.log('Courses table initialized');
 
@@ -198,6 +248,51 @@ export const initDatabase = async () => {
         (2, 66), -- beside
         (2, 67), -- with
         (2, 68); -- without
+
+        INSERT INTO course_vocabulary (course_id, vocabulary_id) VALUES
+        (3, 69), -- neighbor
+        (3, 70), -- community
+        (3, 71), -- gathering
+        (3, 72), -- event
+        (3, 73), -- volunteer
+        (3, 74), -- meeting
+        (3, 75); -- support
+
+        INSERT INTO course_vocabulary (course_id, vocabulary_id) VALUES
+        (4, 76), -- ingredient
+        (4, 77), -- recipe
+        (4, 78), -- cook
+        (4, 79), -- bake
+        (4, 80), -- meal
+        (4, 81), -- snack
+        (4, 82); -- spice
+
+        INSERT INTO course_vocabulary (course_id, vocabulary_id) VALUES
+        (5, 83), -- bicycle
+        (5, 84), -- bus
+        (5, 85), -- train
+        (5, 86), -- motorcycle
+        (5, 87), -- traffic
+        (5, 88), -- route
+        (5, 89); -- license
+
+        INSERT INTO course_vocabulary (course_id, vocabulary_id) VALUES
+        (6, 90), -- manager
+        (6, 91), -- employee
+        (6, 92), -- interview
+        (6, 93), -- salary
+        (6, 94), -- colleague
+        (6, 95), -- promotion
+        (6, 96); -- skills
+
+        INSERT INTO course_vocabulary (course_id, vocabulary_id) VALUES
+        (7, 97), -- street
+        (7, 98), -- park
+        (7, 99), -- building
+        (7, 100), -- direction
+        (7, 101), -- corner
+        (7, 102), -- landmark
+        (7, 103); -- map
     `);
     console.log('Course vocabulary table initialized');
     await db.closeAsync();

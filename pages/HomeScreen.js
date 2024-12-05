@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, FlatList, Dimensions, TouchableOpacity} from 'react-native';
+import {View, Text, FlatList, Dimensions, TouchableOpacity, Image} from 'react-native';
 import styles from '../stylesheet';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as Font from 'expo-font';
 import * as Progress from 'react-native-progress';
+import { queryCourseToDatabase } from '../components/Database';
 
 const loadFonts = async () => {
   await Font.loadAsync({
@@ -14,54 +15,41 @@ const loadFonts = async () => {
   });
 };
 
-const courses = [
-  {
-    id: 1,
-    title: 'Economics Vocabulary',
-    image: 'https://example.com/image1.png',
-  },
-  {
-    id: 2,
-    title: 'Sentence Completion',
-    image: 'https://example.com/image2.png',
-  },
-  {
-    id: 3,
-    title: 'Math Fundamentals',
-    image: 'https://example.com/image3.png',
-  },
-  {
-    id: 4,
-    title: 'Math Fundamentals Difference',
-    image: 'https://example.com/image3.png',
-  },
-];
-
-const CourseCard = ({ item }) => (
-  <View style={{backgroundColor:'white', width: 260, height: 260, marginRight: 20, borderRadius: 20, padding: 15}}>
-    <View style={{flex: 4}}>
-      <Text>{item.title}</Text>
+const CourseCard = ({ item, navigation }) => (
+  <View style={{backgroundColor:'white', height: 370, width: 260, borderRadius: 20, paddingTop: 15, paddingLeft: 20, paddingRight: 20, paddingBottom: 15, marginRight: 15}}>
+    <View style={{height: 240}}>
+      <Image style={{borderRadius: 10, width: '100%', height: '100%'}} source={{ uri: 'https://media.istockphoto.com/id/1162167657/photo/hand-painted-background-with-mixed-liquid-blue-and-golden-paints-abstract-fluid-acrylic.jpg?s=612x612&w=0&k=20&c=DiYltrxEBUFjhhltHriX4WVPRxiPqgQhTBC5R7_C6Ik='}}/>
     </View>
-    <TouchableOpacity style={{flex: 1, borderWidth: 2, borderColor: '#3A94E7', justifyContent: 'center', alignItems: 'center', borderRadius: 15}}>
-      <Text style={{fontFamily:'Poppins-Bold', color:'#3A94E7'}}>Start</Text>
+    <View style={{height: 50}}>
+      <Text style={{fontFamily:'Inter-Bold', fontSize: 18}}>{item.title}</Text>
+      <Text style={{fontFamily:'Poppins-Bold', marginTop: -5,fontSize: 15, color: item.level == 'Beginner' ? 'green' : item.level == 'Intermediate' ? '#FFD700' : 'red'}}>{item.level}</Text>
+    </View>
+    <TouchableOpacity style={{height: 50, borderWidth: 2, borderColor: '#3A94E7', justifyContent: 'center', alignItems: 'center', borderRadius: 15}}>
+      <Text style={{fontFamily:'Poppins-Bold', color:'#3A94E7'}}>View</Text>
     </TouchableOpacity>
   </View>
 );
 
 const streak_count = 0;
-function HomeScreen() {
+function HomeScreen({navigation}) {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
+  const [staticCourses, setStaticCourses] = useState([]);
 
   useEffect(() => {
-    loadFonts().then(() => {
-      const timer = setTimeout(() => {
-        setProgressValue(0.7);
-      }, 100);
-      setFontsLoaded(true)
-      return () => clearTimeout(timer);
-    });
-  }, []);
+    async function init() 
+    {
+      setStaticCourses(await queryCourseToDatabase(''));
+      loadFonts().then(() => {
+        const timer = setTimeout(() => {
+          setProgressValue(0.7);
+        }, 100);
+        setFontsLoaded(true)
+        return () => clearTimeout(timer);
+      });
+    };
+    init();
+  },[]);
 
   if (!fontsLoaded) {
     return null;
@@ -80,7 +68,7 @@ function HomeScreen() {
         </View>
       </View>
 
-      <View style={{width:'100%', marginTop: 10, paddingLeft: 20, paddingTop:20, paddingRight: 20}}>
+      <View style={{width:'100%', paddingLeft: 20, paddingTop: 20, paddingRight: 20}}>
       
         <Text style={{fontFamily: 'Poppins-Bold', fontSize: 20,}}>Current Course</Text>
         <View style={{backgroundColor: 'white', borderRadius: 32, height: Dimensions.get('window').height*0.23, padding: 20, marginTop: 7}}>
@@ -102,22 +90,22 @@ function HomeScreen() {
         </View>
 
 
-        <View style={{flexDirection: 'row', marginTop: 50, alignItems: 'center'}}>
+        <View style={{flexDirection: 'row', marginTop: 10, alignItems: 'center'}}>
           <View style={{alignItems: 'center', flex: 5, alignItems: 'flex-start'}}>
             <Text style={{fontFamily: 'Poppins-Regular', fontSize: 20,}}>Other Courses</Text>
           </View>
-          <TouchableOpacity style={{alignItems: 'flex-end', flex: 1}}>
+          <TouchableOpacity style={{alignItems: 'flex-end', flex: 1}} onPress={() => navigation.navigate('Course')}>
             <Text style={{color: '#3A94E7'}}>View All</Text>
           </TouchableOpacity>
         </View>
       </View>
       <FlatList
-        data={courses}
+        data={staticCourses}
         renderItem={CourseCard}
         keyExtractor={item => item.id}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        style={{paddingLeft:20}}
+        contentContainerStyle={{paddingLeft:20, paddingRight:10}}
         />
     </View>
   );
