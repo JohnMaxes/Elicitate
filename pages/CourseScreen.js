@@ -8,23 +8,29 @@ import * as Progress from 'react-native-progress';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const CourseStack = createNativeStackNavigator();
 
-function CourseScreen({navigation}) {
-  return(
+function CourseScreen() {
+  return (
     <CourseStack.Navigator>
-      <CourseStack.Screen name="CourseSearchScreen" component={CourseSearchScreen}
-      options={{headerShown:false}}/>
-      <CourseStack.Screen name="CourseViewScreen" component={CourseViewScreen}
-      options={{
-        headerTransparent: true,
-        headerTitle: '',
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => navigation.navigate('CourseSearchScreen')}>
-            <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
-          </TouchableOpacity>
-        )
-      }}/>
+      <CourseStack.Screen 
+        name="CourseSearchScreen" 
+        component={CourseSearchScreen}
+        options={{ headerShown: false }} 
+      />
+      <CourseStack.Screen 
+        name="CourseViewScreen" 
+        component={CourseViewScreen}
+        options={({ navigation }) => ({
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Icon name='arrow-back-outline' size={35} color='#3A94E7' />
+            </TouchableOpacity>
+          ),
+        })} 
+      />
     </CourseStack.Navigator>
-  )
+  );
 }
 
 const CourseSearchScreen = ({ navigation }) =>

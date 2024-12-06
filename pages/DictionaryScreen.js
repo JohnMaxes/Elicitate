@@ -8,18 +8,18 @@ import { queryVocabToDatabase, addWordToLearned } from '../components/Database';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const VocabStack = createNativeStackNavigator();
 
-function DictionaryScreen({navigation}) {
+function DictionaryScreen() {
   return (
     <VocabStack.Navigator>
       <VocabStack.Screen name="DictionarySearchScreen" component={DictionarySearchScreen} options={{ headerShown: false }} />
       <VocabStack.Screen 
         name="DictionaryVocabScreen" 
         component={DictionaryVocabScreen}
-        options={({ route }) => ({
+        options={({ route, navigation }) => ({
           headerTransparent: true,
           headerTitle: '',
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.navigate('DictionarySearchScreen')}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
               <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
             </TouchableOpacity>
           ),  

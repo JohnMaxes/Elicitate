@@ -1,6 +1,8 @@
 import * as SQLite from 'expo-sqlite';
 
 export const initDatabase = async () => {
+    const bruh = await SQLite.openDatabaseAsync('elicitate');
+    await bruh.closeAsync();
     await SQLite.deleteDatabaseAsync('elicitate');
     const db = await SQLite.openDatabaseAsync('elicitate');
     try { 
