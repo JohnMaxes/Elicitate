@@ -40,7 +40,6 @@ const CourseSearchScreen = ({ navigation }) =>
   const handleSearch = async (query) => {
     setSearchQuery(query);
     let result = await queryCourseToDatabase(query);
-    console.log(result);
     setCourses(result);
   };
 

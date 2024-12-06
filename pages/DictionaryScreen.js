@@ -32,8 +32,9 @@ function DictionaryScreen() {
   );
 }
 
-const DictionaryVocabScreenAddButton = ({id, learned }) => {
+const DictionaryVocabScreenAddButton = ({id, learned}) => {
   const handleAddWord = async () => {
+    console.log(learned);
     if(await addWordToLearned(id)) {
       alert('Word added successfully');
       learned == 1;
@@ -44,8 +45,7 @@ const DictionaryVocabScreenAddButton = ({id, learned }) => {
   return (
     <TouchableOpacity onPress={handleAddWord} style={{ marginRight: 15 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Ionicons name="add" size={24} color="black" />
-        <Text style={{ marginLeft: 5 }}>Add</Text>
+        <Ionicons name="add" size={35} color="#3A94E7" />
       </View>
     </TouchableOpacity>
   );
@@ -64,7 +64,6 @@ const DictionarySearchScreen = ({ navigation }) => {
 
   const reSearch = async (query) => {
     let result = await queryVocabToDatabase(query, learned);
-    console.log(result);
     setVocab(result);
   };
 
