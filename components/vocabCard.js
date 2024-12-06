@@ -5,7 +5,7 @@ const VocabCard = ({id, word, type, definition, learned, navigation}) => {
     return (
         <TouchableOpacity style={styles.cardContainer} onPress={() => {navigation.navigate("DictionaryVocabScreen", {id, word, type, definition, learned})}}>
             <Text style={{fontFamily:'Poppins-Bold', fontSize:30}}>{word}</Text>
-            <View style={styles.typeContainer}>
+            <View style={[styles.typeContainer, {backgroundColor: learned ? '#4CAF50' : '#7949FF'}]}>
                 <Text style={{color: 'white', fontSize: 15, fontFamily:'Inter-Bold'}}>{type}</Text>
             </View>
             <View style={{marginTop: '5'}}>
@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
     typeContainer: {
         fontSize: 20,
         borderRadius: 10,
-        backgroundColor: '#7949FF',
         width: Dimensions.get('window').width*0.25,
         justifyContent: 'center',
         alignItems:'center',

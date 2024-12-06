@@ -48,8 +48,8 @@ const DictionaryVocabScreenAddButton = ({id, learned}) => {
         <Ionicons name="add" size={35} color="#3A94E7" />
       </View>
     </TouchableOpacity>
-  );
-  else return null;
+  )
+  else return (<Text style={{fontSize: 20, color:'#3A94E7'}}>Learned!</Text>)
 }
 
 const DictionarySearchScreen = ({ navigation }) => {
@@ -83,7 +83,7 @@ const DictionarySearchScreen = ({ navigation }) => {
           style={{flex: 1, borderTopLeftRadius: 25, borderBottomLeftRadius: 25, alignItems: 'center', justifyContent: 'center', backgroundColor: !learned ? '#3A94E7' : '#5BB6FF'}}
           onPress={() => setLearned(0)}
         >
-          <Text style={{color: 'white', fontSize: 20, fontFamily: !learned ? 'Inter-Bold' : 'Inter-Regular'}}>New</Text>
+          <Text style={{color: 'white', fontSize: 20, fontFamily: !learned ? 'Inter-Bold' : 'Inter-Regular'}}>All</Text>
         </Pressable>
         <Pressable
           style={{flex: 1, borderTopRightRadius: 25, borderBottomRightRadius: 25, alignItems: 'center', justifyContent: 'center', backgroundColor: learned ? '#3A94E7' : '#5BB6FF'}}

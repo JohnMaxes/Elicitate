@@ -308,8 +308,8 @@ export const queryVocabToDatabase = async (string, learned) => {
     try {
         const db = await SQLite.openDatabaseAsync('elicitate');
         let query;
-        if(learned) query = 'SELECT * FROM vocabulary WHERE word LIKE ? AND learned_at IS NOT NULL LIMIT 10';
-        else query = 'SELECT * FROM vocabulary WHERE word LIKE ? AND learned_at IS NULL LIMIT 10'
+        if(learned) query = 'SELECT * FROM vocabulary WHERE word LIKE ? AND learned_at IS NOT NULL';
+        else query = 'SELECT * FROM vocabulary WHERE word LIKE ? LIMIT 10'
         let object = await db.getAllAsync(query, '%' + string + '%');
         await db.closeAsync();
         return object;
