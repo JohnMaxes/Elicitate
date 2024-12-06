@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Switch, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, Switch, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -23,10 +23,11 @@ const ProfileScreen = ({ handleLogout }) => {
     <View style={styles.container}>
       
       <TouchableOpacity style={styles.profileCard} onPress={() => navigation.navigate('ProfileDetails')}>
-        <Image source={{ uri: 'https://scontent.fsgn5-14.fna.fbcdn.net/v/t39.30808-6/416318714_3478120982442872_833039280433233648_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGeZz5n0X4YJNG9z10vFLzpxOEqWgQf_gTE4SpaBB_-BPymO5lmMUJjoFaQpHfUpqaGzj0TSAEOi_kb8XJlPq-n&_nc_ohc=GTaI0W_q73kQ7kNvgHvR2Bx&_nc_zt=23&_nc_ht=scontent.fsgn5-14.fna&_nc_gid=AVbKqsYpfdQNzofEMP9ucMr&oh=00_AYD24X4fsHI076DFj3GVxE0AHrVogR9ot3E8oBCJJqjFUg&oe=6756650E' }} style={styles.avatar} />
+        <Image style={styles.avatar} source={{ uri: 'https://scontent.fsgn5-14.fna.fbcdn.net/v/t39.30808-6/416318714_3478120982442872_833039280433233648_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGeZz5n0X4YJNG9z10vFLzpxOEqWgQf_gTE4SpaBB_-BPymO5lmMUJjoFaQpHfUpqaGzj0TSAEOi_kb8XJlPq-n&_nc_ohc=GTaI0W_q73kQ7kNvgHvR2Bx&_nc_zt=23&_nc_ht=scontent.fsgn5-14.fna&_nc_gid=AVbKqsYpfdQNzofEMP9ucMr&oh=00_AYD24X4fsHI076DFj3GVxE0AHrVogR9ot3E8oBCJJqjFUg&oe=6756650E' }}/>
         <View>
           <Text style={styles.name}>{user.name}</Text>
           <Text style={styles.username}>{user.username}</Text>
+          <Text>Press to edit</Text>
         </View>
       </TouchableOpacity>
 
@@ -41,18 +42,22 @@ const ProfileScreen = ({ handleLogout }) => {
         <View style={[styles.metricBox, styles.circleBox]}>
           <View style={styles.circle}>
             <Text style={styles.circleNumberText}>{user.streakDays}</Text>
-            <Text style={styles.circleDayText}> Days</Text>
+            <Text style={styles.circleDayText}>Days</Text>
           </View>
         </View>
       </View>
 
       <View style={styles.settings}>
         <TouchableOpacity style={styles.settingRow}>
-          <View style={styles.settingIcon} />
-          <Text style={styles.settingText}>deo biet</Text>
+          <View style={styles.settingIcon}>
+            <Ionicons name='settings-outline' size={30} color='black'/>
+          </View>
+          <Text style={styles.settingText}>Settings</Text>
         </TouchableOpacity>
         <View style={styles.settingRow}>
-          <View style={styles.settingIcon} />
+          <View style={styles.settingIcon}>
+            <Ionicons name='contrast-outline' size={30} color='black'/>
+          </View>
           <Text style={styles.settingText}>Dark mode</Text>
           <Switch
             value={isDarkMode}
@@ -61,7 +66,9 @@ const ProfileScreen = ({ handleLogout }) => {
           />
         </View>
         <TouchableOpacity style={styles.settingRow} onPress={handleLogout}>
-          <View style={styles.settingIcon} />
+          <View style={styles.settingIcon}>
+            <Ionicons name='log-out-outline' size={30} colo='black'/>
+          </View>
           <Text style={styles.settingText}>Log out</Text>
         </TouchableOpacity>
       </View>
@@ -83,11 +90,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#3b94e7',
     borderRadius: 10,
     marginBottom: 20,
+    height: Dimensions.get('window').height * 0.2
   },
   avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 130,
+    height: 130,
+    borderRadius: 65,
     backgroundColor: '#ccc',
     marginRight: 15,
   },
@@ -97,7 +105,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   username: {
-    color: '#d1d1d1',
+    color: 'white',
     fontSize: 14,
   },
   metrics: {
@@ -155,7 +163,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     elevation: 2,
-    padding: 10,
+    paddingTop: 10, paddingBottom: 10,
+    paddingLeft: 20, paddingRight: 20,
   },
   settingRow: {
     flexDirection: 'row',
@@ -166,6 +175,7 @@ const styles = StyleSheet.create({
   },
   settingText: {
     fontSize: 16,
+    fontFamily:'Inter-Regular',
     color: '#333',
     flex: 1,
   },
@@ -173,8 +183,9 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: '#ccc',
     marginRight: 15,
+    justifyContent: 'center',
+    alignItems:'center',
   },
   switch: {
     marginLeft: 'auto',

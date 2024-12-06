@@ -41,6 +41,7 @@ const Home = ({ handleLogout }) => {
   return (
     <NavigationContainer>
       <BottomTab.Navigator
+        initialRouteName='Home'
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color, size }) => {
             let iconName;

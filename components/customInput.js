@@ -7,7 +7,7 @@ const CustomInput = ({ placeholder, placeholderTextColor, secureTextEntry, iconU
     <View style={styles.inputContainer}>
       <Image style={styles.inputIcon} source={{ uri: iconUri }} />
       <TextInput
-        style={{ flex: 1 }}
+        style={{ flex: 1, fontFamily:'Inter-Regular' }}
         placeholder={placeholder}
         placeholderTextColor={placeholderTextColor}
         secureTextEntry={secureTextEntry}

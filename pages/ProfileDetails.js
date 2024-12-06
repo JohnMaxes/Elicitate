@@ -105,18 +105,20 @@ const styles = StyleSheet.create({
   },
   profileName: {
     fontSize: 18,
-    fontWeight: '600',
     marginTop: 12,
+    fontFamily:'Poppins-Bold',
   },
   profileEmail: {
     fontSize: 14,
     color: '#666',
     marginTop: 4,
+    fontFamily:'Poppins-Bold',
   },
   formContainer: {
     padding: 16,
   },
   label: {
+    fontFamily:'Inter-Bold',
     fontSize: 14,
     color: '#333',
     marginLeft: '5%',
