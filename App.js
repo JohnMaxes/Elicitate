@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Dimensions } from "react-native";
+import { View, Dimensions, Platform } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -64,12 +64,13 @@ const Home = ({ handleLogout }) => {
             elevation: 0,
             shadowOpacity: 0,
             marginLeft: Dimensions.get('window').width / 20,
-            height: 90,
+            height: 80,
             marginBottom: 25,
             width: '90%',
             alignSelf: 'center',
             borderRadius: 45,
-            position: 'absolute'
+            position: 'absolute',
+            paddingBottom: 0,
           },
           tabBarShowLabel: false,
           headerShown: false,

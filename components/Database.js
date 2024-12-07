@@ -18,7 +18,7 @@ export const initDatabase = async () => {
             learned_at DATETIME,         -- Nullable
             reviewed_at DATETIME         -- Nullable
         );`
-    );    console.log('vocab table processed');
+    );
     
     await db.execAsync(`
         CREATE TABLE IF NOT EXISTS courses (
@@ -28,9 +28,7 @@ export const initDatabase = async () => {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             level TEXT NOT NULL
         );`
-    );
-    console.log('courses table processed');
-    
+    );    
     
     await db.execAsync(`
         CREATE TABLE IF NOT EXISTS course_vocabulary (
@@ -41,8 +39,6 @@ export const initDatabase = async () => {
             FOREIGN KEY (vocabulary_id) REFERENCES vocabulary(id)
         );`
     );
-    console.log('courses_vocabular table processed');
-
     // Inserting vocabulary
     await db.execAsync(`
         INSERT INTO vocabulary (word, type, definition, example_sentence) VALUES
@@ -162,7 +158,6 @@ export const initDatabase = async () => {
         ("landmark", "noun", "A recognizable and often historically or culturally significant object or structure.", "The statue is a famous landmark in the city."),
         ("map", "noun", "A visual representation of an area.", "I used a map to find my way around the city.");
         `);
-    console.log("Vocabulary table initialized");
     
     // Inserting courses
     await db.execAsync(`
@@ -175,8 +170,6 @@ export const initDatabase = async () => {
         ('Jobs and Professions', 'Build vocabulary related to various professions and workplace interactions.', 'Intermediate'),
         ('Places and Directions', 'Learn vocabulary for asking for and giving directions in different settings.', 'Beginner');
     `);
-    console.log('Courses table initialized');
-
     // Inserting course vocabulary
     await db.execAsync(`
         INSERT INTO course_vocabulary (course_id, vocabulary_id) VALUES
@@ -296,7 +289,7 @@ export const initDatabase = async () => {
         (7, 102), -- landmark
         (7, 103); -- map
     `);
-    console.log('Course vocabulary table initialized');
+    console.log('Database initialized');
     await db.closeAsync();
     }
     catch (error) {
