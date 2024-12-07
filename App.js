@@ -14,6 +14,7 @@ import SignUpScreen from "./pages/SignUpScreen";
 import LoginScreen from "./pages/LoginScreen";
 import * as Progress from 'react-native-progress';
 import { initDatabase } from "./components/Database.js";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const BottomTab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -126,6 +127,7 @@ export default function App() {
   }
 
   return (
+  <GestureHandlerRootView>
     <View style={[{ flex: 1, justifyContent: 'center' }]}>
       {isLoggedIn ? (
         <Home handleLogout={handleLogout} />
@@ -135,5 +137,6 @@ export default function App() {
         <SignUpScreen togglePage={togglePage} handleLogin={handleLogin} />
       )}
     </View>
+  </GestureHandlerRootView>
   );
 }

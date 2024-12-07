@@ -6,6 +6,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import VocabCard from '../components/vocabCard';
 import { queryVocabToDatabase, addWordToLearned } from '../components/Database';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { TapGestureHandler } from 'react-native-gesture-handler';
+
 const VocabStack = createNativeStackNavigator();
 
 function DictionaryScreen() {
@@ -19,10 +21,14 @@ function DictionaryScreen() {
           headerTransparent: true,
           headerTitle: '',
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
-            </TouchableOpacity>
-          ),  
+            <TapGestureHandler onActivated={() => {
+              navigation.goBack();
+            }}>
+              <TouchableOpacity style={{ padding: 15 }} activeOpacity={0.7}>
+                <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
+              </TouchableOpacity>
+            </TapGestureHandler>
+          ),
           headerRight: () => (
             <DictionaryVocabScreenAddButton id={route.params.id} learned={route.params.learned} />
           ),
@@ -32,25 +38,31 @@ function DictionaryScreen() {
   );
 }
 
-const DictionaryVocabScreenAddButton = ({id, learned}) => {
+const DictionaryVocabScreenAddButton = ({ id, learned }) => {
   const handleAddWord = async () => {
     console.log(learned);
-    if(await addWordToLearned(id)) {
+    if (await addWordToLearned(id)) {
       alert('Word added successfully');
-      learned == 1;
+      // Consider managing learned state through props or state management
+    } else {
+      alert('Something has gone wrong');
     }
-    else alert('Something has gone wrong');
   };
-  if(!learned)
+
   return (
-    <TouchableOpacity onPress={handleAddWord} style={{ marginRight: 15 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Ionicons name="add" size={35} color="#3A94E7" />
-      </View>
-    </TouchableOpacity>
-  )
-  else return (<Text style={{fontSize: 20, color:'#3A94E7'}}>Learned!</Text>)
-}
+    <TapGestureHandler onActivated={handleAddWord}>
+      <TouchableOpacity style={{ marginRight: 15 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          {learned ? (
+            <Text style={{ fontSize: 20, color: '#3A94E7' }}>Learned!</Text>
+          ) : (
+            <Ionicons name="add" size={35} color="#3A94E7" />
+          )}
+        </View>
+      </TouchableOpacity>
+    </TapGestureHandler>
+  );
+};
 
 const DictionarySearchScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');

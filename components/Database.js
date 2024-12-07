@@ -304,43 +304,52 @@ export const initDatabase = async () => {
     }
   };
 
-export const queryVocabToDatabase = async (string, learned) => {
-    try {
-        const db = await SQLite.openDatabaseAsync('elicitate');
-        let query;
-        if(learned) query = 'SELECT * FROM vocabulary WHERE word LIKE ? AND learned_at IS NOT NULL';
-        else query = 'SELECT * FROM vocabulary WHERE word LIKE ? LIMIT 10'
-        let object = await db.getAllAsync(query, '%' + string + '%');
-        await db.closeAsync();
-        return object;
-    }
-    catch (error) {
-        console.log('Failed to execute SQL command', error);
-    }
-}
-
-export const queryCourseToDatabase = async (string) => {
-    try {
-        const db = await SQLite.openDatabaseAsync('elicitate');
-        let query = "SELECT * FROM courses WHERE title LIKE ? LIMIT 10";
-        let object = await db.getAllAsync(query, '%' + string + '%');
-        await db.closeAsync();
-        return(object);
-    }
-    catch (error) {
-        console.log('Failed to execute SQL command', error);
-    }
-}
-
-export const addWordToLearned = async (vocabulary_id) => {
-    try {
-        const db = await SQLite.openDatabaseAsync('elicitate');
-        let query = 'UPDATE vocabulary SET learned_at = CURRENT_TIMESTAMP WHERE id = ?';
-        await db.runAsync(query, [vocabulary_id]);
-        await db.closeAsync();
-        return true;
-    } catch (error) {
-        console.log('Failed to execute SQL command', error);
-        return false;
-    }
-};
+  export const queryVocabToDatabase = async (string, learned) => {
+      const db = await SQLite.openDatabaseAsync('elicitate');
+      let query;
+      if (learned) {
+          query = 'SELECT * FROM vocabulary WHERE word LIKE ? AND learned_at IS NOT NULL LIMIT 10';
+      } else {
+          query = 'SELECT * FROM vocabulary WHERE word LIKE ? LIMIT 10';
+      }
+  
+      try {
+          let object = await db.getAllAsync(query, [`%${string}%`]);
+          return object;
+      } catch (error) {
+          console.error('Failed to execute SQL command', error);
+          throw error; // Rethrow the error for higher-level handling
+      } finally {
+          await db.closeAsync(); // Ensure the database is closed
+      }
+  };
+  
+  export const queryCourseToDatabase = async (string) => {
+      const db = await SQLite.openDatabaseAsync('elicitate');
+      let query = "SELECT * FROM courses WHERE title LIKE ? LIMIT 10";
+  
+      try {
+          let object = await db.getAllAsync(query, [`%${string}%`]);
+          return object;
+      } catch (error) {
+          console.error('Failed to execute SQL command', error);
+          throw error; // Rethrow the error for higher-level handling
+      } finally {
+          await db.closeAsync(); // Ensure the database is closed
+      }
+  };
+  
+  export const addWordToLearned = async (vocabulary_id) => {
+      const db = await SQLite.openDatabaseAsync('elicitate');
+      let query = 'UPDATE vocabulary SET learned_at = CURRENT_TIMESTAMP WHERE id = ?';
+  
+      try {
+          await db.runAsync(query, [vocabulary_id]);
+          return true;
+      } catch (error) {
+          console.error('Failed to execute SQL command', error);
+          throw error; // Rethrow the error for higher-level handling
+      } finally {
+          await db.closeAsync(); // Ensure the database is closed
+      }
+  };
