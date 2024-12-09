@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import CustomSearchBar from '../components/customSearchBar';
 import CourseCard from '../components/courseCard';
 import { queryCourseToDatabase } from '../components/Database';
 import * as Progress from 'react-native-progress';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { TapGestureHandler } from 'react-native-gesture-handler';
+
 const CourseStack = createNativeStackNavigator();
+
 
 function CourseScreen() {
   return (
@@ -19,14 +23,18 @@ function CourseScreen() {
       <CourseStack.Screen 
         name="CourseViewScreen" 
         component={CourseViewScreen}
-        options={({ navigation }) => ({
+        options={({navigation}) => ({
           headerTransparent: true,
           headerTitle: '',
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.pop()}>
-              <Icon name='arrow-back-outline' size={35} color='#3A94E7' />
-            </TouchableOpacity>
-          ),
+            <TapGestureHandler onActivated={() => {
+              navigation.goBack();
+            }}>
+              <TouchableOpacity style={{ padding: 15 }} activeOpacity={0.7}>
+                <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
+              </TouchableOpacity>
+            </TapGestureHandler>
+          )
         })} 
       />
     </CourseStack.Navigator>
@@ -81,7 +89,7 @@ const CourseSearchScreen = ({ navigation }) =>
   );
 }
 
-const CourseViewScreen = ({route}) => {
+const CourseViewScreen = ({route, navigation}) => {
   const {title, subtitle, level} = route.params;
   const [progressValue, setProgressValue] = useState(0);
   useEffect(() => {
@@ -92,7 +100,7 @@ const CourseViewScreen = ({route}) => {
   }, []);
   return(
     <View style={styles.courseViewScreen}>
-      <View style={styles.courseViewContainer}>
+      <View style={styles.courseViewContainer}>        
         <View style={{flexDirection:'row', alignItems:'center'}}>
           <Progress.Circle showsText={true} size={100} progress={progressValue} color={'#3A94E7'} unfilledColor={'#D0EFFF'} borderWidth={0} 
           thickness={10} direction={'counter-clockwise'} strokeCap={'round'} textStyle={{fontWeight:'bold', fontSize: 20}}/>
@@ -131,7 +139,7 @@ const styles = StyleSheet.create({
   },
   courseViewScreen: {
     flex: 1,
-    paddingTop: Dimensions.get('window').height*0.1,
+    paddingTop: Dimensions.get('window').height*0.125,
     alignItems: 'center',
     backgroundColor: '#CCE6FA',
   },
@@ -141,7 +149,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white", 
     borderRadius: 25, 
     padding: 20
-  }
+  },
 });
 
 export default CourseScreen;

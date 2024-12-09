@@ -18,7 +18,7 @@ export const initDatabase = async () => {
             learned_at DATETIME,         -- Nullable
             reviewed_at DATETIME         -- Nullable
         );`
-    );    console.log('vocab table processed');
+    );
     
     await db.execAsync(`
         CREATE TABLE IF NOT EXISTS courses (
@@ -28,9 +28,7 @@ export const initDatabase = async () => {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             level TEXT NOT NULL
         );`
-    );
-    console.log('courses table processed');
-    
+    );    
     
     await db.execAsync(`
         CREATE TABLE IF NOT EXISTS course_vocabulary (
@@ -41,8 +39,6 @@ export const initDatabase = async () => {
             FOREIGN KEY (vocabulary_id) REFERENCES vocabulary(id)
         );`
     );
-    console.log('courses_vocabular table processed');
-
     // Inserting vocabulary
     await db.execAsync(`
         INSERT INTO vocabulary (word, type, definition, example_sentence) VALUES
@@ -162,7 +158,6 @@ export const initDatabase = async () => {
         ("landmark", "noun", "A recognizable and often historically or culturally significant object or structure.", "The statue is a famous landmark in the city."),
         ("map", "noun", "A visual representation of an area.", "I used a map to find my way around the city.");
         `);
-    console.log("Vocabulary table initialized");
     
     // Inserting courses
     await db.execAsync(`
@@ -175,8 +170,6 @@ export const initDatabase = async () => {
         ('Jobs and Professions', 'Build vocabulary related to various professions and workplace interactions.', 'Intermediate'),
         ('Places and Directions', 'Learn vocabulary for asking for and giving directions in different settings.', 'Beginner');
     `);
-    console.log('Courses table initialized');
-
     // Inserting course vocabulary
     await db.execAsync(`
         INSERT INTO course_vocabulary (course_id, vocabulary_id) VALUES
@@ -296,7 +289,7 @@ export const initDatabase = async () => {
         (7, 102), -- landmark
         (7, 103); -- map
     `);
-    console.log('Course vocabulary table initialized');
+    console.log('Database initialized');
     await db.closeAsync();
     }
     catch (error) {
@@ -304,43 +297,52 @@ export const initDatabase = async () => {
     }
   };
 
-export const queryVocabToDatabase = async (string, learned) => {
-    try {
-        const db = await SQLite.openDatabaseAsync('elicitate');
-        let query;
-        if(learned) query = 'SELECT * FROM vocabulary WHERE word LIKE ? AND learned_at IS NOT NULL';
-        else query = 'SELECT * FROM vocabulary WHERE word LIKE ? LIMIT 10'
-        let object = await db.getAllAsync(query, '%' + string + '%');
-        await db.closeAsync();
-        return object;
-    }
-    catch (error) {
-        console.log('Failed to execute SQL command', error);
-    }
-}
-
-export const queryCourseToDatabase = async (string) => {
-    try {
-        const db = await SQLite.openDatabaseAsync('elicitate');
-        let query = "SELECT * FROM courses WHERE title LIKE ? LIMIT 10";
-        let object = await db.getAllAsync(query, '%' + string + '%');
-        await db.closeAsync();
-        return(object);
-    }
-    catch (error) {
-        console.log('Failed to execute SQL command', error);
-    }
-}
-
-export const addWordToLearned = async (vocabulary_id) => {
-    try {
-        const db = await SQLite.openDatabaseAsync('elicitate');
-        let query = 'UPDATE vocabulary SET learned_at = CURRENT_TIMESTAMP WHERE id = ?';
-        await db.runAsync(query, [vocabulary_id]);
-        await db.closeAsync();
-        return true;
-    } catch (error) {
-        console.log('Failed to execute SQL command', error);
-        return false;
-    }
-};
+  export const queryVocabToDatabase = async (string, learned) => {
+      const db = await SQLite.openDatabaseAsync('elicitate');
+      let query;
+      if (learned) {
+          query = 'SELECT * FROM vocabulary WHERE word LIKE ? AND learned_at IS NOT NULL LIMIT 10';
+      } else {
+          query = 'SELECT * FROM vocabulary WHERE word LIKE ? LIMIT 10';
+      }
+  
+      try {
+          let object = await db.getAllAsync(query, [`%${string}%`]);
+          return object;
+      } catch (error) {
+          console.error('Failed to execute SQL command', error);
+          throw error; // Rethrow the error for higher-level handling
+      } finally {
+          await db.closeAsync(); // Ensure the database is closed
+      }
+  };
+  
+  export const queryCourseToDatabase = async (string) => {
+      const db = await SQLite.openDatabaseAsync('elicitate');
+      let query = "SELECT * FROM courses WHERE title LIKE ? LIMIT 10";
+  
+      try {
+          let object = await db.getAllAsync(query, [`%${string}%`]);
+          return object;
+      } catch (error) {
+          console.error('Failed to execute SQL command', error);
+          throw error; // Rethrow the error for higher-level handling
+      } finally {
+          await db.closeAsync(); // Ensure the database is closed
+      }
+  };
+  
+  export const addWordToLearned = async (vocabulary_id) => {
+      const db = await SQLite.openDatabaseAsync('elicitate');
+      let query = 'UPDATE vocabulary SET learned_at = CURRENT_TIMESTAMP WHERE id = ?';
+  
+      try {
+          await db.runAsync(query, [vocabulary_id]);
+          return true;
+      } catch (error) {
+          console.error('Failed to execute SQL command', error);
+          throw error; // Rethrow the error for higher-level handling
+      } finally {
+          await db.closeAsync(); // Ensure the database is closed
+      }
+  };

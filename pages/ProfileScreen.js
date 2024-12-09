@@ -23,11 +23,10 @@ const ProfileScreen = ({ handleLogout }) => {
     <View style={styles.container}>
       
       <TouchableOpacity style={styles.profileCard} onPress={() => navigation.navigate('ProfileDetails')}>
-        <Image style={styles.avatar} source={{ uri: 'https://scontent.fsgn5-14.fna.fbcdn.net/v/t39.30808-6/416318714_3478120982442872_833039280433233648_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGeZz5n0X4YJNG9z10vFLzpxOEqWgQf_gTE4SpaBB_-BPymO5lmMUJjoFaQpHfUpqaGzj0TSAEOi_kb8XJlPq-n&_nc_ohc=GTaI0W_q73kQ7kNvgHvR2Bx&_nc_zt=23&_nc_ht=scontent.fsgn5-14.fna&_nc_gid=AVbKqsYpfdQNzofEMP9ucMr&oh=00_AYD24X4fsHI076DFj3GVxE0AHrVogR9ot3E8oBCJJqjFUg&oe=6756650E' }}/>
+        <Image style={styles.avatar} source={{ uri: 'https://assets.manutd.com/AssetPicker/images/0/0/17/99/1139542/NPS_Landscape_091662019315265_medium.jpg' }}/>
         <View>
           <Text style={styles.name}>{user.name}</Text>
           <Text style={styles.username}>{user.username}</Text>
-          <Text>Press to edit</Text>
         </View>
       </TouchableOpacity>
 
