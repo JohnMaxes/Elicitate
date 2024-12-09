@@ -12,6 +12,7 @@ import ProfileScreen from "./pages/ProfileScreen";
 import ProfileDetails from './pages/ProfileDetails';
 import SignUpScreen from "./pages/SignUpScreen";
 import LoginScreen from "./pages/LoginScreen";
+import * as Notifications from 'expo-notifications';
 import * as Progress from 'react-native-progress';
 import { initDatabase } from "./components/Database.js";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -46,7 +47,6 @@ const Home = ({ handleLogout }) => {
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color, size }) => {
             let iconName;
-
             if (route.name === 'Home') {
               iconName = 'home';
             } else if (route.name === 'Course') {
@@ -91,15 +91,47 @@ export default function App() {
   const [isMember, setIsMember] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setLoading] = useState(true);
-
+  
   useEffect(() => {
     const setup = async () => {
       try {
-        await AsyncStorage.removeItem('init')
+        await AsyncStorage.removeItem('init');
         const init = await AsyncStorage.getItem('init');
         if (init === null) {
           await initDatabase();
           await AsyncStorage.setItem('init', 'true');
+          const { status: existingStatus } = await Notifications.getPermissionsAsync();
+          let finalStatus = existingStatus;
+  
+          if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+          }
+  
+          if (finalStatus === 'granted') {
+            Notifications.setNotificationHandler({
+              handleNotification: async () => ({
+                shouldShowAlert: true,
+                shouldPlaySound: true, // Ensure sound is played
+                shouldSetBadge: true,
+              }),
+            });
+  
+            await Notifications.scheduleNotificationAsync({
+              content: {
+                title: "A word",
+                body: "Its subtitle",
+                // Add more options for visibility if necessary
+                priority: Notifications.AndroidNotificationPriority.HIGH, // This is key
+                sound: 'default', // Ensure a sound is played
+              },
+              trigger: {
+                seconds: 10,
+              },
+            });
+          } else {
+            alert('No notifications will be sent, you can toggle this in the settings!');
+          }
         }
       } catch (error) {
         AsyncStorage.removeItem('init');
@@ -108,8 +140,10 @@ export default function App() {
         setLoading(false);
       }
     };
+  
     setup();
   }, []);
+
 
   const togglePage = () => setIsMember(!isMember);
   const handleLogin = () => setIsLoggedIn(true);
