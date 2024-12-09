@@ -17,7 +17,9 @@ const LoginScreen = ({ togglePage, handleLogin }) => {
       alert('Please fill out all fields.');
       return;
     }
-    else {handleLogin()
+    else {
+      handleLogin();
+      /*
       axios.post(
         'https://f2a2-2001-ee0-4fcc-7570-d940-f7a-58e9-dd77.ngrok-free.app/login',
         qs.stringify({
@@ -32,7 +34,8 @@ const LoginScreen = ({ togglePage, handleLogin }) => {
         })
         .catch(error => {
           alert('Server error!');
-        })
+        }) 
+      */
     }
   }
   return (
