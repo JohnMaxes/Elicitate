@@ -146,7 +146,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#ff9600',
-    marginLeft: -5,
   },
   metricValue: {
     fontSize: 20,

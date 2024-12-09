@@ -23,7 +23,7 @@ function CourseScreen() {
           headerTransparent: true,
           headerTitle: '',
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPress={() => navigation.pop()}>
               <Icon name='arrow-back-outline' size={35} color='#3A94E7' />
             </TouchableOpacity>
           ),
