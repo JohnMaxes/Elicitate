@@ -91,7 +91,6 @@ function HomeScreen({navigation}) {
           <View style={{justifyContent:'center'}}><Text style={{fontSize: 16}}>{streak_count}</Text></View>
         </View>
         <View style={{alignItems:'flex-end', width: Dimensions.get('window').width/3, paddingRight: 25}}>
-          <Icon name={'notifications-outline'} size={24} color={'#3A94E7'}/>
         </View>
       </View>
 
@@ -110,8 +109,16 @@ function HomeScreen({navigation}) {
               <Text style={{fontSize: 15, fontFamily: 'Poppins-Regular', color:'#4D4D4F'}}>Continue your journey!</Text>
             </View>
           </View>
-          <TouchableOpacity style={{marginTop:15, backgroundColor:'#3A94E7', flex:1, justifyContent: 'center',
-          alignItems: 'center',borderRadius: 25}}>
+          <TouchableOpacity
+            style={{
+              marginTop:15,
+              backgroundColor:'#3A94E7',
+              flex:1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: 25
+            }}
+          >
             <Text style={{color:'white', fontFamily:'Poppins-Bold', fontSize: 17}}>Continue Studying</Text>
           </TouchableOpacity>
         </View>

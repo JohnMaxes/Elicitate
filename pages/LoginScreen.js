@@ -2,56 +2,38 @@ import { React, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import CustomInput from '../components/customInput';
 import axios from 'axios';
+import qs from 'qs';
 
 const LoginScreen = ({ togglePage, handleLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
   const onLoginPress = () => {
     const config = {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/x-www-form-urlencoded'
       }
     };
     if (!username || !password) {
       alert('Please fill out all fields.');
       return;
     }
-    else {
-      handleLogin();
-    };
-    /*
-    const onLoginPress = () => {
-        const config = {
-          headers: {
-              'Content-Type': 'application/json'
-          }
-      };
-      if (!email || !password) {
-        alert('Please fill out all fields.');
-        return;
-      }
-      else 
-      {
-        handleLogin();
-      /* enabling API enquiry to backend
-          axios.post(
-            'https://f8b7-116-109-144-43.ngrok-free.app/login',
-            {
-              usernameOrEmail: email,
-              password: password
-            },
-            config
-          )
-          .then(response => {
-            if(response.status == 200) handleLogin();
-            else alert('Wrong credentials!');
-          })
-          .catch(error => {
-            alert(error);
-          })
-        }
-      */
+    else {handleLogin()
+      axios.post(
+        'https://f2a2-2001-ee0-4fcc-7570-d940-f7a-58e9-dd77.ngrok-free.app/login',
+        qs.stringify({
+          usernameOrEmail: username,
+          password: password
+        }),
+        config
+      )
+        .then(response => {
+          if (response.status == 200) handleLogin();
+          else alert('Wrong credentials!');
+        })
+        .catch(error => {
+          alert('Server error!');
+        })
+    }
   }
   return (
     <ScrollView contentContainerStyle={styles.container}>

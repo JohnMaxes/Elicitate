@@ -5,9 +5,9 @@ import axios from 'axios';
 
 const SignUpScreen = ({ togglePage, handleLogin }) => {
     const [registUsername, setRUsername] = useState(''); // Initialize as empty string
-    const [registEmail, setREmail] = useState(''); // Initialize as empty string
-    const [registPassword, setRPassword] = useState(''); // Initialize as empty string
-    const [registConfirm, setRConfirm] = useState(''); // Initialize as empty string
+    const [registEmail, setREmail] = useState('');
+    const [registPassword, setRPassword] = useState('');
+    const [registConfirm, setRConfirm] = useState('');
 
     const processRequest = async () => {
         if (!registUsername || !registEmail || !registPassword || !registConfirm) {
@@ -27,7 +27,7 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
         let b = registEmail;
         let c = registPassword;
         axios.post(
-            'https://f8b7-116-109-144-43.ngrok-free.app/register',
+            'https://9a57-2001-ee0-4fcc-7570-d940-f7a-58e9-dd77.ngrok-free.app/register',
             {
                 username: a,
                 email: b,
