@@ -350,19 +350,18 @@ export const initDatabase = async () => {
   export const getQuestionToLearn = async (course_id) => {
     const db = await SQLite.openDatabaseAsync('elicitate');
     let query = `
-      SELECT word, definition 
+      SELECT id, word, type, definition 
       FROM vocabulary 
       WHERE id IN (
         SELECT vocabulary_id 
         FROM course_vocabulary 
         WHERE course_id = ?
       ) 
-      AND learned_at IS NULL 
       LIMIT 10
     `;
   
     try {
-      const result = await db.getAsync(query, [course_id]);
+      const result = await db.getAllAsync(query, [course_id]);
       return result;
     } catch (error) {
       console.error('Failed to execute SQL command', error);
@@ -388,7 +387,7 @@ export const initDatabase = async () => {
     `;
   
     try {
-      const result = await db.getAsync(query, [course_id]);
+      const result = await db.getAllAsync(query, [course_id]);
       return result;
     } catch (error) {
       console.error('Failed to execute SQL command', error);

@@ -8,6 +8,7 @@ import { queryCourseToDatabase } from '../components/Database';
 import * as Progress from 'react-native-progress';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TapGestureHandler } from 'react-native-gesture-handler';
+import CourseLearnScreen from './CourseLearnScreen';
 
 const CourseStack = createNativeStackNavigator();
 
@@ -36,6 +37,22 @@ function CourseScreen() {
             </TapGestureHandler>
           )
         })} 
+      />
+      <CourseStack.Screen
+        name="CourseLearnScreen"
+        component={CourseLearnScreen}
+        options={({navigation}) => ({
+          headerTitle:'',
+          headerLeft: () => (
+            <TapGestureHandler onActivated={() => {
+              navigation.goBack();
+            }}>
+              <TouchableOpacity style={{ padding: 15 }} activeOpacity={0.7}>
+                <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
+              </TouchableOpacity>
+            </TapGestureHandler>
+          )
+        })}
       />
     </CourseStack.Navigator>
   );

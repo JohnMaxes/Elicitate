@@ -1,7 +1,7 @@
 import { Text, View } from "react-native"
 import { useEffect, useState } from "react"
 
-const CourseLearnScreen = async () => {
+const VocabReviewScreen = async () => {
     const [word, setWord] = useState([]);
     const [wordList, setWordList] = use([])
 
@@ -20,3 +20,5 @@ const CourseLearnScreen = async () => {
         </View>
     )
 }
+
+export default VocabReviewScreen;

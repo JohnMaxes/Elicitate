@@ -22,45 +22,45 @@ function HomeScreen({navigation}) {
   const [staticCourses, setStaticCourses] = useState([]);
 
   const CourseCard = ({ item }) => (
-  <View style={{ backgroundColor: 'white', height: 296, width: 208, borderRadius: 20, paddingTop: 12, paddingLeft: 16, paddingRight: 16, paddingBottom: 12, marginRight: 12 }}>
-    <View style={{ height: 192 }}>
-      <Image
-        style={{ borderRadius: 8, width: '100%', height: '100%' }}
-        source={{ uri: 'https://media.istockphoto.com/id/1162167657/photo/hand-painted-background-with-mixed-liquid-blue-and-golden-paints-abstract-fluid-acrylic.jpg?s=612x612&w=0&k=20&c=DiYltrxEBUFjhhltHriX4WVPRxiPqgQhTBC5R7_C6Ik=' }}
-      />
-    </View>
-    <View style={{ height: 40 }}>
-      <Text style={{ fontFamily: 'Inter-Bold', fontSize: 14.4 }}>{item.title}</Text>
-      <Text style={{
-        fontFamily: 'Poppins-Bold',
-        marginTop: -4,
-        fontSize: 12,
-        color: item.level === 'Beginner' ? 'green' : item.level === 'Intermediate' ? '#FFD700' : 'red'
-      }}>
-        {item.level}
-      </Text>
-    </View>
-    <TouchableOpacity
-      style={{
-        height: 40,
-        borderWidth: 1.6,
-        borderColor: '#3A94E7',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 12
-      }}
-      onPress={() => navigation.navigate('Course', {
-        screen: 'CourseViewScreen',
-        params: {
-          title: item.title,
-          subtitle: item.description,
-          level: item.level
-        }
-      })}>
-      <Text style={{ fontFamily: 'Poppins-Bold', color: '#3A94E7' }}>View</Text>
-    </TouchableOpacity>
-  </View>  
-);
+    <View style={{ backgroundColor: 'white', height: 296, width: 208, borderRadius: 20, paddingTop: 12, paddingLeft: 16, paddingRight: 16, paddingBottom: 12, marginRight: 12 }}>
+      <View style={{ height: 192 }}>
+        <Image
+          style={{ borderRadius: 8, width: '100%', height: '100%' }}
+          source={{ uri: 'https://media.istockphoto.com/id/1162167657/photo/hand-painted-background-with-mixed-liquid-blue-and-golden-paints-abstract-fluid-acrylic.jpg?s=612x612&w=0&k=20&c=DiYltrxEBUFjhhltHriX4WVPRxiPqgQhTBC5R7_C6Ik=' }}
+        />
+      </View>
+      <View style={{ height: 40 }}>
+        <Text style={{ fontFamily: 'Inter-Bold', fontSize: 14.4 }}>{item.title}</Text>
+        <Text style={{
+          fontFamily: 'Poppins-Bold',
+          marginTop: -4,
+          fontSize: 12,
+          color: item.level === 'Beginner' ? 'green' : item.level === 'Intermediate' ? '#FFD700' : 'red'
+        }}>
+          {item.level}
+        </Text>
+      </View>
+      <TouchableOpacity
+        style={{
+          height: 40,
+          borderWidth: 1.6,
+          borderColor: '#3A94E7',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: 12
+        }}
+        onPress={() => navigation.navigate('Course', {
+          screen: 'CourseViewScreen',
+          params: {
+            title: item.title,
+            subtitle: item.description,
+            level: item.level
+          }
+        })}>
+        <Text style={{ fontFamily: 'Poppins-Bold', color: '#3A94E7' }}>View</Text>
+      </TouchableOpacity>
+    </View>  
+  );
   
 
   useEffect(() => {
@@ -118,6 +118,12 @@ function HomeScreen({navigation}) {
               alignItems: 'center',
               borderRadius: 25
             }}
+            onPress={() => navigation.navigate('Course', {
+              screen: 'CourseLearnScreen',
+              params: {
+                id: 1,
+              }
+            })}
           >
             <Text style={{color:'white', fontFamily:'Poppins-Bold', fontSize: 17}}>Continue Studying</Text>
           </TouchableOpacity>
