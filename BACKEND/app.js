@@ -44,4 +44,12 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+// Set the port
+const port = process.env.PORT || 3000;
+
+// Start the server and log the port
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
+
 module.exports = app;
