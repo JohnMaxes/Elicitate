@@ -42,7 +42,8 @@ function CourseScreen() {
         name="CourseLearnScreen"
         component={CourseLearnScreen}
         options={({navigation}) => ({
-          headerTitle:'',
+          headerTransparent: true,
+          headerTitle: '',
           headerLeft: () => (
             <TapGestureHandler onActivated={() => {
               navigation.goBack();
