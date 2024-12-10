@@ -1,7 +1,6 @@
 import { Text, View, StyleSheet, Dimensions, TouchableOpacity, Keyboard } from "react-native";
-import { useFocusEffect } from '@react-navigation/native';
 import { useEffect, useState, useRef } from "react";
-import { getQuestionToLearn } from "../components/Database";
+import { getQuestionToReviewCourse } from "../components/Database";
 import * as Progress from 'react-native-progress';
 import { Pressable, TapGestureHandler } from "react-native-gesture-handler";
 import WordInput from "../components/WordInput";
@@ -52,7 +51,7 @@ const CourseReviewScreen = ({ route }) => {
     useEffect(() => { // starts when a new ID is passed into the route
         async function fetchCourseWords() {
             setLoading(true);
-            const words = await getQuestionToLearn(id);
+            const words = await getQuestionToReviewCourse(id);
             setWordList(words);
             if (words.length > 0) {
                 setWord(words[0]);

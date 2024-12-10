@@ -371,10 +371,10 @@ export const initDatabase = async () => {
     }
   };
   
-  export const getQuestionToReview = async (course_id) => {
+  export const getQuestionToReviewCourse = async (course_id) => {
     const db = await SQLite.openDatabaseAsync('elicitate');
     let query = `
-      SELECT word, definition 
+      SELECT id, word, type, definition, learned_at 
       FROM vocabulary 
       WHERE id IN (
         SELECT vocabulary_id 
@@ -384,6 +384,27 @@ export const initDatabase = async () => {
       AND learned_at IS NOT NULL
       ORDER BY learned_at ASC
       LIMIT 10
+    `;
+  
+    try {
+      const result = await db.getAllAsync(query, [course_id]);
+      return result;
+    } catch (error) {
+      console.error('Failed to execute SQL command', error);
+      throw error;
+    } finally {
+      await db.closeAsync();
+    }
+  };
+
+  export const getQuestionToReviewVocab = async () => {
+    const db = await SQLite.openDatabaseAsync('elicitate');
+    let query = `
+      SELECT id, word, type, definition, learned_at 
+      FROM vocabulary 
+      WHERE learned_at IS NOT NULL
+      ORDER BY learned_at ASC
+      LIMIT 20
     `;
   
     try {
