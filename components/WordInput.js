@@ -1,48 +1,52 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { TextInput, View, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
-const WordInput = ({ value, onComplete }) => {
-    const [inputs, setInputs] = useState([]);
-    const inputRefs = useRef([]);
-
-    // Set the inputs based on the length of the provided value
+const WordInput = ({ value, inputField, inputSetter, reference, Function }) => {
     useEffect(() => {
-        setInputs(Array(value.length).fill(''));
-    }, [value]);
+        inputSetter(Array(value.length).fill(''));
+    }, [value, inputSetter]);
 
     const handleChange = (text, index) => {
-        const newInputs = [...inputs];
+        const newInputs = [...inputField];
         newInputs[index] = text;
-        setInputs(newInputs);
+        inputSetter(newInputs);
 
+        // Focus the next input if available
         if (text && index < newInputs.length - 1) {
-            setTimeout(() => {
-                inputRefs.current[index + 1].focus();
-            }, 0);
+            reference.current[index + 1].focus();
         }
 
-        if (newInputs.every(input => input.length > 0)) {
-            onComplete(newInputs.join(''));
-        }
+        Function(newInputs.join(''));
     };
 
     const handleKeyPress = (e, index) => {
-        if (e.nativeEvent.key === 'Backspace' && inputs[index] === '') {
-            if (index > 0) {
-                inputRefs.current[index - 1].focus();
+        if (e.nativeEvent.key === 'Backspace') {
+            const newInputs = [...inputField];
+
+            // If the current input is empty, focus on the previous input
+            if (newInputs[index] === '' && index > 0) {
+                reference.current[index - 1].focus();
+            } else {
+                // Otherwise, delete the character in the current input
+                newInputs[index] = '';
+                inputSetter(newInputs);
+
+                // Move focus to the previous input if the current one was cleared
+                if (index > 0) {
+                    reference.current[index - 1].focus();
+                }
             }
         }
     };
 
     const handleSubmitEditing = () => {
-        // Dismiss the keyboard when the user presses "Done"
         Keyboard.dismiss();
     };
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.pinContainer}>
-                {inputs.map((input, index) => (
+                {inputField.map((input, index) => (
                     <View style={styles.innerShadow} key={index}>
                         <TextInput
                             style={styles.input}
@@ -50,12 +54,12 @@ const WordInput = ({ value, onComplete }) => {
                             onChangeText={text => handleChange(text, index)}
                             onKeyPress={(e) => handleKeyPress(e, index)}
                             maxLength={1}
-                            ref={el => inputRefs.current[index] = el}
+                            ref={el => (reference.current[index] = el)}
                             keyboardType="ascii-capable"
                             textAlign="center"
                             autoCapitalize="none"
-                            returnKeyType={index === inputs.length - 1 ? "done" : "next"} // Set "Done" for the last input
-                            onSubmitEditing={handleSubmitEditing} // Handle "Done" press
+                            returnKeyType={index === inputField.length - 1 ? "done" : "next"}
+                            onSubmitEditing={handleSubmitEditing}
                         />
                     </View>
                 ))}

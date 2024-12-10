@@ -1,9 +1,11 @@
 import { Text, View, StyleSheet, Dimensions, TouchableOpacity, Keyboard } from "react-native";
-import { useEffect, useState } from "react";
+import { useFocusEffect } from '@react-navigation/native';
+import { useEffect, useState, useRef } from "react";
 import { getQuestionToLearn } from "../components/Database";
 import * as Progress from 'react-native-progress';
 import { Pressable, TapGestureHandler } from "react-native-gesture-handler";
 import WordInput from "../components/WordInput";
+import { addWordToLearned } from "../components/Database";
 
 
 const CourseLearnScreen = ({ route }) => {
@@ -11,8 +13,41 @@ const CourseLearnScreen = ({ route }) => {
     const [wordList, setWordList] = useState([]);
     const [currentWord, setWord] = useState({});
     const [index, setIndex] = useState(0);
+
     const [loading, setLoading] = useState(true);
-    const [isReading, setIsReading] = useState(true)
+    const [isReading, setIsReading] = useState(true);
+    const [checked, setChecked] = useState(false);
+    const [isCorrect, setIsCorrect] = useState(false);
+
+    const [inputs, setInputs] = useState([]);
+    const [finalInput, setFinalInput] = useState('');
+    const inputRefs = useRef([]);
+
+    const updateInput = (input) => {
+        setFinalInput(input);
+    }
+
+    const handleButton = () => {
+        if (index < wordList.length - 1) {
+            setChecked(true);
+            if (finalInput == currentWord.word) {
+                setIsCorrect(true);
+                addWordToLearned(currentWord.id);
+            } else setIsCorrect(false);
+        }
+
+        if (checked == true && isCorrect == true) {
+            setLoading(true);
+            setIsReading(true);
+            setFinalInput('');
+            setInputs([]);
+            setChecked(false);
+            setIsCorrect(false)
+            inputRefs.current = [];
+            setIndex(index + 1);
+            setLoading(false);
+        }   
+    }
 
     useEffect(() => { // starts when a new ID is passed into the route
         async function fetchCourseWords() {
@@ -32,6 +67,8 @@ const CourseLearnScreen = ({ route }) => {
             setWord(wordList[index]);
         }
     }, [index]);
+
+
     // loading screen: without the loading screen, the screen will load so quickly that 
     // getting wordList is slower than the page rendering, resulting in an error
     if (loading) 
@@ -66,19 +103,22 @@ const CourseLearnScreen = ({ route }) => {
 
                 <View style={{height: Dimensions.get('window').height * 0.25, justifyContent:'flex-end'}}>
                     <TapGestureHandler 
-                    onActivated={() => {setIsReading(false)}}>
+                    onActivated={() => {
+                        if(currentWord.learned_at !== null) setIsReading(false)
+                        else setIndex(index + 1);
+                        }}>
                         <TouchableOpacity>
                             <View
                             style={{
                                 width: Dimensions.get('window').width * 0.9,
                                 height: Dimensions.get('window').height * 0.1,
-                                backgroundColor:'#3A94E7',
+                                backgroundColor:(currentWord.learned_at !== null) ? 'green' : '#3A94E7',
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 borderRadius: 45,
                                 marginBottom: 100,
                             }}>
-                                <Text style={{color:'white', fontFamily:'Inter-Bold', fontSize: 20}}>Next!</Text>
+                                <Text style={{color:'white', fontFamily:'Inter-Bold', fontSize: 20}}>{currentWord.learned_at !== null ? 'Learned before' : 'Next'}</Text>
                             </View>
                         </TouchableOpacity>
                     </TapGestureHandler>
@@ -105,30 +145,25 @@ const CourseLearnScreen = ({ route }) => {
                             What's the word?
                         </Text>
                     </View>
-                    <WordInput value={currentWord.word} onComplete={() => {console.log('PIN completed')}}/>
+                    <WordInput value={currentWord.word} inputField={inputs} inputSetter={setInputs} reference={inputRefs} Function={updateInput}/>
                     
                 </View>
 
                 <View style={{height: Dimensions.get('window').height * 0.25, justifyContent:'flex-end'}}>
                     <TapGestureHandler 
-                    onActivated={() => {
-                        if (index < wordList.length - 1) {
-                            setIndex(index + 1);
-                            setIsReading(true);
-                        } else console.log("Reached the end of the list.");
-                    }}>
+                    onActivated={handleButton}>
                         <TouchableOpacity>
                             <View
                             style={{
                                 width: Dimensions.get('window').width * 0.9,
                                 height: Dimensions.get('window').height * 0.1,
-                                backgroundColor:'#3A94E7',
+                                backgroundColor: checked? (isCorrect ? 'green' : 'red') : '#3A94E7',
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 borderRadius: 45,
                                 marginBottom: 100,
                             }}>
-                                <Text style={{color:'white', fontFamily:'Inter-Bold', fontSize: 20}}>Go to next word!</Text>
+                                <Text style={{color:'white', fontFamily:'Inter-Bold', fontSize: 20}}>{checked ? isCorrect ? 'Go to next word!' : 'Enter again!' : 'Check answers'}</Text>
                             </View>
                         </TouchableOpacity>
                     </TapGestureHandler>
@@ -150,20 +185,6 @@ const styles = StyleSheet.create({
         paddingRight: 10,
         backgroundColor: '#7949FF',
         borderRadius: 15,
-    },
-    // Below styles for PIN input
-    pinContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    input: {
-        width: 40,
-        height: 40,
-        borderWidth: 2,
-        borderColor: '#3A94E7',
-        textAlign: 'center',
-        fontSize: 24,
-        borderRadius: 5,
     },
 });
 

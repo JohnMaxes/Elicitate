@@ -311,9 +311,9 @@ export const initDatabase = async () => {
           return object;
       } catch (error) {
           console.error('Failed to execute SQL command', error);
-          throw error; // Rethrow the error for higher-level handling
+          throw error;
       } finally {
-          await db.closeAsync(); // Ensure the database is closed
+          await db.closeAsync();
       }
   };
   
@@ -350,7 +350,7 @@ export const initDatabase = async () => {
   export const getQuestionToLearn = async (course_id) => {
     const db = await SQLite.openDatabaseAsync('elicitate');
     let query = `
-      SELECT id, word, type, definition 
+      SELECT id, word, type, definition, learned_at
       FROM vocabulary 
       WHERE id IN (
         SELECT vocabulary_id 
