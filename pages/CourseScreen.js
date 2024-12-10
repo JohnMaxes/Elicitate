@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity, Pressable } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Ionicons } from '@expo/vector-icons';
 import CustomSearchBar from '../components/customSearchBar';
 import CourseCard from '../components/courseCard';
 import { queryCourseToDatabase } from '../components/Database';
@@ -13,53 +12,7 @@ import CourseViewScreen from './CourseViewScreen'; // Import the new CourseViewS
 
 const CourseStack = createNativeStackNavigator();
 
-function CourseScreen() {
-  return (
-    <CourseStack.Navigator>
-      <CourseStack.Screen 
-        name="CourseSearchScreen" 
-        component={CourseSearchScreen}
-        options={{ headerShown: false }} 
-      />
-      <CourseStack.Screen 
-        name="CourseViewScreen" 
-        component={CourseViewScreen}
-        options={({ navigation }) => ({
-          headerTransparent: true,
-          headerTitle: '',
-          headerLeft: () => (
-            <TapGestureHandler onActivated={() => {
-              navigation.goBack();
-            }}>
-              <TouchableOpacity style={{ padding: 15 }} activeOpacity={0.7}>
-                <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
-              </TouchableOpacity>
-            </TapGestureHandler>
-          )
-        })} 
-      />
-      <CourseStack.Screen
-        name="CourseLearnScreen"
-        component={CourseLearnScreen}
-        options={({ navigation }) => ({
-          headerTransparent: true,
-          headerTitle: '',
-          headerLeft: () => (
-            <TapGestureHandler onActivated={() => {
-              navigation.goBack();
-            }}>
-              <TouchableOpacity style={{ padding: 15 }} activeOpacity={0.7}>
-                <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
-              </TouchableOpacity>
-            </TapGestureHandler>
-          )
-        })}
-      />
-    </CourseStack.Navigator>
-  );
-}
-
-const CourseSearchScreen = ({ navigation }) => {
+function CourseScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [courses, setCourses] = useState([]);
 
@@ -93,13 +46,59 @@ const CourseSearchScreen = ({ navigation }) => {
       <FlatList
         data={courses}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.contentScroll}
         style={{ marginBottom: 150 }}
       />
     </View>
   );
-};
+}
+
+function CourseStackScreen() {
+  return (
+    <CourseStack.Navigator>
+      <CourseStack.Screen 
+        name="CourseScreen" 
+        component={CourseScreen}
+        options={{ headerShown: false }} 
+      />
+      <CourseStack.Screen 
+        name="CourseViewScreen" 
+        component={CourseViewScreen}
+        options={({ navigation }) => ({
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeft: () => (
+            <TapGestureHandler onActivated={() => {
+              navigation.navigate('CourseScreen');
+            }}>
+              <TouchableOpacity style={{ padding: 15 }} activeOpacity={0.7}>
+                <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
+              </TouchableOpacity>
+            </TapGestureHandler>
+          )
+        })} 
+      />
+      <CourseStack.Screen
+        name="CourseLearnScreen"
+        component={CourseLearnScreen}
+        options={({ navigation }) => ({
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeft: () => (
+            <TapGestureHandler onActivated={() => {
+              navigation.navigate('CourseScreen');
+            }}>
+              <TouchableOpacity style={{ padding: 15 }} activeOpacity={0.7}>
+                <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
+              </TouchableOpacity>
+            </TapGestureHandler>
+          )
+        })}
+      />
+    </CourseStack.Navigator>
+  );
+}
 
 const styles = StyleSheet.create({
   contentScroll: {
@@ -120,4 +119,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CourseScreen;
+export default CourseStackScreen;
