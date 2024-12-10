@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Touchable, TouchableOpacity } from 'react-native';
+import { TapGestureHandler } from 'react-native-gesture-handler';
 import * as Progress from 'react-native-progress';
 
 const CourseViewScreen = ({ route, navigation }) => {
-  const { title, subtitle, level } = route.params;
+  const { title, subtitle, level, id } = route.params;
   const [progressValue, setProgressValue] = useState(0);
 
   useEffect(() => {
@@ -40,6 +41,18 @@ const CourseViewScreen = ({ route, navigation }) => {
           <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 20 }}>Course Details</Text>
           <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 15 }} numberOfLines={3} ellipsizeMode="tail">{subtitle}</Text>
         </View>
+
+        <TapGestureHandler onActivated={() => {navigation.navigate('CourseLearnScreen',{id: id})}}>
+          <TouchableOpacity style={styles.button}>
+            <Text style={{color:'white', fontFamilt: 'Inter-Bold', fontSize: 20}}>Learn Course</Text>
+          </TouchableOpacity>
+        </TapGestureHandler>
+
+        <TapGestureHandler onActivated={() => {navigation.navigate('CourseReviewScreen',{id: id})}}>
+          <TouchableOpacity style={styles.button}>
+            <Text style={{color:'white', fontFamilt: 'Inter-Bold', fontSize: 20}}>Review Course</Text>
+          </TouchableOpacity>
+        </TapGestureHandler>
       </View>
     </View>
   );
@@ -59,6 +72,14 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     padding: 20,
   },
+  button: {
+    backgroundColor: '#3A94E7',
+    borderRadius: 35,
+    height: 50,
+    marginBotton: 10, marginTop: 10,
+    alignItems:'center',
+    justifyContent:'center',
+  }
 });
 
 export default CourseViewScreen;

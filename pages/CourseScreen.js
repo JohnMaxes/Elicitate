@@ -8,6 +8,7 @@ import * as Progress from 'react-native-progress';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TapGestureHandler } from 'react-native-gesture-handler';
 import CourseLearnScreen from './CourseLearnScreen';
+import CourseReviewScreen from './CourseReviewScreen';
 import CourseViewScreen from './CourseViewScreen'; // Import the new CourseViewScreen
 
 const CourseStack = createNativeStackNavigator();
@@ -32,6 +33,7 @@ function CourseScreen({ navigation }) {
       subtitle={item.description}
       level={item.level}
       navigation={navigation}
+      id={item.id}
     />
   );
 
@@ -82,6 +84,23 @@ function CourseStackScreen() {
       <CourseStack.Screen
         name="CourseLearnScreen"
         component={CourseLearnScreen}
+        options={({ navigation }) => ({
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeft: () => (
+            <TapGestureHandler onActivated={() => {
+              navigation.navigate('CourseScreen');
+            }}>
+              <TouchableOpacity style={{ padding: 15 }} activeOpacity={0.7}>
+                <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
+              </TouchableOpacity>
+            </TapGestureHandler>
+          )
+        })}
+      />
+      <CourseStack.Screen
+        name="CourseReviewScreen"
+        component={CourseReviewScreen}
         options={({ navigation }) => ({
           headerTransparent: true,
           headerTitle: '',
