@@ -65,7 +65,7 @@ const Home = ({ handleLogout }) => {
             shadowOpacity: 0,
             marginLeft: Dimensions.get('window').width / 20,
             height: 80,
-            marginBottom: 25,
+            marginBottom: 20,
             width: '90%',
             alignSelf: 'center',
             borderRadius: 45,

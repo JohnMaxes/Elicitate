@@ -2,6 +2,7 @@ import { React, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Image, StyleSheet } from 'react-native';
 import CustomInput from '../components/customInput';
 import axios from 'axios';
+import qs from 'qs';
 
 const SignUpScreen = ({ togglePage, handleLogin }) => {
     const [registUsername, setRUsername] = useState(''); // Initialize as empty string
@@ -20,7 +21,7 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
         }
         const config = {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/x-www-form-urlencoded'
             }
         };
         let a = registUsername;
@@ -28,11 +29,11 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
         let c = registPassword;
         axios.post(
             'https://9a57-2001-ee0-4fcc-7570-d940-f7a-58e9-dd77.ngrok-free.app/register',
-            {
+            qs.stringify({
                 username: a,
                 email: b,
-                password: c,
-            },
+                password: c
+            }),
             config
         )
         .then(response => {
