@@ -5,6 +5,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import * as Font from 'expo-font';
 import * as Progress from 'react-native-progress';
 import { queryCourseToDatabase } from '../components/Database';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import VocabReviewScreen from './VocabReviewScreen';
+import { ScrollView } from 'react-native-gesture-handler';
+import { TapGestureHandler } from 'react-native-gesture-handler';
 
 const loadFonts = async () => {
   await Font.loadAsync({
@@ -16,6 +20,38 @@ const loadFonts = async () => {
 };
 
 const streak_count = 0;
+
+const HomeStack = createNativeStackNavigator();
+const Home = () => {
+  return(
+    <HomeStack.Navigator initialRouteName='HomeScreen'>
+      <HomeStack.Screen
+        name='HomeScreen'
+        component={HomeScreen}
+        options={{
+          headerShown:false,
+        }}
+      />
+      <HomeStack.Screen
+        name='VocabReviewScreen'
+        component={VocabReviewScreen}
+        options={({ navigation }) => ({
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeft: () => (
+            <TapGestureHandler onActivated={() => {
+              navigation.goBack();
+            }}>
+              <TouchableOpacity style={{ padding: 15 }} activeOpacity={0.7}>
+                <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
+              </TouchableOpacity>
+            </TapGestureHandler>
+          )
+        })} 
+      />
+    </HomeStack.Navigator>
+  )
+}
 
 function HomeScreen({ navigation }) {
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -86,7 +122,7 @@ function HomeScreen({ navigation }) {
   }
 
   return (
-    <View style={styles.screen}>
+    <ScrollView contentContainerStyle={{alignItems:'center'}} style={{flex: 1, paddingTop: 50, backgroundColor: '#CCE6FA',}}>
       <View name='StatusBar' style={{ flexDirection: 'row' }}>
         <View style={{ width: Dimensions.get('window').width / 3 }} />
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: Dimensions.get('window').width / 3 }}>
@@ -99,6 +135,8 @@ function HomeScreen({ navigation }) {
 
       <View style={{ width: '100%', paddingLeft: 20, paddingTop: 20, paddingRight: 20 }}>
         <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 25, textAlign: 'center', color: '#047cfc' }}>Current Course</Text>
+
+
         {currentCourse ? (
           <View style={{ backgroundColor: 'white', borderRadius: 32, height: Dimensions.get('window').height * 0.23, padding: 20, marginTop: 7 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -145,6 +183,44 @@ function HomeScreen({ navigation }) {
           <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 15, color: '#4D4D4F', textAlign: 'center' }}>No current course selected.</Text>
         )}
       </View>
+
+      <View style={{ backgroundColor: 'white', borderRadius: 32, height: Dimensions.get('window').height * 0.23, padding: 20, marginTop: 7 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View>
+            <Progress.Circle
+              showsText={true}
+              size={100}
+              progress={progressValue}
+              color={'#3A94E7'}
+              unfilledColor={'#D0EFFF'}
+              borderWidth={0}
+              thickness={12}
+              direction={'counter-clockwise'}
+              strokeCap={'round'}
+              textStyle={{ fontWeight: 'bold', fontSize: 20 }}
+            />
+          </View>
+          <View style={{ paddingLeft: 10 }}>
+            <Text style={{ fontSize: 15, fontFamily: 'Poppins-Regular', color: '#4D4D4F' }}>Chapter 2</Text>
+            <Text style={{ fontSize: 20, fontFamily: 'Poppins-Bold' }}>Review your vocab</Text>
+            <Text style={{ fontSize: 15, fontFamily: 'Poppins-Regular', color: '#4D4D4F' }}>Don't let yourself forget!</Text>
+          </View>
+        </View>
+        <TouchableOpacity
+          style={{
+            marginTop: 15,
+            backgroundColor: '#3A94E7',
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 25
+          }}
+          onPress={() => navigation.navigate('VocabReviewScreen')}r
+        >
+          <Text style={{ color: 'white', fontFamily: 'Poppins-Bold', fontSize: 17 }}>Review</Text>
+        </TouchableOpacity>
+      </View>
+
       <View style={{ flexDirection: 'row', marginTop: '10%', alignItems: 'center', justifyContent: 'space-between' }}>
         <View style={{ flex: 1, paddingLeft: 20 }}>
           <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 20, color: '#333' }}>Other Courses</Text>
@@ -164,8 +240,8 @@ function HomeScreen({ navigation }) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingLeft: 20, paddingRight: 10 }}
       />
-    </View>
+    </ScrollView>
   );
 }
 
-export default HomeScreen;
+export default Home;

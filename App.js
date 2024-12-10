@@ -6,7 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DictionaryScreen from "./pages/DictionaryScreen";
-import HomeScreen from "./pages/HomeScreen";
+import Home from "./pages/Home.js";
 import CourseScreen from "./pages/CourseScreen";
 import ProfileScreen from "./pages/ProfileScreen";
 import ProfileDetails from './pages/ProfileDetails';
@@ -39,7 +39,7 @@ const ProfileStack = ({ handleLogout }) => {
   );
 };
 
-const Home = ({ handleLogout }) => {
+const HomeBottomTab = ({ handleLogout }) => {
   return (
     <NavigationContainer>
       <BottomTab.Navigator
@@ -76,7 +76,7 @@ const Home = ({ handleLogout }) => {
           headerShown: false,
         })}
       >
-        <BottomTab.Screen name="Home" component={HomeScreen} />
+        <BottomTab.Screen name="Home" component={Home} />
         <BottomTab.Screen name="Course" component={CourseScreen} />
         <BottomTab.Screen name="Dictionary" component={DictionaryScreen} />
         <BottomTab.Screen name="Profile">
@@ -165,7 +165,7 @@ export default function App() {
   <GestureHandlerRootView>
     <View style={[{ flex: 1, justifyContent: 'center' }]}>
       {isLoggedIn ? (
-        <Home handleLogout={handleLogout} />
+        <HomeBottomTab handleLogout={handleLogout} />
       ) : isMember ? (
         <LoginScreen handleLogin={handleLogin} togglePage={togglePage} />
       ) : (
