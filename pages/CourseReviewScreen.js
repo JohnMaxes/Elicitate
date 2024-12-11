@@ -17,6 +17,8 @@ const CourseReviewScreen = ({ route }) => {
     const [isReading, setIsReading] = useState(true);
     const [checked, setChecked] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
+    const [empty, setEmpty] = useState(false);
+    const [finished, setFinished] = useState(false)
 
     const [inputs, setInputs] = useState([]);
     const [finalInput, setFinalInput] = useState('');
@@ -27,15 +29,15 @@ const CourseReviewScreen = ({ route }) => {
     }
 
     const handleButton = () => {
-        if (index < wordList.length - 1) {
+        if (index < wordList.length) {
             setChecked(true);
             if (finalInput == currentWord.word) {
                 setIsCorrect(true);
                 addWordToLearned(currentWord.id);
             } else setIsCorrect(false);
-        }
+        } else setFinished(true);
 
-        if (checked == true && isCorrect == true) {
+        if (checked == true && isCorrect == true && finished == false) {
             setLoading(true);
             setIsReading(true);
             setFinalInput('');
@@ -56,6 +58,7 @@ const CourseReviewScreen = ({ route }) => {
             if (words.length > 0) {
                 setWord(words[0]);
             }
+            else setEmpty(true);
             setLoading(false);
         }
         fetchCourseWords();
@@ -78,6 +81,24 @@ const CourseReviewScreen = ({ route }) => {
                 color="#3A94E7"
                 size={30}
             />
+        </View>
+    )
+
+    if (finished)
+    return(
+        <View style={styles.vocabScreen}>
+            <View style={{alignItems:'center', height: Dimensions.get('window').height * 0.6}}>
+                <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight:30 }}>You're finished here! Hooray!</Text>
+            </View>
+        </View>
+    )    
+
+    if (empty)
+    return(
+        <View style={styles.vocabScreen}>
+            <View style={{alignItems:'center', height: Dimensions.get('window').height * 0.6}}>
+                <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight:30 }}>You've not learned anything yet!</Text>
+            </View>
         </View>
     )
     
@@ -127,7 +148,7 @@ const CourseReviewScreen = ({ route }) => {
 
     // isReading is false when the user presses "Next!" and proceeds with the Course
     // this page will make the user validate the word again by making them enter the word
-    else if(isReading === false)
+    if(isReading == false)
     return(
         <>
             <Pressable style={styles.vocabScreen} onPress={Keyboard.dismiss}>

@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, Dimensions, TouchableOpacity, Keyboard } from "react-native";
 import { useFocusEffect } from '@react-navigation/native';
 import { useEffect, useState, useRef } from "react";
-import { getQuestionToReview } from "../components/Database";
+import { getQuestionToReviewVocab } from "../components/Database";
 import * as Progress from 'react-native-progress';
 import { Pressable, TapGestureHandler } from "react-native-gesture-handler";
 import WordInput from "../components/WordInput";
@@ -21,12 +21,14 @@ const VocabReviewScreen = () => {
     const [finalInput, setFinalInput] = useState('');
     const inputRefs = useRef([]);
 
+    const [empty, setEmpty] = useState(false);
+
     const updateInput = (input) => {
         setFinalInput(input);
     }
 
     const handleButton = () => {
-        if (index < wordList.length - 1) {
+        if (index < wordList.length) {
             setChecked(true);
             if (finalInput == currentWord.word) {
                 setIsCorrect(true);
@@ -42,17 +44,21 @@ const VocabReviewScreen = () => {
             inputRefs.current = [];
             setIndex(index + 1);
             setLoading(false);
-        }   
+        }
+        console.log(checked);
     }
 
-    useEffect(() => { // starts when a new ID is passed into the route
+    useEffect(() => {
         async function fetchVocabReview() {
             setLoading(true);
-            const words = await getQuestionToReview();
+            const words = await getQuestionToReviewVocab();
             setWordList(words);
+            console.log(words.length);
             if (words.length > 0) {
+                setEmpty(false);
                 setWord(words[0]);
             }
+            else setEmpty(true);
             setLoading(false);
         }
         fetchVocabReview();
@@ -74,7 +80,16 @@ const VocabReviewScreen = () => {
             />
         </View>
     )
-    
+
+    if (empty == true)
+    return(
+        <View style={styles.vocabScreen}>
+            <View style={{alignItems:'center', height: Dimensions.get('window').height * 0.6}}>
+                <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight:30 }}>You've not learned anything yet!</Text>
+            </View>
+        </View>
+    )
+
     return(
         <>
             <Pressable style={styles.vocabScreen} onPress={Keyboard.dismiss}>
@@ -90,8 +105,7 @@ const VocabReviewScreen = () => {
                             What's the word?
                         </Text>
                     </View>
-                    <WordInput value={currentWord.word} inputField={inputs} inputSetter={setInputs} reference={inputRefs} Function={updateInput}/>
-                    
+                    <WordInput value={currentWord.word} inputField={inputs} inputSetter={setInputs} reference={inputRefs} Function={updateInput}/>                    
                 </View>
 
                 <View style={{height: Dimensions.get('window').height * 0.25, justifyContent:'flex-end'}}>
@@ -138,5 +152,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
 });
+
+// <WordInput value={currentWord.word} inputField={inputs} inputSetter={setInputs} reference={inputRefs} Function={updateInput}/>
 
 export default VocabReviewScreen;

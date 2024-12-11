@@ -18,6 +18,7 @@ const CourseLearnScreen = ({ route }) => {
     const [isReading, setIsReading] = useState(true);
     const [checked, setChecked] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
+    const [finished, setFinished] = useState(false)
 
     const [inputs, setInputs] = useState([]);
     const [finalInput, setFinalInput] = useState('');
@@ -28,13 +29,13 @@ const CourseLearnScreen = ({ route }) => {
     }
 
     const handleButton = () => {
-        if (index < wordList.length - 1) {
+        if (index < wordList.length) {
             setChecked(true);
             if (finalInput == currentWord.word) {
                 setIsCorrect(true);
                 addWordToLearned(currentWord.id);
             } else setIsCorrect(false);
-        }
+        } else setFinished(true); 
 
         if (checked == true && isCorrect == true) {
             setLoading(true);
@@ -82,6 +83,14 @@ const CourseLearnScreen = ({ route }) => {
         </View>
     )
     
+    if (finished)
+    return(
+        <View style={styles.vocabScreen}>
+            <View style={{alignItems:'center', height: Dimensions.get('window').height * 0.6}}>
+                <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight:30 }}>You're finished with learning this course! Go out there and get more champ!</Text>
+            </View>
+        </View>
+    )        
     // isReading: meaning that the user is reading the definitions of this one word
     if(isReading)
     return (
@@ -104,7 +113,7 @@ const CourseLearnScreen = ({ route }) => {
                 <View style={{height: Dimensions.get('window').height * 0.25, justifyContent:'flex-end'}}>
                     <TapGestureHandler 
                     onActivated={() => {
-                        if(currentWord.learned_at !== null) setIsReading(false)
+                        if(currentWord.learned_at === null) setIsReading(false)
                         else setIndex(index + 1);
                         }}>
                         <TouchableOpacity>
@@ -129,7 +138,7 @@ const CourseLearnScreen = ({ route }) => {
 
     // isReading is false when the user presses "Next!" and proceeds with the Course
     // this page will make the user validate the word again by making them enter the word
-    else if(isReading === false)
+    if(isReading === false)
     return(
         <>
             <Pressable style={styles.vocabScreen} onPress={Keyboard.dismiss}>
