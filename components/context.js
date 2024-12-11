@@ -6,9 +6,11 @@ export const GlobalContext = createContext();
 export const Context = ({ children }) => {
     const [streakCount, setStreakCount] = useState(0);
     const [wordCount, setWordCount] = useState(0);
+    const [currentCourse, setCurrentCourse] = useState(null);
+    const [courseCount, setCourseCount] = useState(0);
 
     return (
-        <GlobalContext.Provider value={{ streakCount, wordCount, setStreakCount, setWordCount }}>
+        <GlobalContext.Provider value={{ streakCount, wordCount, setStreakCount, setWordCount, setCourseCount, courseCount, currentCourse, setCurrentCourse }}>
             {children}
         </GlobalContext.Provider>
     );

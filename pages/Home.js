@@ -8,11 +8,10 @@ import * as Progress from 'react-native-progress';
 
 import VocabReviewScreen from './VocabReviewScreen';
 
-import { queryCourseToDatabase, getLearnedWordNumber } from '../components/Database';
+import { queryCourseToDatabase, getLearnedWordNumber, getLearnedCourseNumber } from '../components/Database';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { GlobalContext } from '../components/context';
-import { NavigationContainer } from '@react-navigation/native';
 
 const loadFonts = async () => {
   await Font.loadAsync({
@@ -60,9 +59,13 @@ function HomeScreen({ navigation }) {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
   const [staticCourses, setStaticCourses] = useState([]);
-  const [currentCourse, setCurrentCourse] = useState(null);
   const [loading, setLoading] = useState(true);
-  const {streakCount, wordCount, setStreakCount, setWordCount} = useContext(GlobalContext);
+  const {
+    streakCount, setStreakCount,
+    wordCount, setWordCount,
+    courseCount, setCourseCount, 
+    currentCourse, setCurrentCourse
+  } = useContext(GlobalContext);
 
   const CourseCard = ({ item }) => (
     <View style={{ backgroundColor: 'white', height: 296, width: 208, borderRadius: 20, paddingTop: 12, paddingLeft: 16, paddingRight: 16, paddingBottom: 12, marginRight: 12 }}>
@@ -93,7 +96,6 @@ function HomeScreen({ navigation }) {
           borderRadius: 12
         }}
         onPress={() => {
-          setCurrentCourse(item); // Update current course
           navigation.navigate('Course', {
             screen: 'CourseViewScreen',
             params: {
@@ -109,23 +111,27 @@ function HomeScreen({ navigation }) {
   );
 
   useEffect(() => {
-    async function initialize() { // initialize streakCount here before page renders, that'll be easier
+    async function initialize() {
       try {
-        console.log('The issue is here!');
         const courses = await queryCourseToDatabase('');
         setStaticCourses(courses);
         await loadFonts();
         setFontsLoaded(true);
-        setLoading(false);
+
         try {
           let result = await getLearnedWordNumber();
           setWordCount(result.total_words);
           setStreakCount(15);
+
+          result = await getLearnedCourseNumber();
+          setCourseCount(result.total_courses);
         }
         catch (error) {
           console.log('Error setting up context!');
           console.log(error);
         }
+
+        setLoading(false);
       } catch (error) {
         console.error('Error initializing:', error);
       }
@@ -159,80 +165,79 @@ function HomeScreen({ navigation }) {
 
       <View style={{ width: '100%', paddingLeft: 20, paddingTop: 20, paddingRight: 20 }}>
         <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 25, textAlign: 'center', color: '#047cfc' }}>Current Course</Text>
-
-
-        {currentCourse ? (
-          <View style={{ backgroundColor: 'white', borderRadius: 32, height: Dimensions.get('window').height * 0.23, padding: 20, marginTop: 7 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <View>
-                <Progress.Circle
-                  showsText={true}
-                  size={100}
-                  progress={progressValue}
-                  color={'#3A94E7'}
-                  unfilledColor={'#D0EFFF'}
-                  borderWidth={0}
-                  thickness={12}
-                  direction={'counter-clockwise'}
-                  strokeCap={'round'}
-                  textStyle={{ fontWeight: 'bold', fontSize: 20 }}
-                />
-              </View>
-              <View style={{ paddingLeft: 10 }}>
-                <Text style={{ fontSize: 15, fontFamily: 'Poppins-Regular', color: '#4D4D4F' }}>Chapter 2</Text>
-                <Text style={{ fontSize: 20, fontFamily: 'Poppins-Bold' }}>{currentCourse.title}</Text>
-                <Text style={{ fontSize: 15, fontFamily: 'Poppins-Regular', color: '#4D4D4F' }}>Continue your journey!</Text>
-              </View>
-            </View>
-            <TouchableOpacity
-              style={{
-                marginTop: 15,
-                backgroundColor: '#3A94E7',
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: 25
-              }}
-              onPress={() => navigation.navigate('Course', {
-                screen: 'CourseLearnScreen',
-                params: {
-                  id: currentCourse.id,
-                }
-              })}
-            >
-              <Text style={{ color: 'white', fontFamily: 'Poppins-Bold', fontSize: 17 }}>Continue Studying</Text>
-            </TouchableOpacity>
+        <View style={{ backgroundColor: 'white', borderRadius: 32, height: Dimensions.get('window').height * 0.25, width: Dimensions.get('window').width*0.9, padding: 20, marginTop: 7 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', height: 120 }}>
+              {
+                currentCourse? (
+                <>
+                  <View>
+                    <Progress.Circle
+                      showsText={true}
+                      size={'90%'}
+                      progress={progressValue}
+                      color={'#3A94E7'}
+                      unfilledColor={'#D0EFFF'}
+                      borderWidth={0}
+                      thickness={12}
+                      direction={'counter-clockwise'}
+                      strokeCap={'round'}
+                      textStyle={{ fontWeight: 'bold', fontSize: 20 }}
+                    />
+                  </View>
+                  <View style={{ paddingLeft: 10 }}>
+                    <Text style={{ fontSize: 15, fontFamily: 'Poppins-Regular', color: '#4D4D4F' }}>Chapter 2</Text>
+                    <Text style={{ fontSize: 20, fontFamily: 'Poppins-Bold' }}>Something</Text>
+                    <Text style={{ fontSize: 15, fontFamily: 'Poppins-Regular', color: '#4D4D4F' }}>Continue your journey!</Text>   
+                  </View> 
+                </>
+                ) : (<View style={{height: 120, justifyContent:'center', alignItems:'center'}}><Text style={{ fontSize: 30, fontFamily: 'Poppins-Bold' }}>No current Course!</Text></View>)
+              }
           </View>
-        ) : (
-          <Text style={{ fontFamily: 'Poppins-Regular', fontSize: 15, color: '#4D4D4F', textAlign: 'center' }}>No current course selected.</Text>
-        )}
+          <TouchableOpacity
+            style={{
+              marginTop: 5,
+              backgroundColor: '#3A94E7',
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: 25,
+            }}
+            onPress={() => 
+              { 
+                if(currentCourse)
+                  navigation.navigate('Course', {
+                    screen: 'CourseLearnScreen',
+                    params: {
+                      id: currentCourse.id,
+                    }
+                  })
+                if(currentCourse == null)
+                  navigation.navigate('Course', {
+                    screen: 'CourseScreen'
+                  })  
+              }
+            }
+          >
+            <Text style={{ color: 'white', fontFamily: 'Poppins-Bold', fontSize: 17 }}>Continue Studying</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
-      <View style={{ backgroundColor: 'white', borderRadius: 32, height: Dimensions.get('window').height * 0.23, padding: 20, marginTop: 7 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <View>
-            <Progress.Circle
-              showsText={true}
-              size={100}
-              progress={100}
-              color={'#3A94E7'}
-              unfilledColor={'#D0EFFF'}
-              borderWidth={0}
-              thickness={12}
-              direction={'counter-clockwise'}
-              strokeCap={'round'}
-              textStyle={{ fontWeight: 'bold', fontSize: 20 }}
-            />
+      <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 25, textAlign: 'center', color: '#047cfc', marginTop: 7}}>Statistics</Text>
+      <View style={{ backgroundColor: 'white', borderRadius: 32, height: Dimensions.get('window').height * 0.25, width: Dimensions.get('window').width*0.9, padding: 20, marginTop: 7}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent:'center', height: 120 }}>
+          <View style={{flex:1.75, backgroundColor: '#047cfc', alignItems:'center', justifyContent:'center', marginRight: 5, borderRadius: 30, height: '90%'}}>
+            <Text style={{fontSize: 45, fontFamily:'Poppins-Bold', color:'white'}}>{wordCount}</Text>
+            <Text style={{fontFamily:'Poppins-Bold', color:'white'}}>Words</Text>
           </View>
-          <View style={{ paddingLeft: 10 }}>
-            <Text style={{ fontSize: 15, fontFamily: 'Poppins-Regular', color: '#4D4D4F' }}>Chapter 2</Text>
-            <Text style={{ fontSize: 20, fontFamily: 'Poppins-Bold' }}>Review your vocab</Text>
-            <Text style={{ fontSize: 15, fontFamily: 'Poppins-Regular', color: '#4D4D4F' }}>Don't let yourself forget!</Text>
+          <View style={{flex:1, backgroundColor: '#047cfc', alignItems:'center', justifyContent:'center', borderRadius: 30, height: '90%'}}>
+            <Text style={{fontSize: 50, fontFamily:'Poppins-Bold', color:'white'}}>{courseCount}</Text>
+            <Text style={{fontFamily:'Poppins-Bold', color:'white'}}>Courses</Text>
           </View>
         </View>
         <TouchableOpacity
           style={{
-            marginTop: 15,
+            marginTop: 5,
             backgroundColor: '#3A94E7',
             flex: 1,
             justifyContent: 'center',
@@ -257,6 +262,7 @@ function HomeScreen({ navigation }) {
       </View>
 
       <FlatList
+        style={{paddingBottom: 110}}
         data={staticCourses}
         renderItem={CourseCard}
         keyExtractor={item => item.id.toString()}

@@ -26,6 +26,7 @@ export const initDatabase = async () => {
             title TEXT NOT NULL,
             description TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            learned_at DATETIME, 
             level TEXT NOT NULL
         );`
     );    
@@ -406,7 +407,6 @@ export const initDatabase = async () => {
       ORDER BY learned_at ASC
       LIMIT 20
     `;
-  
     try {
       const result = await db.getAllAsync(query);
       return result;
@@ -425,6 +425,23 @@ export const initDatabase = async () => {
       FROM vocabulary
       WHERE learned_at IS NOT NULL;    
     `;
+    try {
+      const result = await db.getFirstAsync(query);
+      return result;
+    } catch (error) {
+      console.error('Failed to execute SQL command', error);
+      throw error;
+    } finally {
+      await db.closeAsync();
+    }
+  }
+
+  export const getLearnedCourseNumber = async () => {
+    const db = await SQLite.openDatabaseAsync('elicitate');
+    let query = `
+      SELECT COUNT(id) AS total_courses 
+      FROM courses;
+\    `;
     try {
       const result = await db.getFirstAsync(query);
       return result;
