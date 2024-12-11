@@ -408,7 +408,7 @@ export const initDatabase = async () => {
     `;
   
     try {
-      const result = await db.getAllAsync(query, [course_id]);
+      const result = await db.getAllAsync(query);
       return result;
     } catch (error) {
       console.error('Failed to execute SQL command', error);
