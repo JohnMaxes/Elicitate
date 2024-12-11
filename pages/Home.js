@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, FlatList, Dimensions, TouchableOpacity, Image } from 'react-native';
-import styles from '../stylesheet';
+import { ScrollView, TapGestureHandler } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
+
 import * as Font from 'expo-font';
 import * as Progress from 'react-native-progress';
-import { queryCourseToDatabase } from '../components/Database';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import VocabReviewScreen from './VocabReviewScreen';
-import { ScrollView } from 'react-native-gesture-handler';
-import { TapGestureHandler } from 'react-native-gesture-handler';
+
+import { queryCourseToDatabase, getLearnedWordNumber } from '../components/Database';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import { GlobalContext } from '../components/context';
+import { NavigationContainer } from '@react-navigation/native';
 
 const loadFonts = async () => {
   await Font.loadAsync({
@@ -18,8 +22,6 @@ const loadFonts = async () => {
     'Inter-Regular': require('../assets/fonts/Inter Regular 400.otf'),
   });
 };
-
-const streak_count = 0;
 
 const HomeStack = createNativeStackNavigator();
 const Home = () => {
@@ -53,11 +55,14 @@ const Home = () => {
   )
 }
 
+
 function HomeScreen({ navigation }) {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
   const [staticCourses, setStaticCourses] = useState([]);
   const [currentCourse, setCurrentCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const {streakCount, wordCount, setStreakCount, setWordCount} = useContext(GlobalContext);
 
   const CourseCard = ({ item }) => (
     <View style={{ backgroundColor: 'white', height: 296, width: 208, borderRadius: 20, paddingTop: 12, paddingLeft: 16, paddingRight: 16, paddingBottom: 12, marginRight: 12 }}>
@@ -104,22 +109,41 @@ function HomeScreen({ navigation }) {
   );
 
   useEffect(() => {
-    async function init() {
-      setStaticCourses(await queryCourseToDatabase(''));
-      loadFonts().then(() => {
-        const timer = setTimeout(() => {
-          setProgressValue(0.7);
-        }, 100);
+    async function initialize() { // initialize streakCount here before page renders, that'll be easier
+      try {
+        console.log('The issue is here!');
+        const courses = await queryCourseToDatabase('');
+        setStaticCourses(courses);
+        await loadFonts();
         setFontsLoaded(true);
-        return () => clearTimeout(timer);
-      });
+        setLoading(false);
+        try {
+          let result = await getLearnedWordNumber();
+          setWordCount(result.total_words);
+          setStreakCount(15);
+        }
+        catch (error) {
+          console.log('Error setting up context!');
+          console.log(error);
+        }
+      } catch (error) {
+        console.error('Error initializing:', error);
+      }
     }
-    init();
+    initialize();
   }, []);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+
+  if (loading) 
+  return (
+      <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+          <Progress.Circle
+              indeterminate={true}
+              color="#3A94E7"
+              size={30}
+          />
+      </View>
+  )
 
   return (
     <ScrollView contentContainerStyle={{alignItems:'center'}} style={{flex: 1, paddingTop: 50, backgroundColor: '#CCE6FA',}}>
@@ -127,7 +151,7 @@ function HomeScreen({ navigation }) {
         <View style={{ width: Dimensions.get('window').width / 3 }} />
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: Dimensions.get('window').width / 3 }}>
           <View><Icon name={'flame'} size={24} color={'red'}></Icon></View>
-          <View style={{ justifyContent: 'center' }}><Text style={{ fontSize: 16 }}>{streak_count}</Text></View>
+          <View style={{ justifyContent: 'center' }}><Text style={{ fontSize: 16, fontFamily:'Inter-Bold' }}>{streakCount}</Text></View>
         </View>
         <View style={{ alignItems: 'flex-end', width: Dimensions.get('window').width / 3, paddingRight: 25 }}>
         </View>
@@ -190,7 +214,7 @@ function HomeScreen({ navigation }) {
             <Progress.Circle
               showsText={true}
               size={100}
-              progress={progressValue}
+              progress={100}
               color={'#3A94E7'}
               unfilledColor={'#D0EFFF'}
               borderWidth={0}

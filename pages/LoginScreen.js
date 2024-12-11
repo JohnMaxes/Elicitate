@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView 
 import CustomInput from '../components/customInput';
 import axios from 'axios';
 import qs from 'qs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ togglePage, handleLogin }) => {
   const [username, setUsername] = useState('');
@@ -18,6 +19,7 @@ const LoginScreen = ({ togglePage, handleLogin }) => {
       return;
     }
     else {
+      AsyncStorage.setItem('loggedIn', 'true');
       handleLogin();
       /*
       axios.post(

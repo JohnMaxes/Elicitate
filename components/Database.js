@@ -417,3 +417,21 @@ export const initDatabase = async () => {
       await db.closeAsync();
     }
   };
+
+  export const getLearnedWordNumber = async () => {
+    const db = await SQLite.openDatabaseAsync('elicitate');
+    let query = `
+      SELECT COUNT(word) AS total_words 
+      FROM vocabulary
+      WHERE learned_at IS NOT NULL;    
+    `;
+    try {
+      const result = await db.getFirstAsync(query);
+      return result;
+    } catch (error) {
+      console.error('Failed to execute SQL command', error);
+      throw error;
+    } finally {
+      await db.closeAsync();
+    }
+  }
