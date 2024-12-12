@@ -24,13 +24,13 @@ const loadFonts = async () => {
 
 const HomeStack = createNativeStackNavigator();
 const Home = () => {
-  return(
+  return (
     <HomeStack.Navigator initialRouteName='HomeScreen'>
       <HomeStack.Screen
         name='HomeScreen'
         component={HomeScreen}
         options={{
-          headerShown:false,
+          headerShown: false,
         }}
       />
       <HomeStack.Screen
@@ -44,16 +44,15 @@ const Home = () => {
               navigation.goBack();
             }}>
               <TouchableOpacity style={{ padding: 15 }} activeOpacity={0.7}>
-                <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
+                <Icon name='arrow-back-outline' size={35} color='#3A94E7' />
               </TouchableOpacity>
             </TapGestureHandler>
           )
-        })} 
+        })}
       />
     </HomeStack.Navigator>
   )
 }
-
 
 function HomeScreen({ navigation }) {
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -63,7 +62,7 @@ function HomeScreen({ navigation }) {
   const {
     streakCount, setStreakCount,
     wordCount, setWordCount,
-    courseCount, setCourseCount, 
+    courseCount, setCourseCount,
     currentCourse, setCurrentCourse
   } = useContext(GlobalContext);
 
@@ -96,6 +95,7 @@ function HomeScreen({ navigation }) {
           borderRadius: 12
         }}
         onPress={() => {
+          setCurrentCourse(item);
           navigation.navigate('Course', {
             screen: 'CourseViewScreen',
             params: {
@@ -139,112 +139,148 @@ function HomeScreen({ navigation }) {
     initialize();
   }, []);
 
-
-  if (loading) 
-  return (
+  if (loading)
+    return (
       <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-          <Progress.Circle
-              indeterminate={true}
-              color="#3A94E7"
-              size={30}
-          />
+        <Progress.Circle
+          indeterminate={true}
+          color="#3A94E7"
+          size={30}
+        />
       </View>
-  )
+    )
 
   return (
-    <ScrollView contentContainerStyle={{alignItems:'center'}} style={{flex: 1, paddingTop: 50, backgroundColor: '#CCE6FA',}}>
+    <ScrollView contentContainerStyle={{ alignItems: 'center' }} style={{ flex: 1, paddingTop: 50, backgroundColor: '#CCE6FA', }}>
       <View name='StatusBar' style={{ flexDirection: 'row' }}>
         <View style={{ width: Dimensions.get('window').width / 3 }} />
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: Dimensions.get('window').width / 3 }}>
           <View><Icon name={'flame'} size={24} color={'red'}></Icon></View>
-          <View style={{ justifyContent: 'center' }}><Text style={{ fontSize: 16, fontFamily:'Inter-Bold' }}>{streakCount}</Text></View>
+          <View style={{ justifyContent: 'center' }}><Text style={{ fontSize: 16, fontFamily: 'Inter-Bold' }}>{streakCount}</Text></View>
         </View>
         <View style={{ alignItems: 'flex-end', width: Dimensions.get('window').width / 3, paddingRight: 25 }}>
         </View>
       </View>
 
-      <View style={{ width: '100%', paddingLeft: 20, paddingTop: 20, paddingRight: 20 }}>
-        <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 25, textAlign: 'center', color: '#047cfc' }}>Current Course</Text>
-        <View style={{ backgroundColor: 'white', borderRadius: 32, height: Dimensions.get('window').height * 0.25, width: Dimensions.get('window').width*0.9, padding: 20, marginTop: 7 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', height: 120 }}>
-              {
-                currentCourse? (
-                <>
+
+      {
+        currentCourse ? (
+          <>
+            <View style={{ width: '100%', paddingLeft: 20, paddingTop: 20, paddingRight: 20 }}>
+              <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 30, textAlign: 'center', color: '#03174c' }}>Current Course</Text>
+              <View style={{ borderRadius: 32, height: Dimensions.get('window').height * 0.28, backgroundColor:'#a2e0c1', width: Dimensions.get('window').width * 0.9, padding: 20, marginTop: 7 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', height: 120 }}>
+
                   <View>
                     <Progress.Circle
                       showsText={true}
-                      size={'90%'}
-                      progress={progressValue}
-                      color={'#3A94E7'}
+                      size={Dimensions.get('window').width * 0.3}
+                      progress={isNaN(progressValue) ? 0 : progressValue}
+                      color={'#03174c'}
                       unfilledColor={'#D0EFFF'}
                       borderWidth={0}
                       thickness={12}
                       direction={'counter-clockwise'}
                       strokeCap={'round'}
-                      textStyle={{ fontWeight: 'bold', fontSize: 20 }}
+                      textStyle={{ fontWeight: 'bold', fontSize: 40 }}
                     />
                   </View>
-                  <View style={{ paddingLeft: 10 }}>
-                    <Text style={{ fontSize: 15, fontFamily: 'Poppins-Regular', color: '#4D4D4F' }}>Chapter 2</Text>
-                    <Text style={{ fontSize: 20, fontFamily: 'Poppins-Bold' }}>Something</Text>
-                    <Text style={{ fontSize: 15, fontFamily: 'Poppins-Regular', color: '#4D4D4F' }}>Continue your journey!</Text>   
-                  </View> 
-                </>
-                ) : (<View style={{height: 120, justifyContent:'center', alignItems:'center'}}><Text style={{ fontSize: 30, fontFamily: 'Poppins-Bold' }}>No current Course!</Text></View>)
-              }
-          </View>
-          <TouchableOpacity
-            style={{
-              marginTop: 5,
-              backgroundColor: '#3A94E7',
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 25,
-            }}
-            onPress={() => 
-              { 
-                if(currentCourse)
+                  <View style={{ paddingLeft: 10, alignItems: 'center' }}>
+                    <Text style={{ alignSelf:'left', paddingLeft: 12, fontSize: 20, fontFamily: 'Poppins-Regular', color: '#03174c' }}>Chapter 2</Text>
+                    <Text style={{ fontSize: 28, fontFamily: 'Poppins-Bold', maxWidth: '90%' }}>{currentCourse.title}</Text>
+                  </View>
+                </View>
+                <TouchableOpacity
+                  style={{
+                    margin: 25,
+                    paddingVertical: 10,
+                    backgroundColor: '#4f54b4',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: 25,
+                    borderWidth: 3,
+                    borderColor: 'transparent',
+                  }}
+                  onPress={() => {
+                    if (currentCourse)
+                      navigation.navigate('Course', {
+                        screen: 'CourseLearnScreen',
+                        params: {
+                          id: currentCourse.id,
+                        }
+                      })
+                    if (currentCourse == null)
+                      navigation.navigate('Course', {
+                        screen: 'CourseScreen'
+                      })
+                  }
+                  }
+                >
+                  <Text style={{ color: 'white', fontFamily: 'Poppins-Bold', fontSize: 17 }}>Continue Studying</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </>
+        ) : (
+          <View style={{ width: '100%', paddingLeft: 20, paddingTop: 20, paddingRight: 20 }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 40, textAlign: 'center', color: '#03174c' }}>Welcome to Elicitate!</Text>
+            <TouchableOpacity
+              style={{
+                margin: 25,
+                paddingVertical: 10,
+                backgroundColor: '#4c53b4',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 25,
+                borderWidth: 3,
+                borderColor: 'transparent',
+              }}
+              onPress={() => {
+                if (currentCourse)
                   navigation.navigate('Course', {
                     screen: 'CourseLearnScreen',
                     params: {
                       id: currentCourse.id,
                     }
                   })
-                if(currentCourse == null)
+                if (currentCourse == null)
                   navigation.navigate('Course', {
                     screen: 'CourseScreen'
-                  })  
+                  })
               }
-            }
-          >
-            <Text style={{ color: 'white', fontFamily: 'Poppins-Bold', fontSize: 17 }}>Continue Studying</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 25, textAlign: 'center', color: '#047cfc', marginTop: 7}}>Statistics</Text>
-      <View style={{ backgroundColor: 'white', borderRadius: 32, height: Dimensions.get('window').height * 0.25, width: Dimensions.get('window').width*0.9, padding: 20, marginTop: 7}}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent:'center', height: 120 }}>
-          <View style={{flex:1.75, backgroundColor: '#047cfc', alignItems:'center', justifyContent:'center', marginRight: 5, borderRadius: 30, height: '90%'}}>
-            <Text style={{fontSize: 45, fontFamily:'Poppins-Bold', color:'white'}}>{wordCount}</Text>
-            <Text style={{fontFamily:'Poppins-Bold', color:'white'}}>Words</Text>
+              }
+            >
+              <Text style={{ color: 'white', fontFamily: 'Poppins-Bold', fontSize: 20 }}>Start Studying</Text>
+            </TouchableOpacity>
           </View>
-          <View style={{flex:1, backgroundColor: '#047cfc', alignItems:'center', justifyContent:'center', borderRadius: 30, height: '90%'}}>
-            <Text style={{fontSize: 50, fontFamily:'Poppins-Bold', color:'white'}}>{courseCount}</Text>
-            <Text style={{fontFamily:'Poppins-Bold', color:'white'}}>Courses</Text>
+        )
+      }
+
+
+
+      <View style={{ height: '3%' }} />
+      <View style={{ backgroundColor: '#03174c', borderRadius: 32, height: Dimensions.get('window').height * 0.32, width: Dimensions.get('window').width * 0.9, paddingHorizontal: 20 }}>
+        <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 25, textAlign: 'center', color: 'white', paddingTop: 15 }}>Statistics</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 120 }}>
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 50, fontFamily: 'Poppins-Bold', color: 'white' }}>{wordCount}</Text>
+            <Text style={{ fontSize: 20, fontFamily: 'Poppins-Bold', color: 'white' }}>Words</Text>
+          </View>
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 50, fontFamily: 'Poppins-Bold', color: 'white' }}>{courseCount}</Text>
+            <Text style={{ fontSize: 20, fontFamily: 'Poppins-Bold', color: 'white' }}>Courses</Text>
           </View>
         </View>
         <TouchableOpacity
           style={{
-            marginTop: 5,
-            backgroundColor: '#3A94E7',
-            flex: 1,
+            margin: 25,
+            paddingVertical: 10,
+            backgroundColor: '#969ef1',
             justifyContent: 'center',
             alignItems: 'center',
             borderRadius: 25
           }}
-          onPress={() => navigation.navigate('VocabReviewScreen')}r
+          onPress={() => navigation.navigate('VocabReviewScreen')}
         >
           <Text style={{ color: 'white', fontFamily: 'Poppins-Bold', fontSize: 17 }}>Review</Text>
         </TouchableOpacity>
@@ -262,13 +298,13 @@ function HomeScreen({ navigation }) {
       </View>
 
       <FlatList
-        style={{paddingBottom: 110}}
+        style={{ paddingBottom: 200 }}
         data={staticCourses}
         renderItem={CourseCard}
         keyExtractor={item => item.id.toString()}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingLeft: 20, paddingRight: 10 }}
+        contentContainerStyle={{ paddingLeft: 20, paddingRight: 25 }}
       />
     </ScrollView>
   );
