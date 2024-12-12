@@ -7,7 +7,6 @@ import { Pressable, TapGestureHandler } from "react-native-gesture-handler";
 import WordInput from "../components/WordInput";
 import { addWordToLearned } from "../components/Database";
 
-
 const VocabReviewScreen = () => {
     const [wordList, setWordList] = useState([]);
     const [currentWord, setWord] = useState({});
@@ -29,21 +28,35 @@ const VocabReviewScreen = () => {
 
     const handleButton = () => {
         if (index < wordList.length) {
-            setChecked(true);
-            if (finalInput == currentWord.word) {
-                setIsCorrect(true);
-            } else setIsCorrect(false);
-        }
-
-        if (checked == true && isCorrect == true) {
-            setLoading(true);
-            setFinalInput('');
-            setInputs([]);
-            setChecked(false);
-            setIsCorrect(false)
-            inputRefs.current = [];
-            setIndex(index + 1);
-            setLoading(false);
+            if (checked) {
+                if (isCorrect) {
+                    if (index === wordList.length - 1) {
+                        // If the current word is the last one and is correct, finish the review
+                        setFinished(true);
+                    } else {
+                        setLoading(true);
+                        setFinalInput('');
+                        setInputs([]);
+                        setChecked(false);
+                        setIsCorrect(false);
+                        inputRefs.current = [];
+                        setIndex(index + 1);
+                        setLoading(false);
+                    }
+                } else {
+                    setChecked(false);
+                    setInputs(Array(currentWord.word.length).fill(''));
+                    setFinalInput('');
+                    inputRefs.current.forEach(ref => ref && ref.clear());
+                }
+            } else {
+                setChecked(true);
+                if (finalInput === currentWord.word) {
+                    setIsCorrect(true);
+                } else {
+                    setIsCorrect(false);
+                }
+            }
         }
         console.log(checked);
     }
@@ -70,31 +83,31 @@ const VocabReviewScreen = () => {
         }
     }, [index]);
 
-    if (loading) 
-    return (
-        <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-            <Progress.Circle
-                indeterminate={true}
-                color="#3A94E7"
-                size={30}
-            />
-        </View>
-    )
+    if (loading)
+        return (
+            <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                <Progress.Circle
+                    indeterminate={true}
+                    color="#3A94E7"
+                    size={30}
+                />
+            </View>
+        )
 
     if (empty == true)
-    return(
-        <View style={styles.vocabScreen}>
-            <View style={{alignItems:'center', height: Dimensions.get('window').height * 0.6}}>
-                <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight:30 }}>You've not learned anything yet!</Text>
+        return (
+            <View style={styles.vocabScreen}>
+                <View style={{ alignItems: 'center', height: Dimensions.get('window').height * 0.6 }}>
+                    <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight: 30 }}>You've not learned anything yet!</Text>
+                </View>
             </View>
-        </View>
-    )
+        )
 
-    return(
+    return (
         <>
             <Pressable style={styles.vocabScreen} onPress={Keyboard.dismiss}>
-                <View style={{alignItems:'center', height: Dimensions.get('window').height * 0.6}}>
-                    <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight:30 }}>{currentWord.definition}</Text>
+                <View style={{ alignItems: 'center', height: Dimensions.get('window').height * 0.6 }}>
+                    <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight: 30 }}>{currentWord.definition}</Text>
 
                     <View style={styles.typeContainer}>
                         <Text style={{ fontFamily: 'Inter-Bold', fontSize: 20, color: 'white' }}>{currentWord.type}</Text>
@@ -105,30 +118,30 @@ const VocabReviewScreen = () => {
                             What's the word?
                         </Text>
                     </View>
-                    <WordInput value={currentWord.word} inputField={inputs} inputSetter={setInputs} reference={inputRefs} Function={updateInput}/>                    
+                    <WordInput value={currentWord.word} inputField={inputs} inputSetter={setInputs} reference={inputRefs} Function={updateInput} />
                 </View>
 
-                <View style={{height: Dimensions.get('window').height * 0.25, justifyContent:'flex-end'}}>
-                    {checked ? 
-                    (<View style={{alignItems:'center'}}>
-                        <Text style={{fontFamily:'Inter-Bold', fontSize: 20,}}>Answer: {currentWord.word}</Text>
-                    </View>) 
-                    : 
-                    (null)}
-                    <TapGestureHandler 
-                    onActivated={handleButton}>
+                <View style={{ height: Dimensions.get('window').height * 0.25, justifyContent: 'flex-end' }}>
+                    {checked ?
+                        (<View style={{ alignItems: 'center' }}>
+                            <Text style={{ fontFamily: 'Inter-Bold', fontSize: 20, }}>Answer: {currentWord.word}</Text>
+                        </View>)
+                        :
+                        (null)}
+                    <TapGestureHandler
+                        onActivated={handleButton}>
                         <TouchableOpacity>
                             <View
-                            style={{
-                                width: Dimensions.get('window').width * 0.9,
-                                height: Dimensions.get('window').height * 0.1,
-                                backgroundColor: checked? (isCorrect ? 'green' : 'red') : '#3A94E7',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                borderRadius: 45,
-                                marginBottom: 100,
-                            }}>
-                                <Text style={{color:'white', fontFamily:'Inter-Bold', fontSize: 20}}>{checked ? isCorrect ? 'Go to next word!' : 'Enter again!' : 'Check answers'}</Text>
+                                style={{
+                                    width: Dimensions.get('window').width * 0.5,
+                                    height: Dimensions.get('window').height * 0.07,
+                                    backgroundColor: checked ? (isCorrect ? 'green' : 'red') : '#3A94E7',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    borderRadius: 45,
+                                    marginBottom: Dimensions.get('window').height * 0.3,
+                                }}>
+                                <Text style={{ color: 'white', fontFamily: 'Inter-Bold', fontSize: 20 }}>{checked ? isCorrect ? 'Go to next word!' : 'Enter again!' : 'Check answers'}</Text>
                             </View>
                         </TouchableOpacity>
                     </TapGestureHandler>
@@ -141,7 +154,7 @@ const VocabReviewScreen = () => {
 const styles = StyleSheet.create({
     vocabScreen: {
         paddingTop: Dimensions.get('window').height * 0.15,
-        flex:1,
+        flex: 1,
         alignItems: 'center',
         backgroundColor: '#CCE6FA',
     },
@@ -152,7 +165,5 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
 });
-
-// <WordInput value={currentWord.word} inputField={inputs} inputSetter={setInputs} reference={inputRefs} Function={updateInput}/>
 
 export default VocabReviewScreen;

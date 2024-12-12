@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { TextInput, View, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { TextInput, View, StyleSheet, TouchableWithoutFeedback, Keyboard, Dimensions } from 'react-native';
 
 const WordInput = ({ value, inputField, inputSetter, reference, Function }) => {
     useEffect(() => {
@@ -22,19 +22,16 @@ const WordInput = ({ value, inputField, inputSetter, reference, Function }) => {
     const handleKeyPress = (e, index) => {
         if (e.nativeEvent.key === 'Backspace') {
             const newInputs = [...inputField];
-
-            // If the current input is empty, focus on the previous input
-            if (newInputs[index] === '' && index > 0) {
-                reference.current[index - 1].focus();
-            } else {
-                // Otherwise, delete the character in the current input
+    
+            // Delete the character in the current input
+            if (newInputs[index]) {
                 newInputs[index] = '';
                 inputSetter(newInputs);
-
-                // Move focus to the previous input if the current one was cleared
-                if (index > 0) {
-                    reference.current[index - 1].focus();
-                }
+            } else if (index > 0) {
+                // If the current input is already empty, move focus to the previous field
+                reference.current[index - 1].focus();
+                newInputs[index - 1] = '';
+                inputSetter(newInputs);
             }
         }
     };
@@ -43,13 +40,17 @@ const WordInput = ({ value, inputField, inputSetter, reference, Function }) => {
         Keyboard.dismiss();
     };
 
+    // Dynamic width
+    const inputWidth = Math.min(50, Math.max(30, Dimensions.get('window').width / value.length - 10));
+    const inputHeight = Math.min(50, Math.max(30, Dimensions.get('window').height / value.length - 10));
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.pinContainer}>
                 {inputField.map((input, index) => (
-                    <View style={styles.innerShadow} key={index}>
+                    <View style={[styles.innerShadow, { width: inputWidth }]} key={index}>
                         <TextInput
-                            style={styles.input}
+                            style={[styles.input, { width: inputWidth }]}
                             value={input}
                             onChangeText={text => handleChange(text, index)}
                             onKeyPress={(e) => handleKeyPress(e, index)}
@@ -60,6 +61,7 @@ const WordInput = ({ value, inputField, inputSetter, reference, Function }) => {
                             autoCapitalize="none"
                             returnKeyType={index === inputField.length - 1 ? "done" : "next"}
                             onSubmitEditing={handleSubmitEditing}
+                            selectTextOnFocus={true} 
                         />
                     </View>
                 ))}
@@ -71,20 +73,20 @@ const WordInput = ({ value, inputField, inputSetter, reference, Function }) => {
 const styles = StyleSheet.create({
     pinContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
         marginTop: 20,
     },
     input: {
         backgroundColor: 'white',
-        width: 40,
-        height: 40,
         textAlign: 'center',
-        fontSize: 24,
+        fontSize: 20,
+        fontWeight: 'bold',
         borderRadius: 5,
+        margin: 5,
     },
     innerShadow: {
-        marginLeft: 5,
-        marginRight: 5,
+        margin: 5,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 5,
