@@ -98,6 +98,7 @@ function HomeScreen({ navigation }) {
           setCurrentCourse(item);
           navigation.navigate('Course', {
             screen: 'CourseViewScreen',
+            initial: false,
             params: {
               title: item.title,
               subtitle: item.description,
@@ -202,16 +203,11 @@ function HomeScreen({ navigation }) {
                     borderColor: 'transparent',
                   }}
                   onPress={() => {
-                    if (currentCourse)
-                      navigation.navigate('CourseScreen', {
+                      navigation.navigate('Course', {
                         screen: 'CourseLearnScreen',
                         params: {
                           id: currentCourse.id,
                         }
-                      })
-                    if (currentCourse == null)
-                      navigation.navigate('Course', {
-                        screen: 'CourseScreen'
                       })
                   }
                   }
@@ -236,14 +232,6 @@ function HomeScreen({ navigation }) {
                 borderColor: 'transparent',
               }}
               onPress={() => {
-                if (currentCourse)
-                  navigation.navigate('Course', {
-                    screen: 'CourseLearnScreen',
-                    params: {
-                      id: currentCourse.id,
-                    }
-                  })
-                if (currentCourse == null)
                   navigation.navigate('Course', {
                     screen: 'CourseScreen'
                   })
@@ -291,7 +279,7 @@ function HomeScreen({ navigation }) {
           <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 20, color: '#333' }}>Other Courses</Text>
         </View>
         <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 20 }}>
-          <TouchableOpacity onPress={() => navigation.navigate('Course')}>
+          <TouchableOpacity onPress={() => navigation.navigate('CourseScreen')}>
             <Text style={{ color: '#3A94E7', fontSize: 16, fontFamily: 'Poppins-Bold' }}>View All</Text>
           </TouchableOpacity>
         </View>
