@@ -59,12 +59,7 @@ function HomeScreen({ navigation }) {
   const [progressValue, setProgressValue] = useState(0);
   const [staticCourses, setStaticCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const {
-    streakCount, setStreakCount,
-    wordCount, setWordCount,
-    courseCount, setCourseCount,
-    currentCourse, setCurrentCourse
-  } = useContext(GlobalContext);
+  const { streakCount, wordCount, courseCount, currentCourse, setUpContext, setCurrentCourse } = useContext(GlobalContext);
 
   const CourseCard = ({ item }) => (
     <View style={{ backgroundColor: 'white', height: 296, width: 208, borderRadius: 20, paddingTop: 12, paddingLeft: 16, paddingRight: 16, paddingBottom: 12, marginRight: 12 }}>
@@ -118,20 +113,7 @@ function HomeScreen({ navigation }) {
         setStaticCourses(courses);
         await loadFonts();
         setFontsLoaded(true);
-
-        try {
-          let result = await getLearnedWordNumber();
-          setWordCount(result.total_words);
-          setStreakCount(15);
-
-          result = await getLearnedCourseNumber();
-          setCourseCount(result.total_courses);
-        }
-        catch (error) {
-          console.log('Error setting up context!');
-          console.log(error);
-        }
-
+        await setUpContext();
         setLoading(false);
       } catch (error) {
         console.error('Error initializing:', error);

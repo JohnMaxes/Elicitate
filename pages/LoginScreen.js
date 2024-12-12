@@ -8,7 +8,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const LoginScreen = ({ togglePage, handleLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const onLoginPress = () => {
+  const [loading, setLoading] = useState(false);
+  const onLoginPress = async () => {
     const config = {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -18,27 +19,36 @@ const LoginScreen = ({ togglePage, handleLogin }) => {
       alert('Please fill out all fields.');
       return;
     }
-    else {
-      AsyncStorage.setItem('loggedIn', 'true');
-      handleLogin();
-      /*
-      axios.post(
-        'https://f2a2-2001-ee0-4fcc-7570-d940-f7a-58e9-dd77.ngrok-free.app/login',
-        qs.stringify({
-          usernameOrEmail: username,
-          password: password
-        }),
-        config
-      )
-        .then(response => {
-          if (response.status == 200) handleLogin();
-          else alert('Wrong credentials!');
-        })
-        .catch(error => {
+    else 
+    {
+      setLoading(true);
+      try {
+        const response = await axios.post(
+          'https://825a-2402-800-6314-c5d1-249d-756b-f2c6-afc9.ngrok-free.app/login',
+          qs.stringify({
+              usernameOrEmail: username,
+              password: password
+          }),
+          config
+        );
+
+        if (response.status === 200) {
+            console.log(response.data);
+            let token = response.data.token; // Assuming the token is returned as { message: [token] }
+            console.log(token);
+            await addToken(token); // Wait for the token to be added
+            setLoading(false);
+            handleLogin(); // Proceed to handle login
+        } else {
+            alert('Wrong credentials!');
+            setLoading(false);
+        }
+      } catch (error) {
           alert('Server error!');
-        }) 
-      */
-    }
+          setLoading(false)
+          console.error('Error:', error); // Log the error for debugging
+      }
+    }  
   }
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -67,7 +77,13 @@ const LoginScreen = ({ togglePage, handleLogin }) => {
       />
 
       <TouchableOpacity style={styles.button} onPress={onLoginPress}>
-        <Text style={styles.buttonText}>LOGIN</Text>
+        {!loading ? (<Text style={styles.buttonText}>LOGIN</Text>)
+        : (        
+        <Progress.Circle
+            indeterminate={true}
+            color="white"
+            size={20}
+        />)}
       </TouchableOpacity>
       <View style={styles.signupContainer}>
         <Text style={{ fontSize: 16, fontStyle: 'italic' }}>Don't have an account? </Text>

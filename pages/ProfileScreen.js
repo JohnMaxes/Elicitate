@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, StyleSheet, Switch, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { GlobalContext } from '../components/context';
+
 
 const ProfileScreen = ({ handleLogout }) => {
   const navigation = useNavigation();
-
+  const {contextUsername, streakCount} = useContext(GlobalContext);
   // Test data
   const user = {
-    name: 'Thinh dep trai vai',
-    username: '@thinhtucuto',
+    name: contextUsername,
+    username: contextUsername,
     timeSpent: 'De dit me may',
     wordsLearned: 69,
     streakDays: 23,
@@ -21,12 +23,12 @@ const ProfileScreen = ({ handleLogout }) => {
 
   return (
     <View style={styles.container}>
-      
+      <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 30, textAlign: 'center', color: '#03174c', marginTop: 20, marginBottom: 10 }}>Profile Screen</Text>
       <TouchableOpacity style={styles.profileCard} onPress={() => navigation.navigate('ProfileDetails')}>
         <Image style={styles.avatar} source={{ uri: 'https://assets.manutd.com/AssetPicker/images/0/0/17/99/1139542/NPS_Landscape_091662019315265_medium.jpg' }}/>
         <View>
           <Text style={styles.name}>{user.name}</Text>
-          <Text style={styles.username}>{user.username}</Text>
+          <Text style={styles.username}>{user.name}</Text>
         </View>
       </TouchableOpacity>
 

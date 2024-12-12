@@ -1,5 +1,7 @@
 import { React, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Image, StyleSheet } from 'react-native';
+import * as Progress from 'react-native-progress';
+import { storeJWT } from '../components/jwt';
 import CustomInput from '../components/customInput';
 import axios from 'axios';
 import qs from 'qs';
@@ -9,6 +11,7 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
     const [registEmail, setREmail] = useState('');
     const [registPassword, setRPassword] = useState('');
     const [registConfirm, setRConfirm] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const processRequest = async () => {
         if (!registUsername || !registEmail || !registPassword || !registConfirm) {
@@ -19,6 +22,7 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
             alert('Passwords do not match.');
             return;
         }
+        setLoading('true');
         const config = {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -27,26 +31,33 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
         let a = registUsername;
         let b = registEmail;
         let c = registPassword;
-        axios.post(
-            'https://9a57-2001-ee0-4fcc-7570-d940-f7a-58e9-dd77.ngrok-free.app/register',
-            qs.stringify({
-                username: a,
-                email: b,
-                password: c
-            }),
-            config
-        )
-        .then(response => {
+        try {
+            const response = await axios.post(
+                'https://825a-2402-800-6314-c5d1-249d-756b-f2c6-afc9.ngrok-free.app/register',
+                qs.stringify({
+                    username: a,
+                    email: b,
+                    password: c
+                }),
+                config
+            );
             if (response.status === 201) {
-              alert('Account created!');
-              handleLogin();
+                console.log(response.data);
+                const token = response.data.token;
+                console.log(token);
+                await storeJWT(token);
+                alert('Account created!');
+                setLoading(false);
+                handleLogin();
+            } else {
+                alert('Existent username');
+                setLoading(false);
             }
-            else alert('Existent username');
-        })
-        .catch(error => {
+        } catch (error) {
+            setLoading(false);
             alert(error);
             togglePage();
-        });
+        }
     };
 
     return (
@@ -55,11 +66,10 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
                 style={styles.logo}
                 source={{ uri: 'https://i.ibb.co/HxXVqfS/image-removebg-preview.png' }}
             />
-
-                <View style={styles.textContainer}>
-                    <Text style={styles.title}>Sign Up</Text>
-                    <Text style={styles.subtitle}>Your journey starts here!</Text>
-                </View>
+            <View style={styles.textContainer}>
+                <Text style={styles.title}>Sign Up</Text>
+                <Text style={styles.subtitle}>Your journey starts here!</Text>
+            </View>
             <CustomInput
                 placeholder="Username"
                 placeholderTextColor="grey"
@@ -96,7 +106,13 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
                 value={registConfirm}
             />
             <TouchableOpacity style={styles.button} onPress={processRequest}>
-                <Text style={styles.buttonText}>SIGN UP</Text>
+                {!loading ? (<Text style={styles.buttonText}>SIGN UP</Text>)
+                : (        
+                <Progress.Circle
+                    indeterminate={true}
+                    color="white"
+                    size={20}
+                />)}
             </TouchableOpacity>
             <View style={styles.signupContainer}>
                 <Text style={{fontSize: 16, fontStyle: 'italic'}}>Already have an account? </Text>

@@ -27,8 +27,8 @@ router.post('/', async(req, res, next) => {
           if(encryption.compare(password, userPassword)) 
           {
               userEmail = userData.email;
-              token = await createToken(usernameOrEmail, userEmail);
-              res.status(200).json({ message: token });
+              let token = await createToken(usernameOrEmail, userEmail);
+              res.status(200).json({ token: token });
           }
           else res.status(400).json({ message: 'Wrong password!'});
       } 
@@ -48,7 +48,7 @@ router.post('/', async(req, res, next) => {
             if(encryption.compare(password, userPassword)) {
               userUser = userData.username;
               token = createToken(userUser, usernameOrEmail);
-              res.status(200).json({ message: token });
+              res.status(200).json({ token: token });
             }
             else res.status(400).json({ message: 'Wrong password!'});
           }

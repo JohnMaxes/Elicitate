@@ -142,9 +142,9 @@ export default function App() {
         console.error('Error during setup:', error);
       } finally {
         try {
-          const login = await AsyncStorage.getItem('loggedIn');
-          if (login !== null) {
-            console.log('You are already logged in before that');
+          const token = await AsyncStorage.getItem('token');
+          if (token !== null) {
+            console.log(token);
             setIsLoggedIn(true);
           }
         } catch (error) {

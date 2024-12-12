@@ -6,6 +6,8 @@ const { getFirestore, collection, getDocs, addDoc, doc, setDoc, query, where, se
 const db = getFirestore(app);
 
 var encryption = require('../functions/passwordEncrypt');
+var createToken = require('../functions/token')
+
 
 router.post('/', async (req, res, next) => {
     const { username, email, password } = req.body;
@@ -17,14 +19,16 @@ router.post('/', async (req, res, next) => {
         if (snapshot.empty) {
             const hashedPassword = await encryption.encryptPassword(password);
 
-            const docRef = doc(usersRef, email);
+            const docRef = doc(usersRef, username);
             const newDoc = await setDoc(docRef, {
                 email: email,
                 password: hashedPassword,
                 username: username,
-                createdAt: serverTimestamp()
+                createdAt: serverTimestamp(),
+                pfp: '',
             });
-            res.status(201).json({ message: 'User registered successfully!' });
+            const token = await createToken(username, email);
+            res.status(201).json({ token: token });
         } else {
             res.status(409).json({ message: 'Username already taken.' });
         }
