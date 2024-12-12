@@ -187,7 +187,7 @@ function HomeScreen({ navigation }) {
                   </View>
                   <View style={{ paddingLeft: 10, alignItems: 'center' }}>
                     <Text style={{ alignSelf:'left', paddingLeft: 12, fontSize: 20, fontFamily: 'Poppins-Regular', color: '#03174c' }}>Chapter 2</Text>
-                    <Text style={{ fontSize: 28, fontFamily: 'Poppins-Bold', maxWidth: '90%' }}>{currentCourse.title}</Text>
+                    <Text style={{ alignSelf:'left', paddingLeft: 12, fontSize: 28, fontFamily: 'Poppins-Bold', maxWidth: '90%' }}>{currentCourse.title}</Text>
                   </View>
                 </View>
                 <TouchableOpacity
@@ -203,7 +203,7 @@ function HomeScreen({ navigation }) {
                   }}
                   onPress={() => {
                     if (currentCourse)
-                      navigation.navigate('Course', {
+                      navigation.navigate('CourseScreen', {
                         screen: 'CourseLearnScreen',
                         params: {
                           id: currentCourse.id,

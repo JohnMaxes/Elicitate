@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomSearchBar from '../components/customSearchBar';
 import CourseCard from '../components/courseCard';
 import { queryCourseToDatabase } from '../components/Database';
-import * as Progress from 'react-native-progress';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TapGestureHandler } from 'react-native-gesture-handler';
 import CourseLearnScreen from './CourseLearnScreen';
 import CourseReviewScreen from './CourseReviewScreen';
-import CourseViewScreen from './CourseViewScreen'; // Import the new CourseViewScreen
+import CourseViewScreen from './CourseViewScreen';
 
 const CourseStack = createNativeStackNavigator();
 
@@ -58,7 +57,7 @@ function CourseScreen({ navigation }) {
 
 function CourseStackScreen() {
   return (
-    <CourseStack.Navigator>
+    <CourseStack.Navigator initialRouteName="CourseScreen">
       <CourseStack.Screen 
         name="CourseScreen" 
         component={CourseScreen}
@@ -72,7 +71,7 @@ function CourseStackScreen() {
           headerTitle: '',
           headerLeft: () => (
             <TapGestureHandler onActivated={() => {
-              navigation.navigate('CourseScreen');
+              navigation.goBack();
             }}>
               <TouchableOpacity style={{ padding: 15 }} activeOpacity={0.7}>
                 <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
@@ -89,7 +88,7 @@ function CourseStackScreen() {
           headerTitle: '',
           headerLeft: () => (
             <TapGestureHandler onActivated={() => {
-              navigation.navigate('CourseScreen');
+              navigation.goBack();
             }}>
               <TouchableOpacity style={{ padding: 15 }} activeOpacity={0.7}>
                 <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
@@ -106,7 +105,7 @@ function CourseStackScreen() {
           headerTitle: '',
           headerLeft: () => (
             <TapGestureHandler onActivated={() => {
-              navigation.navigate('CourseScreen');
+              navigation.goBack();
             }}>
               <TouchableOpacity style={{ padding: 15 }} activeOpacity={0.7}>
                 <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
