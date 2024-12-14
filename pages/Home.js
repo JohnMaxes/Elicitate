@@ -10,7 +10,6 @@ import * as Progress from 'react-native-progress';
 import VocabReviewScreen from './VocabReviewScreen';
 
 import { queryCourseToDatabase, getLearnedWordNumber, getLearnedCourseNumber } from '../components/Database';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { GlobalContext } from '../components/context';
 
