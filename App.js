@@ -17,6 +17,8 @@ import LoginScreen from "./pages/LoginScreen";
 import * as Notifications from 'expo-notifications';
 import * as Progress from 'react-native-progress';
 
+import { removeJWT } from "./components/jwt.js";
+
 import { initDatabase, getLearnedWordNumber } from "./components/Database.js";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Context } from "./components/context.js";
@@ -158,8 +160,11 @@ export default function App() {
 
   const togglePage = () => setIsMember(!isMember);
   const handleLogin = () => setIsLoggedIn(true);
-  const handleLogout = () => setIsLoggedIn(false);
-
+  const handleLogout = async () => {
+    console.log('logging out');
+    await removeJWT();
+    setIsLoggedIn(false);
+  }
   if (isLoading) {
     return (
       <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>

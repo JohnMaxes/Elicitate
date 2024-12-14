@@ -9,6 +9,15 @@ export const storeJWT = async (token) => {
   }
 };
 
+export const removeJWT = async () => {
+  try {
+    await AsyncStorage.removeItem('token');
+    console.log('token removed from async storage');
+  } catch (error) {
+    console.error('Error removing JWT:', error);
+  }
+}
+
 export const getJWT = async () => {
   try {
     return await AsyncStorage.getItem('token');

@@ -46,12 +46,12 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
                 const token = response.data.token;
                 console.log(token);
                 await storeJWT(token);
-                alert('Account created!');
                 setLoading(false);
                 handleLogin();
+                togglePage();
             } else {
-                alert('Existent username');
                 setLoading(false);
+                alert('Existent username');
             }
         } catch (error) {
             setLoading(false);
@@ -157,6 +157,8 @@ const styles = StyleSheet.create({
     button: {
       backgroundColor: "#2a4dbf",
       padding: 10,
+      alignItems:'center',
+      justifyContent:'center',
       borderRadius: 15,
       width: "50%",
       alignSelf: "flex-end",

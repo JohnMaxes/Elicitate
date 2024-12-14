@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView 
 import CustomInput from '../components/customInput';
 import axios from 'axios';
 import qs from 'qs';
+import * as Progress from 'react-native-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ togglePage, handleLogin }) => {
@@ -45,7 +46,6 @@ const LoginScreen = ({ togglePage, handleLogin }) => {
         }
       } catch (error) {
           alert('Server error!');
-          setLoading(false)
           console.error('Error:', error); // Log the error for debugging
       }
     }  
@@ -127,6 +127,8 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#2a4dbf",
+    alignItems:'center',
+    justifyContent:'center',
     padding: 10,
     borderRadius: 15,
     width: "50%",

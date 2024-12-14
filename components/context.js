@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { getLearnedCourseNumber, getLearnedWordNumber } from './Database';
-import { getJWT, decodeJWT } from './jwt';
+import { getJWT, decodeJWT, removeJWT } from './jwt';
 
 // KHÔNG ĐƯỢC SET useEffect Ở ĐÂY
 // MUỐN KHỞI TẠO FIRST TIME THÌ XÀI SETTER SET NÓ TRONG useEffect CỦA SCREEN CẦN XÀI CONTEXT
@@ -34,11 +34,20 @@ export const Context = ({ children }) => {
         }  
     }
 
+    const removeContext = async () => {
+        try {
+            await removeJWT();
+        } catch (error) {
+            console.log('Error removing JWT');
+            console.log(error);
+        }
+    }
+
     return (
         <GlobalContext.Provider value={{ streakCount, wordCount, setStreakCount, 
         setWordCount, setCourseCount, courseCount, currentCourse, setCurrentCourse, 
         contextUsername, contextEmail,
-        setUpContext }}>
+        setUpContext, removeContext }}>
             {children}
         </GlobalContext.Provider>
     );
