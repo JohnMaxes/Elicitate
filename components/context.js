@@ -15,6 +15,23 @@ export const Context = ({ children }) => {
     const [contextEmail, setContextEmail] = useState('');
     const [timeSpent, setTimeSpent] = useState(0);
     const [pfp, setPfp] = useState('');
+    const [isDarkMode, setIsDarkMode] = useState(true);
+
+    useEffect(() => {
+        const loadTheme = async () => {
+            const savedTheme = await AsyncStorage.getItem('theme');
+            if (savedTheme) {
+                setIsDarkMode(savedTheme === 'dark');
+            }
+        };
+        loadTheme();
+    }, []);
+
+    const toggleTheme = async () => {
+        const newTheme = !isDarkMode ? 'dark' : 'light';
+        setIsDarkMode(!isDarkMode);
+        await AsyncStorage.setItem('theme', newTheme);
+    };
 
     const setUpContext = async () => {
         try {
@@ -55,10 +72,11 @@ export const Context = ({ children }) => {
     };
 
     return (
-        <GlobalContext.Provider value={{ streakCount, wordCount, setStreakCount, 
-        setWordCount, setCourseCount, courseCount, currentCourse, setCurrentCourse, 
-        contextUsername, contextEmail, timeSpent,
-        setUpContext, saveTimeSpent }}>
+        <GlobalContext.Provider value={{ 
+            streakCount, wordCount, setStreakCount, setWordCount, setCourseCount, courseCount, 
+            currentCourse, setCurrentCourse, contextUsername, contextEmail, timeSpent, setUpContext, 
+            saveTimeSpent, isDarkMode, toggleTheme 
+        }}>
             {children}
         </GlobalContext.Provider>
     );
