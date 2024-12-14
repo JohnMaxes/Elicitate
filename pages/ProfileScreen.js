@@ -7,7 +7,7 @@ import { GlobalContext } from '../components/context';
 
 const ProfileScreen = ({ handleLogout }) => {
   const navigation = useNavigation();
-  const {contextUsername, streakCount} = useContext(GlobalContext);
+  const {contextUsername, streakCount, timeSpent} = useContext(GlobalContext);
   // Test data
   const user = {
     name: contextUsername,
@@ -17,15 +17,22 @@ const ProfileScreen = ({ handleLogout }) => {
     streakDays: 23,
   };
 
+  const formattedTime = () => {
+    let finalTime;
+    let hours = timeSpent / 3600;
+    let minutes = timeSpent / 60;
+    if(hours == 0) return (minutes + 'm')
+    else return (hours + 'h' + minutes + 'm');
+  }
+
   const [isDarkMode, setIsDarkMode] = React.useState(false);
 
   const toggleDarkMode = () => setIsDarkMode((previousState) => !previousState);
-
   return (
     <View style={styles.container}>
       <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 30, textAlign: 'center', color: '#03174c', marginTop: 20, marginBottom: 10 }}>Profile Screen</Text>
       <TouchableOpacity style={styles.profileCard} onPress={() => navigation.navigate('ProfileDetails')}>
-        <Image style={styles.avatar} source={{ uri: 'https://assets.manutd.com/AssetPicker/images/0/0/17/99/1139542/NPS_Landscape_091662019315265_medium.jpg' }}/>
+        <Image style={styles.avatar} source={require('../assets/default-pfp.png')}/>
         <View>
           <Text style={styles.name}>{user.name}</Text>
           <Text style={styles.username}>{user.name}</Text>
@@ -34,7 +41,9 @@ const ProfileScreen = ({ handleLogout }) => {
 
       <View style={styles.metrics}>
         <View style={styles.metricBox}>
-          <Text style={styles.metricValue}>{user.timeSpent}</Text>
+          <Text style={styles.metricValue}>{
+            (timeSpent / 3600 >= 1) ? (timeSpent / 3600 + 'h' + timeSpent / 60 + 'm') : (Math.floor(timeSpent / 60) + 'm')
+          }</Text>
           <Text style={styles.metricLabel}>Time spent</Text>
           <View style={{ height: 10 }} />
           <Text style={styles.metricValue}>{user.wordsLearned}</Text>
