@@ -8,7 +8,7 @@ import WordInput from "../components/WordInput";
 import { addWordToLearned } from "../components/Database";
 import { GlobalContext } from "../components/context";
 
-const CourseLearnScreen = ({ route }) => {
+const CourseLearnScreen = ({ route, navigation }) => {
     const { id } = route.params;
     const [wordList, setWordList] = useState([]);
     const [currentWord, setWord] = useState(null);
@@ -126,8 +126,24 @@ const CourseLearnScreen = ({ route }) => {
     if (finished)
         return (
             <View style={styles.vocabScreen}>
-                <View style={{ alignItems: 'center', height: Dimensions.get('window').height * 0.6 }}>
+                <View style={{ justifyContent:'center', alignItems: 'center', height: Dimensions.get('window').height * 0.6 }}>
                     <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight: 30 }}>You're finished with learning this course! Go out there and get more champ!</Text>
+                    <TouchableOpacity
+                        onPress={() => navigation.goBack()}
+                    >
+                        <View
+                                style={{
+                                    width: Dimensions.get('window').width * 0.5,
+                                    height: Dimensions.get('window').height * 0.07,
+                                    backgroundColor: 'green',
+                                    marginTop: Dimensions.get('window').width * 0.1,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    borderRadius: 45,
+                                }}>
+                                <Text style={{ color: 'white', fontFamily: 'Inter-Bold', fontSize: 20 }}>Complete</Text>
+                        </View>
+                        </TouchableOpacity>
                 </View>
             </View>
         )

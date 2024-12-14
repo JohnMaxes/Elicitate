@@ -1,45 +1,58 @@
 import * as SQLite from 'expo-sqlite';
 
+let dbInstance = null;
+
+// Singleton to get the database instance
+const getDatabaseInstance = async () => {
+  if (!dbInstance) {
+    dbInstance = await SQLite.openDatabaseAsync('elicitate');
+  }
+  return dbInstance;
+};
+
 export const initDatabase = async () => {
-    const bruh = await SQLite.openDatabaseAsync('elicitate');
-    await bruh.closeAsync();
+  const db = await getDatabaseInstance();
+  try {
+    // Ensure a clean slate for testing (remove these lines in production)
+    await db.closeAsync();
     await SQLite.deleteDatabaseAsync('elicitate');
-    const db = await SQLite.openDatabaseAsync('elicitate');
-    try { 
+    dbInstance = await SQLite.openDatabaseAsync('elicitate'); // Reopen the database
+
+    // Set up the schema
     await db.execAsync(`
-        PRAGMA journal_mode = WAL;
-        CREATE TABLE IF NOT EXISTS vocabulary (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            word TEXT NOT NULL,
-            type TEXT NOT NULL,
-            definition TEXT NOT NULL,
-            example_sentence TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            learned_at DATETIME,         -- Nullable
-            reviewed_at DATETIME         -- Nullable
-        );`
-    );
-    
+      PRAGMA journal_mode = WAL;
+      CREATE TABLE IF NOT EXISTS vocabulary (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        word TEXT NOT NULL,
+        type TEXT NOT NULL,
+        definition TEXT NOT NULL,
+        example_sentence TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        learned_at DATETIME,         -- Nullable
+        reviewed_at DATETIME         -- Nullable
+      );
+    `);
+
     await db.execAsync(`
-        CREATE TABLE IF NOT EXISTS courses (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            description TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            learned_at DATETIME, 
-            level TEXT NOT NULL
-        );`
-    );    
-    
+      CREATE TABLE IF NOT EXISTS courses (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        description TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        learned_at DATETIME, 
+        level TEXT NOT NULL
+      );
+    `);
+
     await db.execAsync(`
-        CREATE TABLE IF NOT EXISTS course_vocabulary (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            course_id INTEGER NOT NULL,
-            vocabulary_id INTEGER NOT NULL,
-            FOREIGN KEY (course_id) REFERENCES courses(id),
-            FOREIGN KEY (vocabulary_id) REFERENCES vocabulary(id)
-        );`
-    );
+      CREATE TABLE IF NOT EXISTS course_vocabulary (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        course_id INTEGER NOT NULL,
+        vocabulary_id INTEGER NOT NULL,
+        FOREIGN KEY (course_id) REFERENCES courses(id),
+        FOREIGN KEY (vocabulary_id) REFERENCES vocabulary(id)
+      );
+    `);
     // Inserting vocabulary
     await db.execAsync(`
         INSERT INTO vocabulary (word, type, definition, example_sentence) VALUES
@@ -159,7 +172,7 @@ export const initDatabase = async () => {
         ("landmark", "noun", "A recognizable and often historically or culturally significant object or structure.", "The statue is a famous landmark in the city."),
         ("map", "noun", "A visual representation of an area.", "I used a map to find my way around the city.");
         `);
-    
+
     // Inserting courses
     await db.execAsync(`
         INSERT INTO courses (title, description, level) VALUES
@@ -291,164 +304,148 @@ export const initDatabase = async () => {
         (7, 103); -- map
     `);
     console.log('Database initialized');
-    await db.closeAsync();
-    }
-    catch (error) {
-        console.log('Failed to execute SQL command', error);
-    }
-  };
-
-  export const queryVocabToDatabase = async (string, learned) => {
-      const db = await SQLite.openDatabaseAsync('elicitate');
-      let query;
-      if (learned) {
-          query = 'SELECT * FROM vocabulary WHERE word LIKE ? AND learned_at IS NOT NULL LIMIT 10';
-      } else {
-          query = 'SELECT * FROM vocabulary WHERE word LIKE ? LIMIT 10';
-      }
-  
-      try {
-          let object = await db.getAllAsync(query, [`%${string}%`]);
-          return object;
-      } catch (error) {
-          console.error('Failed to execute SQL command', error);
-          throw error;
-      } finally {
-          await db.closeAsync();
-      }
-  };
-  
-  export const queryCourseToDatabase = async (string) => {
-      const db = await SQLite.openDatabaseAsync('elicitate');
-      let query = "SELECT * FROM courses WHERE title LIKE ? LIMIT 10";
-  
-      try {
-          let object = await db.getAllAsync(query, [`%${string}%`]);
-          return object;
-      } catch (error) {
-          console.error('Failed to execute SQL command', error);
-          throw error; // Rethrow the error for higher-level handling
-      } finally {
-          await db.closeAsync(); // Ensure the database is closed
-      }
-  };
-  
-  export const addWordToLearned = async (vocabulary_id) => {
-      const db = await SQLite.openDatabaseAsync('elicitate');
-      let query = 'UPDATE vocabulary SET learned_at = CURRENT_TIMESTAMP WHERE id = ?';
-  
-      try {
-          await db.runAsync(query, [vocabulary_id]);
-          return true;
-      } catch (error) {
-          console.error('Failed to execute SQL command', error);
-          throw error; // Rethrow the error for higher-level handling
-      } finally {
-          await db.closeAsync(); // Ensure the database is closed
-      }
-  };
-
-  export const getQuestionToLearn = async (course_id) => {
-    const db = await SQLite.openDatabaseAsync('elicitate');
-    let query = `
-      SELECT id, word, type, definition, learned_at
-      FROM vocabulary 
-      WHERE id IN (
-        SELECT vocabulary_id 
-        FROM course_vocabulary 
-        WHERE course_id = ?
-      ) 
-      LIMIT 10
-    `;
-  
-    try {
-      const result = await db.getAllAsync(query, [course_id]);
-      return result;
-    } catch (error) {
-      console.error('Failed to execute SQL command', error);
-      throw error;
-    } finally {
-      await db.closeAsync();
-    }
-  };
-  
-  export const getQuestionToReviewCourse = async (course_id) => {
-    const db = await SQLite.openDatabaseAsync('elicitate');
-    let query = `
-      SELECT id, word, type, definition, learned_at 
-      FROM vocabulary 
-      WHERE id IN (
-        SELECT vocabulary_id 
-        FROM course_vocabulary 
-        WHERE course_id = ?
-      )
-      AND learned_at IS NOT NULL
-      ORDER BY learned_at ASC
-      LIMIT 10
-    `;
-  
-    try {
-      const result = await db.getAllAsync(query, [course_id]);
-      return result;
-    } catch (error) {
-      console.error('Failed to execute SQL command', error);
-      throw error;
-    } finally {
-      await db.closeAsync();
-    }
-  };
-
-  export const getQuestionToReviewVocab = async () => {
-    const db = await SQLite.openDatabaseAsync('elicitate');
-    let query = `
-      SELECT id, word, type, definition, learned_at 
-      FROM vocabulary 
-      WHERE learned_at IS NOT NULL
-      ORDER BY learned_at ASC
-      LIMIT 20
-    `;
-    try {
-      const result = await db.getAllAsync(query);
-      return result;
-    } catch (error) {
-      console.error('Failed to execute SQL command', error);
-      throw error;
-    } finally {
-      await db.closeAsync();
-    }
-  };
-
-  export const getLearnedWordNumber = async () => {
-    const db = await SQLite.openDatabaseAsync('elicitate');
-    let query = `
-      SELECT COUNT(word) AS total_words 
-      FROM vocabulary
-      WHERE learned_at IS NOT NULL;    
-    `;
-    try {
-      const result = await db.getFirstAsync(query);
-      return result;
-    } catch (error) {
-      console.error('Failed to execute SQL command', error);
-      throw error;
-    } finally {
-      await db.closeAsync();
-    }
+  } catch (error) {
+    console.error('Failed to initialize the database', error);
+    throw error;
   }
+};
 
-  export const getLearnedCourseNumber = async () => {
-    const db = await SQLite.openDatabaseAsync('elicitate');
-    let query = `
-      SELECT COUNT(id) AS total_courses 
-      FROM courses;
-\    `;
-    try {
-      const result = await db.getFirstAsync(query);
-      return result;
-    } catch (error) {
-      console.error('Failed to execute SQL command', error);
-      throw error;
-    } finally {
-      await db.closeAsync();
-    }
+// Query helper functions
+export const queryVocabToDatabase = async (string, learned) => {
+  const db = await getDatabaseInstance();
+  const query = learned
+    ? 'SELECT * FROM vocabulary WHERE word LIKE ? AND learned_at IS NOT NULL LIMIT 10'
+    : 'SELECT * FROM vocabulary WHERE word LIKE ? LIMIT 10';
+
+  try {
+    const result = await db.getAllAsync(query, [`%${string}%`]);
+    return result;
+  } catch (error) {
+    console.error('Failed to execute SQL command', error);
+    throw error;
   }
+};
+
+export const queryCourseToDatabase = async (string) => {
+  const db = await getDatabaseInstance();
+  const query = 'SELECT * FROM courses WHERE title LIKE ? LIMIT 10';
+
+  try {
+    const result = await db.getAllAsync(query, [`%${string}%`]);
+    return result;
+  } catch (error) {
+    console.error('Failed to execute SQL command', error);
+    throw error;
+  }
+};
+
+export const addWordToLearned = async (vocabulary_id) => {
+  const db = await getDatabaseInstance();
+  const query = 'UPDATE vocabulary SET learned_at = CURRENT_TIMESTAMP WHERE id = ?';
+
+  try {
+    await db.runAsync(query, [vocabulary_id]);
+    return true;
+  } catch (error) {
+    console.error('Failed to execute SQL command', error);
+    throw error;
+  }
+};
+
+export const getQuestionToLearn = async (course_id) => {
+  const db = await getDatabaseInstance();
+  const query = `
+    SELECT id, word, type, definition, learned_at
+    FROM vocabulary 
+    WHERE id IN (
+      SELECT vocabulary_id 
+      FROM course_vocabulary 
+      WHERE course_id = ?
+    ) 
+    LIMIT 10
+  `;
+
+  try {
+    const result = await db.getAllAsync(query, [course_id]);
+    return result;
+  } catch (error) {
+    console.error('Failed to execute SQL command', error);
+    throw error;
+  }
+};
+
+export const getQuestionToReviewCourse = async (course_id) => {
+  const db = await getDatabaseInstance();
+  const query = `
+    SELECT id, word, type, definition, learned_at 
+    FROM vocabulary 
+    WHERE id IN (
+      SELECT vocabulary_id 
+      FROM course_vocabulary 
+      WHERE course_id = ?
+    )
+    AND learned_at IS NOT NULL
+    ORDER BY learned_at ASC
+    LIMIT 10
+  `;
+
+  try {
+    const result = await db.getAllAsync(query, [course_id]);
+    return result;
+  } catch (error) {
+    console.error('Failed to execute SQL command', error);
+    throw error;
+  }
+};
+
+export const getQuestionToReviewVocab = async () => {
+  const db = await getDatabaseInstance();
+  const query = `
+    SELECT id, word, type, definition, learned_at 
+    FROM vocabulary 
+    WHERE learned_at IS NOT NULL
+    ORDER BY learned_at ASC
+    LIMIT 20
+  `;
+
+  try {
+    const result = await db.getAllAsync(query);
+    return result;
+  } catch (error) {
+    console.error('Failed to execute SQL command', error);
+    throw error;
+  }
+};
+
+export const getLearnedWordNumber = async () => {
+  const db = await getDatabaseInstance();
+  const query = `
+    SELECT COUNT(word) AS total_words 
+    FROM vocabulary
+    WHERE learned_at IS NOT NULL;    
+  `;
+
+  try {
+    const result = await db.getFirstAsync(query);
+    return result;
+  } catch (error) {
+    console.error('Failed to execute SQL command', error);
+    throw error;
+  }
+};
+
+export const getLearnedCourseNumber = async () => {
+  const db = await getDatabaseInstance();
+  const query = `
+    SELECT COUNT(id) AS total_courses 
+    FROM courses;
+  `;
+
+  try {
+    const result = await db.getFirstAsync(query);
+    return result;
+  } catch (error) {
+    console.error('Failed to execute SQL command', error);
+    throw error;
+  }
+};

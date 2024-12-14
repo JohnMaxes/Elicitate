@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, FlatList, Dimensions, TouchableOpacity, Image } from 'react-native';
 import { ScrollView, TapGestureHandler } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useFocusEffect } from '@react-navigation/native';
 
 import * as Font from 'expo-font';
 import * as Progress from 'react-native-progress';
@@ -22,44 +23,12 @@ const loadFonts = async () => {
   });
 };
 
-const HomeStack = createNativeStackNavigator();
-const Home = () => {
-  return (
-    <HomeStack.Navigator initialRouteName='HomeScreen'>
-      <HomeStack.Screen
-        name='HomeScreen'
-        component={HomeScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <HomeStack.Screen
-        name='VocabReviewScreen'
-        component={VocabReviewScreen}
-        options={({ navigation }) => ({
-          headerTransparent: true,
-          headerTitle: '',
-          headerLeft: () => (
-            <TapGestureHandler onActivated={() => {
-              navigation.goBack();
-            }}>
-              <TouchableOpacity style={{ padding: 15 }} activeOpacity={0.7}>
-                <Icon name='arrow-back-outline' size={35} color='#3A94E7' />
-              </TouchableOpacity>
-            </TapGestureHandler>
-          )
-        })}
-      />
-    </HomeStack.Navigator>
-  )
-}
-
 function HomeScreen({ navigation }) {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
   const [staticCourses, setStaticCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { streakCount, wordCount, courseCount, currentCourse, setUpContext, setCurrentCourse, timeSpent } = useContext(GlobalContext);
+  const { streakCount, wordCount, courseCount, currentCourse, setUpContext, setCurrentCourse, timeSpent, setWordCount, setCourseCount } = useContext(GlobalContext);
 
   const CourseCard = ({ item }) => (
     <View style={{ backgroundColor: 'white', height: 296, width: 208, borderRadius: 20, paddingTop: 12, paddingLeft: 16, paddingRight: 16, paddingBottom: 12, marginRight: 12 }}>
@@ -107,6 +76,24 @@ function HomeScreen({ navigation }) {
     </View>
   );
 
+  useFocusEffect(
+    React.useCallback(() => {
+      async function updateCounts() {
+        try {
+          const wordResult = await getLearnedWordNumber();
+          setWordCount(wordResult.total_words);
+
+          const courseResult = await getLearnedCourseNumber();
+          setCourseCount(courseResult.total_courses);
+        } catch (error) {
+          console.error('Error updating counts:', error);
+        }
+      }
+
+      updateCounts();
+    }, [])
+  );
+
   useEffect(() => {
     async function initialize() {
       try {
@@ -132,7 +119,7 @@ function HomeScreen({ navigation }) {
           size={30}
         />
       </View>
-    )
+    );
 
   return (
     <ScrollView contentContainerStyle={{ alignItems: 'center' }} style={{ flex: 1, paddingTop: 50, backgroundColor: '#CCE6FA', }}>
@@ -145,7 +132,6 @@ function HomeScreen({ navigation }) {
         <View style={{ alignItems: 'flex-end', width: Dimensions.get('window').width / 3, paddingRight: 25 }}>
         </View>
       </View>
-
 
       {
         currentCourse ? (
@@ -281,4 +267,4 @@ function HomeScreen({ navigation }) {
   );
 }
 
-export default Home;
+export default HomeScreen;
