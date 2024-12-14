@@ -1,11 +1,12 @@
 import { Text, View, StyleSheet, Dimensions, TouchableOpacity, Keyboard } from "react-native";
 import { useFocusEffect } from '@react-navigation/native';
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { getQuestionToReviewVocab } from "../components/Database";
 import * as Progress from 'react-native-progress';
 import { Pressable, TapGestureHandler } from "react-native-gesture-handler";
 import WordInput from "../components/WordInput";
 import { addWordToLearned } from "../components/Database";
+import { GlobalContext } from "../components/context";
 
 const VocabReviewScreen = () => {
     const [wordList, setWordList] = useState([]);
@@ -21,6 +22,28 @@ const VocabReviewScreen = () => {
     const inputRefs = useRef([]);
 
     const [empty, setEmpty] = useState(false);
+
+    const [seconds, setSeconds] = useState(0);
+    const{ saveTimeSpent } = useContext(GlobalContext);
+    const secondsRef = useRef(seconds);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const intervalId = setInterval(() => {
+                setSeconds(prevSeconds => {
+                secondsRef.current = prevSeconds + 1;
+                return secondsRef.current;
+                });
+            }, 1000);
+    
+            return () => {
+                const currentSeconds = secondsRef.current; // Use the ref to get the latest seconds
+                saveTimeSpent(currentSeconds); // Call saveTimeSpent
+                setSeconds(0); // Reset seconds
+                clearInterval(intervalId); // Clear the interval
+            };
+        }, [])
+    );    
 
     const updateInput = (input) => {
         setFinalInput(input);
@@ -64,11 +87,12 @@ const VocabReviewScreen = () => {
     useEffect(() => {
         async function fetchVocabReview() {
             setLoading(true);
+            console.log('here!');
             const words = await getQuestionToReviewVocab();
             setWordList(words);
-            console.log(words.length);
+            console.log(words);
             if (words.length > 0) {
-                setEmpty(false);
+                setEmpty(true);
                 setWord(words[0]);
             }
             else setEmpty(true);

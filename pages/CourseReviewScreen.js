@@ -1,10 +1,13 @@
 import { Text, View, StyleSheet, Dimensions, TouchableOpacity, Keyboard } from "react-native";
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
+import { useFocusEffect } from '@react-navigation/native';
 import { getQuestionToReviewCourse } from "../components/Database";
 import * as Progress from 'react-native-progress';
 import { Pressable, TapGestureHandler } from "react-native-gesture-handler";
 import WordInput from "../components/WordInput";
 import { addWordToLearned } from "../components/Database";
+import { GlobalContext } from "../components/context";
+
 
 const CourseReviewScreen = ({ route }) => {
     const { id } = route.params;
@@ -22,6 +25,28 @@ const CourseReviewScreen = ({ route }) => {
     const [inputs, setInputs] = useState([]);
     const [finalInput, setFinalInput] = useState('');
     const inputRefs = useRef([]);
+
+    const [seconds, setSeconds] = useState(0);
+    const{ saveTimeSpent } = useContext(GlobalContext);
+    const secondsRef = useRef(seconds);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const intervalId = setInterval(() => {
+                setSeconds(prevSeconds => {
+                secondsRef.current = prevSeconds + 1;
+                return secondsRef.current;
+                });
+            }, 1000);
+    
+            return () => {
+                const currentSeconds = secondsRef.current; // Use the ref to get the latest seconds
+                saveTimeSpent(currentSeconds); // Call saveTimeSpent
+                setSeconds(0); // Reset seconds
+                clearInterval(intervalId); // Clear the interval
+            };
+        }, [])
+    );    
 
     const updateInput = (input) => {
         setFinalInput(input);
@@ -72,6 +97,7 @@ const CourseReviewScreen = ({ route }) => {
         async function fetchCourseWords() {
             setLoading(true);
             const words = await getQuestionToReviewCourse(id);
+            console.log(words);
             setWordList(words);
             if (words.length > 0) {
                 setWord(words[0]);
@@ -91,7 +117,7 @@ const CourseReviewScreen = ({ route }) => {
 
     // loading screen: without the loading screen, the screen will load so quickly that 
     // getting wordList is slower than the page rendering, resulting in an error
-    if (loading || !currentWord)
+    if ((loading || !currentWord) && !empty)
         return (
             <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                 <Progress.Circle

@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { getLearnedCourseNumber, getLearnedWordNumber } from './Database';
 import { getJWT, decodeJWT, removeJWT } from './jwt';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // KHÔNG ĐƯỢC SET useEffect Ở ĐÂY
 // MUỐN KHỞI TẠO FIRST TIME THÌ XÀI SETTER SET NÓ TRONG useEffect CỦA SCREEN CẦN XÀI CONTEXT
@@ -12,6 +13,7 @@ export const Context = ({ children }) => {
     const [courseCount, setCourseCount] = useState(0);
     const [contextUsername, setContextUsername] = useState('');
     const [contextEmail, setContextEmail] = useState('');
+    const [timeSpent, setTimeSpent] = useState(0);
     const [pfp, setPfp] = useState('');
 
     const setUpContext = async () => {
@@ -27,6 +29,10 @@ export const Context = ({ children }) => {
             setContextUsername(object.user);
             setContextEmail(object.email);
             console.log(contextUsername);
+
+            const time = await AsyncStorage.getItem('timeSpent');
+            if( time !== null) setTimeSpent(parseInt(time));
+            else AsyncStorage.setItem('timeSpent', '0');
         }
         catch (error) {
             console.log('Error setting up context!');
@@ -34,20 +40,25 @@ export const Context = ({ children }) => {
         }  
     }
 
-    const removeContext = async () => {
+    const saveTimeSpent = async (currentTimeSpent) => {
         try {
-            await removeJWT();
+            const existingTimeSpent = await AsyncStorage.getItem('timeSpent');
+            const newTotalTimeSpent = existingTimeSpent 
+                ? parseInt(existingTimeSpent) + currentTimeSpent 
+                : currentTimeSpent;
+            setTimeSpent(newTotalTimeSpent)
+            await AsyncStorage.setItem('timeSpent', newTotalTimeSpent.toString());
+            console.log('Saved ' + currentTimeSpent + ' seconds and now have ' + newTotalTimeSpent + ' seconds total.');
         } catch (error) {
-            console.log('Error removing JWT');
-            console.log(error);
+            console.error("Error saving time: ", error);
         }
-    }
+    };
 
     return (
         <GlobalContext.Provider value={{ streakCount, wordCount, setStreakCount, 
         setWordCount, setCourseCount, courseCount, currentCourse, setCurrentCourse, 
-        contextUsername, contextEmail,
-        setUpContext, removeContext }}>
+        contextUsername, contextEmail, timeSpent,
+        setUpContext, saveTimeSpent }}>
             {children}
         </GlobalContext.Provider>
     );

@@ -59,7 +59,7 @@ function HomeScreen({ navigation }) {
   const [progressValue, setProgressValue] = useState(0);
   const [staticCourses, setStaticCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { streakCount, wordCount, courseCount, currentCourse, setUpContext, setCurrentCourse } = useContext(GlobalContext);
+  const { streakCount, wordCount, courseCount, currentCourse, setUpContext, setCurrentCourse, timeSpent } = useContext(GlobalContext);
 
   const CourseCard = ({ item }) => (
     <View style={{ backgroundColor: 'white', height: 296, width: 208, borderRadius: 20, paddingTop: 12, paddingLeft: 16, paddingRight: 16, paddingBottom: 12, marginRight: 12 }}>
@@ -97,7 +97,8 @@ function HomeScreen({ navigation }) {
             params: {
               title: item.title,
               subtitle: item.description,
-              level: item.level
+              level: item.level,
+              id: item.id,
             }
           });
         }}>
@@ -139,7 +140,7 @@ function HomeScreen({ navigation }) {
         <View style={{ width: Dimensions.get('window').width / 3 }} />
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: Dimensions.get('window').width / 3 }}>
           <View><Icon name={'flame'} size={24} color={'red'}></Icon></View>
-          <View style={{ justifyContent: 'center' }}><Text style={{ fontSize: 16, fontFamily: 'Inter-Bold' }}>{streakCount}</Text></View>
+          <View style={{ justifyContent: 'center' }}><Text style={{ fontSize: 16, fontFamily: 'Inter-Bold' }}>{streakCount + ' ' + timeSpent}</Text></View>
         </View>
         <View style={{ alignItems: 'flex-end', width: Dimensions.get('window').width / 3, paddingRight: 25 }}>
         </View>
