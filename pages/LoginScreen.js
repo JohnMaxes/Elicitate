@@ -4,6 +4,7 @@ import CustomInput from '../components/customInput';
 import axios from 'axios';
 import qs from 'qs';
 import * as Progress from 'react-native-progress';
+import { storeJWT } from '../components/jwt';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ togglePage, handleLogin }) => {
@@ -25,7 +26,7 @@ const LoginScreen = ({ togglePage, handleLogin }) => {
       setLoading(true);
       try {
         const response = await axios.post(
-          'https://825a-2402-800-6314-c5d1-249d-756b-f2c6-afc9.ngrok-free.app/login',
+          'https://251c-2402-800-6314-c5d1-c1b0-8bb4-aa67-6db9.ngrok-free.app/login',
           qs.stringify({
               usernameOrEmail: username,
               password: password
@@ -34,21 +35,20 @@ const LoginScreen = ({ togglePage, handleLogin }) => {
         );
 
         if (response.status === 200) {
-            console.log(response.data);
             let token = response.data.token; // Assuming the token is returned as { message: [token] }
             console.log(token);
-            await addToken(token); // Wait for the token to be added
+            await storeJWT(token); // Wait for the token to be added
+            handleLogin();
             setLoading(false);
-            handleLogin(); // Proceed to handle login
         } else {
-            alert('Wrong credentials!');
+            alert("Response status isn't 200");
             setLoading(false);
         }
       } catch (error) {
-          alert('Server error!');
-          console.error('Error:', error); // Log the error for debugging
-      }
-    }  
+          alert(error);
+          setLoading(false);
+      } finally {setLoading(false)};
+    }
   }
   return (
     <ScrollView contentContainerStyle={styles.container}>

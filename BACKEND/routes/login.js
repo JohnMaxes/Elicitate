@@ -10,12 +10,11 @@ var createToken = require('../functions/token')
 
 router.post('/', async(req, res, next) => { 
   const { usernameOrEmail, password } = req.body;
-  console.log(usernameOrEmail + ' ' + password);
   try {
       const usersRef = collection(db, 'users');
       const q1 = query(
           usersRef,
-          where('user', '==', usernameOrEmail),
+          where('username', '==', usernameOrEmail),
       );
 
       const snapshot1 = await getDocs(q1);
@@ -28,9 +27,14 @@ router.post('/', async(req, res, next) => {
           {
               userEmail = userData.email;
               let token = await createToken(usernameOrEmail, userEmail);
+              console.log('Login success!');
               res.status(200).json({ token: token });
           }
-          else res.status(400).json({ message: 'Wrong password!'});
+          else {
+            res.status(400).json({ message: 'Wrong password!'});
+            console.log(usernameOrEmail + ' ' + password);
+            console.log('Wrong password!');
+          }
       } 
       else // if the user did not input username
       {
@@ -51,8 +55,10 @@ router.post('/', async(req, res, next) => {
               res.status(200).json({ token: token });
             }
             else res.status(400).json({ message: 'Wrong password!'});
+            console.log('Wrong password!');
           }
           else res.status(400).json({ message: 'Wrong password!'});
+          console.log('Wrong password!');
       }
     } catch(error) {
       console.error('Error registering user:', error);
