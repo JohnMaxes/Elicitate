@@ -22,7 +22,7 @@ const LoginScreen = ({ togglePage, handleLogin }) => {
       return;
     }
     else 
-    {
+    {            handleLogin();
       setLoading(true);
       try {
         const response = await axios.post(

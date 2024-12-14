@@ -47,7 +47,7 @@ function HomeScreen({ navigation }) {
       </View>
       <View style={styles.courseTextContainer}>
         <Text style={ styles.courseTitle }>{item.title}</Text>
-        <Text style={[styles.courseLevel, { color: item.level === 'Beginner' ? 'green' : item.level === 'Intermediate' ? '#FFD700' : 'red' }]}>{item.level}</Text>
+        <Text style={[styles.courseLevel, { color: item.level === 'Beginner' ? 'green' : item.level === 'Intermediate' ? '#ccae1b' : 'red' }]}>{item.level}</Text>
       </View>
       <TouchableOpacity
         style={ styles.courseButton }
@@ -125,15 +125,15 @@ function HomeScreen({ navigation }) {
             <View style={styles.currentCourseProgressContainer}>
               <Progress.Circle
                 showsText={true}
-                size={Dimensions.get('window').width * 0.3}
-                progress={0} // Update this with actual progress value
-                color={ isDarkMode ? '#1B2A41' : '#03174c'}
+                size={Dimensions.get('window').width * 0.23}
+                progress={0.9} // Update this with actual progress value
+                color={ isDarkMode ? '#4f54b4' : '#03174c'}
                 unfilledColor={'#D0EFFF'}
                 borderWidth={0}
                 thickness={12}
                 direction={'counter-clockwise'}
                 strokeCap={'round'}
-                textStyle={{ fontWeight: 'bold', fontSize: 40 }}
+                textStyle={{ fontWeight: 'bold', fontSize: 20 }}
               />
               <View style={styles.currentCourseTextContainer}>
                 <Text style={ styles.currentCourseChapter }>Chapter 2</Text>
@@ -223,7 +223,7 @@ const getStyles = (isDarkMode) => StyleSheet.create({
     borderRadius: 20,
     padding: 15,
     marginRight: 20,
-    backgroundColor: isDarkMode ? '#829ab1' : 'white',
+    backgroundColor: isDarkMode ? '#829ab1' : '#f2f5f5',
   },
   courseImageContainer: {
     height: 190
@@ -239,7 +239,7 @@ const getStyles = (isDarkMode) => StyleSheet.create({
   courseTitle: {
     fontFamily: 'Inter-Bold',
     fontSize: 15,
-    color: isDarkMode ? '#F9F9F9' : 'black',
+    color: isDarkMode ? '#191970' : '#4f54b4',
   },
   courseLevel: {
     fontFamily: 'Poppins-Bold',
@@ -302,7 +302,7 @@ const getStyles = (isDarkMode) => StyleSheet.create({
   currentCourseProgressContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 120
+    height: 120,
   },
   currentCourseTextContainer: {
     paddingLeft: 10,
@@ -318,14 +318,14 @@ const getStyles = (isDarkMode) => StyleSheet.create({
   currentCourseName: {
     alignSelf: 'left',
     paddingLeft: 12,
-    fontSize: 28,
+    fontSize: 25,
     fontFamily: 'Poppins-Bold',
-    maxWidth: '90%',
+    maxWidth: '98%',
     color: isDarkMode ? 'white' : 'black',
   },
   currentCourseButton: {
     margin: 25,
-    paddingVertical: 10,
+    paddingVertical: 5,
     backgroundColor: '#4f54b4',
     justifyContent: 'center',
     alignItems: 'center',
@@ -369,9 +369,9 @@ const getStyles = (isDarkMode) => StyleSheet.create({
   statisticsContainer: {
     backgroundColor: isDarkMode ? '#4f54b4' : '#0E79B2',
     borderRadius: 32,
-    height: Dimensions.get('window').height * 0.31,
+    height: Dimensions.get('window').height * 0.32,
     width: Dimensions.get('window').width * 0.85,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   statisticsTitle: {
     fontFamily: 'Poppins-Bold',
@@ -384,7 +384,7 @@ const getStyles = (isDarkMode) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 120
+    height: 120,
   },
   statisticsItem: {
     flex: 1,
@@ -407,7 +407,7 @@ const getStyles = (isDarkMode) => StyleSheet.create({
     backgroundColor: isDarkMode ? '#58B09C' : '#959df1',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 25
+    borderRadius: 25,
   },
   statisticsButtonText: {
     color: 'white',

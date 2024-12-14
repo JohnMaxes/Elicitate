@@ -1,7 +1,7 @@
-// CourseCard.js (Reusable component)
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { GlobalContext } from './context';
 
 const CourseCard = ({ 
   title, 
@@ -16,33 +16,36 @@ const CourseCard = ({
   onPress 
   */
 }) => {
-    return (
-          <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("CourseViewScreen", {title, subtitle, level, id})}>
-            <View style={styles.contentContainer}>
-              <Image source={{ uri: 'https://media.istockphoto.com/id/1162167657/photo/hand-painted-background-with-mixed-liquid-blue-and-golden-paints-abstract-fluid-acrylic.jpg?s=612x612&w=0&k=20&c=DiYltrxEBUFjhhltHriX4WVPRxiPqgQhTBC5R7_C6Ik='}} style={styles.image} />
-              <View style={styles.textContainer}>
-                <Text style={styles.title}>{title}</Text>
-                <Text style={styles.subtitle}>{subtitle}</Text>
-              </View>
-            </View>
-            <View style={{ height: 2, backgroundColor: '#ccc', marginVertical: 10 }} />
-            <View style={styles.infoContainer}>
-              <View style={styles.infoItem}>
-                <Ionicons name="people-outline" size={16} color="#666" />
-                <Text style={styles.infoText}>Some number Enrolled</Text>
-              </View>
-              <View style={styles.infoItem}>
-                <Ionicons name="location-outline" size={16} color="#666" />
-                <Text style={styles.infoText}>{level}</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        );
-      };
+  const { isDarkMode } = useContext(GlobalContext);
+  const styles = getStyles(isDarkMode);
 
-const styles = StyleSheet.create({
+  return (
+    <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("CourseViewScreen", {title, subtitle, level, id})}>
+      <View style={styles.contentContainer}>
+        <Image source={{ uri: 'https://media.istockphoto.com/id/1162167657/photo/hand-painted-background-with-mixed-liquid-blue-and-golden-paints-abstract-fluid-acrylic.jpg?s=612x612&w=0&k=20&c=DiYltrxEBUFjhhltHriX4WVPRxiPqgQhTBC5R7_C6Ik='}} style={styles.image} />
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.subtitle}>{subtitle}</Text>
+        </View>
+      </View>
+      <View style={{ height: 2, backgroundColor: isDarkMode ? '#4f54b4' : '#ccc', marginVertical: 10 }} />
+      <View style={styles.infoContainer}>
+        <View style={styles.infoItem}>
+          <Ionicons name="people-outline" size={16} color={ isDarkMode ? '#070778' : '#666' } />
+          <Text style={styles.infoText}>Some number Enrolled</Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Ionicons name="location-outline" size={16} color={ isDarkMode ? '#070778' : '#666'} />
+          <Text style={styles.infoText}>{level}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const getStyles = (isDarkMode) => StyleSheet.create({
   card: {
-    backgroundColor: '#f7f6fa',
+    backgroundColor: isDarkMode ? '#829ab1' : '#f2f5f5',
     borderRadius: 20,
     padding: 16,
     marginVertical: 10,
@@ -67,12 +70,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#000',
-    marginBottom: 4,
+    color: isDarkMode ? '#191970' : 'black',
   },
   subtitle: {
     fontSize: 14,
-    color: '#666',
+    color: isDarkMode ? '#191970' : 'black',
     marginBottom: 8,
   },
   infoContainer: {
@@ -87,7 +89,7 @@ const styles = StyleSheet.create({
   infoText: {
     marginLeft: 4,
     fontSize: 14,
-    color: '#666',
+    color: isDarkMode ? '#070778' : '#666',
   },
 });
 

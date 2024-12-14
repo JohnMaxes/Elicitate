@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomSearchBar from '../components/customSearchBar';
@@ -9,12 +9,16 @@ import { TapGestureHandler } from 'react-native-gesture-handler';
 import CourseLearnScreen from './CourseLearnScreen';
 import CourseReviewScreen from './CourseReviewScreen';
 import CourseViewScreen from './CourseViewScreen';
+import { GlobalContext } from '../components/context';
 
 const CourseStack = createNativeStackNavigator();
 
 function CourseScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [courses, setCourses] = useState([]);
+  const { isDarkMode } = useContext(GlobalContext);
+
+  const styles = getStyles(isDarkMode);
 
   const handleSearch = async (query) => {
     setSearchQuery(query);
@@ -118,7 +122,7 @@ function CourseStackScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (isDarkMode) => StyleSheet.create({
   contentScroll: {
     paddingHorizontal: 25,
     paddingBottom: 40,
@@ -129,11 +133,12 @@ const styles = StyleSheet.create({
     textAlign: 'flex-start',
     paddingLeft: 25,
     fontWeight: "bold",
+    color: isDarkMode ? 'white' : 'black',
   },
   container: {
     flexGrow: 1,
     justifyContent: "center",
-    backgroundColor: "#CCE6FA",
+    backgroundColor: isDarkMode ? '#1c294a' : '#CCE6FA',
   },
 });
 

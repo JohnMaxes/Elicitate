@@ -1,9 +1,11 @@
-// CustomSearchBar.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Image, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { GlobalContext } from './context';
 
 const CustomSearchBar = ({ placeholder, placeholderTextColor, iconUri, onChangeText }) => {
   const [searchText, setSearchText] = useState('');
+  const { isDarkMode } = useContext(GlobalContext);
+  const styles = getStyles(isDarkMode);
 
   const handleClear = () => {
     setSearchText('');
@@ -14,10 +16,9 @@ const CustomSearchBar = ({ placeholder, placeholderTextColor, iconUri, onChangeT
     <View style={styles.inputContainer}>
       <Image style={styles.inputIcon} source={{ uri: iconUri }} />
       <TextInput
-        style={{ flex: 1 }}
+        style={{ flex: 1, color: 'black' }}
         placeholder={placeholder}
-        placeholderTextColor= '#9494a9'
-        color= 'black'
+        placeholderTextColor={isDarkMode ? '#666' : '#9494a9'}
         value={searchText}
         onChangeText={(text) => {
           setSearchText(text);
@@ -36,11 +37,11 @@ const CustomSearchBar = ({ placeholder, placeholderTextColor, iconUri, onChangeT
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (isDarkMode) => StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f3f4f9",
+    backgroundColor: isDarkMode ? "#d9d9d9" : "#f3f4f9",
     height: 50,
     borderRadius: 60,
     marginHorizontal: "5%",
