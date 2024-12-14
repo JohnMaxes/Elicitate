@@ -72,11 +72,10 @@ export const Context = ({ children }) => {
     };
 
     return (
-        <GlobalContext.Provider value={{ 
-            streakCount, wordCount, setStreakCount, setWordCount, setCourseCount, courseCount, 
-            currentCourse, setCurrentCourse, contextUsername, contextEmail, timeSpent, setUpContext, 
-            saveTimeSpent, isDarkMode, toggleTheme 
-        }}>
+        <GlobalContext.Provider value={{ streakCount, wordCount, setStreakCount, 
+        setWordCount, setCourseCount, courseCount, currentCourse, setCurrentCourse, 
+        contextUsername, contextEmail, timeSpent, pfp, setPfp,
+        setUpContext, saveTimeSpent, isDarkMode, toggleTheme }}>
             {children}
         </GlobalContext.Provider>
     );

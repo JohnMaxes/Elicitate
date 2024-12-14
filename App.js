@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
-import { View, Dimensions, Platform } from "react-native";
+import { View, Dimensions, Platform, TouchableOpacity } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -7,12 +7,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import DictionaryScreen from "./pages/DictionaryScreen";
-import Home from "./pages/Home.js";
+import HomeScreen from "./pages/Home.js";
 import CourseScreen from "./pages/CourseScreen";
 import ProfileScreen from "./pages/ProfileScreen";
 import ProfileDetails from './pages/ProfileDetails';
 import SignUpScreen from "./pages/SignUpScreen";
 import LoginScreen from "./pages/LoginScreen";
+import VocabReviewScreen from "./pages/VocabReviewScreen.js";
+import { TapGestureHandler } from "react-native-gesture-handler";
 
 import * as Notifications from 'expo-notifications';
 import * as Progress from 'react-native-progress';
@@ -26,6 +28,30 @@ import { Context } from "./components/context.js";
 
 const BottomTab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+const ReviewStack = createStackNavigator();
+
+const HomeVocabReviewStack = () => {
+  return (
+    <ReviewStack.Navigator initialRouteName="HomeScreen">
+      <ReviewStack.Screen name='HomeScreen' component={HomeScreen} options={{headerShown:false}}/>
+      <ReviewStack.Screen name='VocabReviewScreen' component={VocabReviewScreen}
+        options={({ navigation }) => ({
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeft: () => (
+            <TapGestureHandler onActivated={() => {
+              navigation.goBack();
+            }}>
+              <TouchableOpacity style={{ padding: 15 }} activeOpacity={0.7}>
+                <Icon name='arrow-back-outline' size={35} color='#3A94E7'/>
+              </TouchableOpacity>
+            </TapGestureHandler>
+          )
+        })}       
+      />
+    </ReviewStack.Navigator>
+  )
+}
 
 const ProfileStack = ({ handleLogout }) => {
   return (
@@ -54,7 +80,7 @@ const HomeBottomTab = ({ handleLogout }) => {
           screenOptions={({ route }) => ({
             tabBarIcon: ({ color, size }) => {
               let iconName;
-              if (route.name === 'Home') {
+              if (route.name === 'HomeVocabReviewStack') {
                 iconName = 'home';
               } else if (route.name === 'Course') {
                 iconName = 'book';
@@ -83,7 +109,7 @@ const HomeBottomTab = ({ handleLogout }) => {
             headerShown: false,
           })}
         >
-          <BottomTab.Screen name="Home" component={Home} />
+          <BottomTab.Screen name="HomeVocabReviewStack" component={HomeVocabReviewStack} />
           <BottomTab.Screen name="Course" component={CourseScreen} />
           <BottomTab.Screen name="Dictionary" component={DictionaryScreen} />
           <BottomTab.Screen name="Profile">

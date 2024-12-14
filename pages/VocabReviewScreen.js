@@ -87,12 +87,10 @@ const VocabReviewScreen = () => {
     useEffect(() => {
         async function fetchVocabReview() {
             setLoading(true);
-            console.log('here!');
             const words = await getQuestionToReviewVocab();
             setWordList(words);
-            console.log(words);
             if (words.length > 0) {
-                setEmpty(true);
+                setEmpty(false);
                 setWord(words[0]);
             }
             else setEmpty(true);

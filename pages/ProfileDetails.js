@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ScrollView 
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import CustomInput from '../components/customInput';
+import { launchImageLibrary } from 'react-native-image-picker';
+
 
 const ProfileDetails = ({ navigation }) => {
   const handleSave = () => {
@@ -10,6 +12,8 @@ const ProfileDetails = ({ navigation }) => {
     console.log('Profile saved!');
     navigation.goBack();
   };
+
+
 
   return (
     <ScrollView style={styles.container}>
@@ -30,7 +34,7 @@ const ProfileDetails = ({ navigation }) => {
       </View>
 
       <View style={styles.profileImageContainer}>
-        <Image source={{ uri: 'https://scontent.fsgn5-14.fna.fbcdn.net/v/t39.30808-6/416318714_3478120982442872_833039280433233648_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGeZz5n0X4YJNG9z10vFLzpxOEqWgQf_gTE4SpaBB_-BPymO5lmMUJjoFaQpHfUpqaGzj0TSAEOi_kb8XJlPq-n&_nc_ohc=GTaI0W_q73kQ7kNvgHvR2Bx&_nc_zt=23&_nc_ht=scontent.fsgn5-14.fna&_nc_gid=AVbKqsYpfdQNzofEMP9ucMr&oh=00_AYD24X4fsHI076DFj3GVxE0AHrVogR9ot3E8oBCJJqjFUg&oe=6756650E' }} style={styles.profileImage} />
+        <Image source={require('../assets/default-pfp.png')} style={styles.profileImage} />
         <Text style={styles.profileName}>Thinh dep trai vai</Text>
         <Text style={styles.profileEmail}>@thinhtucuto</Text>
       </View>

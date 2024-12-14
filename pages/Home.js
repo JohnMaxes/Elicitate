@@ -6,6 +6,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import * as Font from 'expo-font';
 import * as Progress from 'react-native-progress';
 import { queryCourseToDatabase, getLearnedWordNumber, getLearnedCourseNumber } from '../components/Database';
+
 import { GlobalContext } from '../components/context';
 
 const loadFonts = async () => {
