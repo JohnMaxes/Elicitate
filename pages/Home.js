@@ -127,7 +127,7 @@ function HomeScreen({ navigation }) {
                 showsText={true}
                 size={Dimensions.get('window').width * 0.23}
                 progress={0.9} // Update this with actual progress value
-                color={ isDarkMode ? '#4f54b4' : '#03174c'}
+                color={ isDarkMode ? '#4f54b4' : '#3A94E7'}
                 unfilledColor={'#D0EFFF'}
                 borderWidth={0}
                 thickness={12}
@@ -294,7 +294,7 @@ const getStyles = (isDarkMode) => StyleSheet.create({
   currentCourseCard: {
     borderRadius: 32,
     height: Dimensions.get('window').height * 0.28,
-    backgroundColor: isDarkMode ? '#58B09C' : '#a2e0c1',
+    backgroundColor: isDarkMode ? '#58B09C' : '#1c294a',
     padding: 30,
     marginTop: 7,
     marginHorizontal: 10,
@@ -313,7 +313,7 @@ const getStyles = (isDarkMode) => StyleSheet.create({
     paddingLeft: 12,
     fontSize: 20,
     fontFamily: 'Poppins-Regular',
-    color: isDarkMode ? 'white' : 'black',
+    color: 'white',
   },
   currentCourseName: {
     alignSelf: 'left',
@@ -321,12 +321,12 @@ const getStyles = (isDarkMode) => StyleSheet.create({
     fontSize: 25,
     fontFamily: 'Poppins-Bold',
     maxWidth: '98%',
-    color: isDarkMode ? 'white' : 'black',
+    color: 'white',
   },
   currentCourseButton: {
     margin: 25,
     paddingVertical: 5,
-    backgroundColor: '#4f54b4',
+    backgroundColor: isDarkMode ? '#4f54b4' : '#3A94E7',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 25,

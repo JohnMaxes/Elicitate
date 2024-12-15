@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, FlatList, Dimensions, Pressable, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, ScrollView, FlatList, Pressable, TouchableOpacity, Alert, StyleSheet, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CustomSearchBar from '../components/customSearchBar';
 import Icon from 'react-native-vector-icons/Ionicons';
 import VocabCard from '../components/vocabCard';
-import { queryVocabToDatabase, addWordToLearned } from '../components/Database';
+import { queryVocabToDatabase, addWordToLearned, removeWordFromLearned } from '../components/Database';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TapGestureHandler } from 'react-native-gesture-handler';
+import { GlobalContext } from '../components/context';
 
 const VocabStack = createNativeStackNavigator();
 
@@ -39,22 +40,32 @@ function DictionaryScreen() {
 }
 
 const DictionaryVocabScreenAddButton = ({ id, learned }) => {
-  const handleAddWord = async () => {
-    console.log(learned);
-    if (await addWordToLearned(id)) {
-      alert('Word added successfully');
-      // Consider managing learned state through props or state management
+  const [isLearned, setIsLearned] = useState(learned);
+
+  const handleToggleLearned = async () => {
+    if (isLearned) {
+      if (await removeWordFromLearned(id)) {
+        alert('Word removed from learned list');
+        setIsLearned(false);
+      } else {
+        alert('Something has gone wrong');
+      }
     } else {
-      alert('Something has gone wrong');
+      if (await addWordToLearned(id)) {
+        alert('Word added to learned list');
+        setIsLearned(true);
+      } else {
+        alert('Something has gone wrong');
+      }
     }
   };
 
   return (
-    <TapGestureHandler onActivated={handleAddWord}>
+    <TapGestureHandler onActivated={handleToggleLearned}>
       <TouchableOpacity style={{ marginRight: 15 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          {learned ? (
-            <Text style={{ fontSize: 20, color: '#3A94E7' }}>Learned!</Text>
+          {isLearned ? (
+            <Text style={{ fontSize: 20, color: '#3A94E7' }}>Unlearn</Text>
           ) : (
             <Ionicons name="add" size={35} color="#3A94E7" />
           )}
@@ -68,6 +79,9 @@ const DictionarySearchScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [vocab, setVocab] = useState([]);
   const [learned, setLearned] = useState(0);
+  const { isDarkMode } = useContext(GlobalContext);
+
+  const styles = getStyles(isDarkMode);
 
   const handleSearch = async (query) => {
     setSearchQuery(query);
@@ -90,15 +104,29 @@ const DictionarySearchScreen = ({ navigation }) => {
         iconUri="https://img.icons8.com/ios-filled/50/000000/search.png"
         onChangeText={handleSearch}
       />
-      <View style={{flexDirection: 'row', height: 40, marginHorizontal: 25, marginTop: -25}}>
+      <View style={{ flexDirection: 'row', height: 40, marginHorizontal: 25, marginTop: -25 }}>
         <Pressable
-          style={{flex: 1, borderTopLeftRadius: 25, borderBottomLeftRadius: 25, alignItems: 'center', justifyContent: 'center', backgroundColor: !learned ? '#3A94E7' : '#5BB6FF'}}
+          style={{
+            flex: 1,
+            borderTopLeftRadius: 25,
+            borderBottomLeftRadius: 25,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: !learned ? (isDarkMode ? '#3c448e' : '#3A94E7') : (isDarkMode ? '#7478c4' : '#5BB6FF')
+          }}
           onPress={() => setLearned(0)}
         >
           <Text style={{color: 'white', fontSize: 20, fontFamily: !learned ? 'Inter-Bold' : 'Inter-Regular'}}>All</Text>
         </Pressable>
         <Pressable
-          style={{flex: 1, borderTopRightRadius: 25, borderBottomRightRadius: 25, alignItems: 'center', justifyContent: 'center', backgroundColor: learned ? '#3A94E7' : '#5BB6FF'}}
+          style={{
+            flex: 1,
+            borderTopRightRadius: 25,
+            borderBottomRightRadius: 25,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: learned ? (isDarkMode ? '#3c448e' : '#3A94E7') : (isDarkMode ? '#7478c4' : '#5BB6FF')
+          }}
           onPress={() => setLearned(1)}
         >
           <Text style={{color: 'white', fontSize: 20, fontFamily: learned ? 'Inter-Bold' : 'Inter-Regular'}}>Learned</Text>
@@ -120,34 +148,37 @@ const DictionarySearchScreen = ({ navigation }) => {
 
 const DictionaryVocabScreen = ({route}) => {
   const { id, word, type, definition, learned } = route.params;
+  const { isDarkMode } = useContext(GlobalContext);
+
+  const styles = getStyles(isDarkMode);
 
   return (
     <View style={styles.vocabScreen}>
-        <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 55 }}>{word}</Text>
+      <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 55, color: isDarkMode ? 'white' : 'black' }}>{word}</Text>
 
-        <View style={styles.typeContainer}>
-          <Text style={{ fontFamily: 'Inter-Bold', fontSize: 20, color:'white' }}>{type}</Text>
-        </View>
+      <View style={styles.typeContainer}>
+        <Text style={{ fontFamily: 'Inter-Bold', fontSize: 20, color:'white' }}>{type}</Text>
+      </View>
 
-        <View style = {{paddingLeft:30, paddingRight: 30}}>
-          <Text style={{textAlign:'center', marginTop: 10, fontFamily: 'Inter-Regular', fontSize: 20}}>{definition}</Text>
-          <Text style={{textAlign:'center', marginTop: 10, fontFamily: 'Inter-Regular', fontSize: 20}}>{id}</Text>
-        </View>
+      <View style={{ paddingLeft: 30, paddingRight: 30 }}>
+        <Text style={{ textAlign: 'center', marginTop: 10, fontFamily: 'Inter-Regular', fontSize: 20, color: isDarkMode ? 'white' : 'black' }}>{definition}</Text>
+        <Text style={{ textAlign: 'center', marginTop: 10, fontFamily: 'Inter-Regular', fontSize: 20, color: isDarkMode ? 'white' : 'black' }}>{id}</Text>
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (isDarkMode) => StyleSheet.create({
   container: {
     flexGrow: 1,
     justifyContent: "center",
-    backgroundColor: "#CCE6FA",
+    backgroundColor: isDarkMode ? "#1c294a" : "#CCE6FA",
   },
   vocabScreen: {
     flex: 1,
-    paddingTop: Dimensions.get('window').height*0.1,
+    paddingTop: Dimensions.get('window').height * 0.1,
     alignItems: 'center',
-    backgroundColor: '#CCE6FA',
+    backgroundColor: isDarkMode ? "#1c294a" : "#CCE6FA",
   },
   contentScroll: {
     paddingHorizontal: 25,
@@ -157,7 +188,7 @@ const styles = StyleSheet.create({
   typeContainer: {
     paddingLeft: 10,
     paddingRight: 10,
-    backgroundColor:'#7949FF',
+    backgroundColor: '#7949FF',
     borderRadius: 15,
   },
 });

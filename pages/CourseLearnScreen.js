@@ -25,8 +25,10 @@ const CourseLearnScreen = ({ route, navigation }) => {
     const inputRefs = useRef([]);
 
     const [seconds, setSeconds] = useState(0);
-    const{ saveTimeSpent } = useContext(GlobalContext);
+    const { saveTimeSpent, isDarkMode } = useContext(GlobalContext);
     const secondsRef = useRef(seconds);
+
+    const styles = getStyles(isDarkMode);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -117,7 +119,7 @@ const CourseLearnScreen = ({ route, navigation }) => {
             <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                 <Progress.Circle
                     indeterminate={true}
-                    color="#3A94E7"
+                    color={isDarkMode ? '#70b6bb' : '#3A94E7'}
                     size={30}
                 />
             </View>
@@ -126,22 +128,37 @@ const CourseLearnScreen = ({ route, navigation }) => {
     if (finished)
         return (
             <View style={styles.vocabScreen}>
-                <View style={{ justifyContent:'center', alignItems: 'center', height: Dimensions.get('window').height * 0.6 }}>
-                    <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight: 30 }}>You're finished with learning this course! Go out there and get more champ!</Text>
-                    <TouchableOpacity
-                        onPress={() => navigation.goBack()}
-                    >
+                <View style={{
+                    justifyContent:'center',
+                    alignItems: 'center',
+                    minHeight: Dimensions.get('window').height * 0.6
+                    }}
+                >
+                    <Text style={{
+                        textAlign: 'center',
+                        fontFamily: 'Poppins-Bold',
+                        fontSize: 30,
+                        paddingHorizontal: 30,
+                        color: isDarkMode ? 'white' : 'black'
+                        }}
+                    >You've finished learning this course!</Text>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
                         <View
                                 style={{
                                     width: Dimensions.get('window').width * 0.5,
-                                    height: Dimensions.get('window').height * 0.07,
+                                    minHeight: Dimensions.get('window').height * 0.07,
                                     backgroundColor: 'green',
                                     marginTop: Dimensions.get('window').width * 0.1,
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     borderRadius: 45,
                                 }}>
-                                <Text style={{ color: 'white', fontFamily: 'Inter-Bold', fontSize: 20 }}>Complete</Text>
+                                <Text style={{
+                                    color: 'white',
+                                    fontFamily: 'Inter-Bold',
+                                    fontSize: 20
+                                    }}
+                                >Complete</Text>
                         </View>
                         </TouchableOpacity>
                 </View>
@@ -151,38 +168,38 @@ const CourseLearnScreen = ({ route, navigation }) => {
     if (isReading)
         return (
             <Pressable style={styles.vocabScreen} onPress={Keyboard.dismiss}>
-                <View style={{ alignItems: 'center', height: Dimensions.get('window').height * 0.6 }}>
-                    <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 55 }}>{currentWord.word}</Text>
+                <View style={{
+                    alignItems: 'center',
+                    minHeight: Dimensions.get('window').height * 0.5
+                    }}
+                >
+                    <Text style={styles.wordText}>{currentWord.word}</Text>
 
                     <View style={styles.typeContainer}>
-                        <Text style={{ fontFamily: 'Inter-Bold', fontSize: 20, color: 'white' }}>{currentWord.type}</Text>
+                        <Text style={styles.typeText}>{currentWord.type}</Text>
                     </View>
 
-                    <View style={{ paddingLeft: 30, paddingRight: 30 }}>
-                        <Text style={{ textAlign: 'center', marginTop: 10, fontFamily: 'Inter-Regular', fontSize: 20 }}>
+                    <View style={{ paddingHorizontal: 30 }}>
+                        <Text style={styles.definitionText}>
                             {currentWord.definition}
                         </Text>
                     </View>
                 </View>
 
-                <View style={{ height: Dimensions.get('window').height * 0.25, justifyContent: 'flex-end' }}>
+                <View style={styles.nextButtonContainer}>
                     <TapGestureHandler
                         onActivated={() => {
-                            if (currentWord.learned_at === null) setIsReading(false)
-                            else setIndex(index + 1);
+                            if (index >= wordList.length - 1) {
+                                setFinished(true);
+                              } else if (currentWord.learned_at === null) {
+                                setIsReading(false);
+                              } else {
+                                setIndex(index + 1);
+                              }
                         }}>
                         <TouchableOpacity>
-                            <View
-                                style={{
-                                    width: Dimensions.get('window').width * 0.5,
-                                    height: Dimensions.get('window').height * 0.07,
-                                    marginBottom: Dimensions.get('window').height * 0.3,
-                                    backgroundColor: (currentWord.learned_at !== null) ? 'green' : '#3A94E7',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    borderRadius: 45,
-                                }}>
-                                <Text style={{ color: 'white', fontFamily: 'Inter-Bold', fontSize: 20 }}>{currentWord.learned_at !== null ? 'Learned before' : 'Next'}</Text>
+                            <View style={[styles.nextButton, { backgroundColor: (currentWord.learned_at !== null) ? 'green' : (isDarkMode ? '#70b6bb' : '#3A94E7') }]}>
+                                <Text style={styles.nextButtonText}>{currentWord.learned_at !== null ? 'Learned before' : 'Next'}</Text>
                             </View>
                         </TouchableOpacity>
                     </TapGestureHandler>
@@ -195,37 +212,26 @@ const CourseLearnScreen = ({ route, navigation }) => {
     if (isReading === false)
         return (
             <Pressable style={styles.vocabScreen} onPress={Keyboard.dismiss}>
-                <View style={{ alignItems: 'center', height: Dimensions.get('window').height * 0.6 }}>
-                    <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight: 30 }}>{currentWord.definition}</Text>
+                <View style={{ alignItems: 'center', minHeight: Dimensions.get('window').height * 0.6 }}>
+                    <Text style={styles.definitionText}>{currentWord.definition}</Text>
 
                     <View style={styles.typeContainer}>
-                        <Text style={{ fontFamily: 'Inter-Bold', fontSize: 20, color: 'white' }}>{currentWord.type}</Text>
+                        <Text style={styles.typeText}>{currentWord.type}</Text>
                     </View>
 
                     <View style={{ paddingLeft: 30, paddingRight: 30 }}>
-                        <Text style={{ textAlign: 'center', marginTop: 10, fontFamily: 'Inter-Regular', fontSize: 20 }}>
-                            What's the word?
-                        </Text>
+                        <Text style={styles.questionText}>What's the word?</Text>
                     </View>
                     <WordInput value={currentWord.word} inputField={inputs} inputSetter={setInputs} reference={inputRefs} Function={updateInput} />
 
                 </View>
 
-                <View style={{ height: Dimensions.get('window').height * 0.25, justifyContent: 'flex-end' }}>
+                <View style={styles.checkButtonContainer}>
                     <TapGestureHandler
                         onActivated={handleButton}>
                         <TouchableOpacity>
-                            <View
-                                style={{
-                                    width: Dimensions.get('window').width * 0.5,
-                                    height: Dimensions.get('window').height * 0.07,
-                                    marginBottom: Dimensions.get('window').height * 0.3,
-                                    backgroundColor: checked ? (isCorrect ? 'green' : 'red') : '#3A94E7',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    borderRadius: 45,
-                                }}>
-                                <Text style={{ color: 'white', fontFamily: 'Inter-Bold', fontSize: 20 }}>{checked ? isCorrect ? 'Go to next word!' : 'Enter again!' : 'Check answers'}</Text>
+                            <View style={[styles.checkButton, { backgroundColor: checked ? (isCorrect ? 'green' : 'red') : (isDarkMode ? '#70b6bb' : '#3A94E7') }]}>
+                                <Text style={styles.checkButtonText}>{checked ? isCorrect ? 'Go to next word!' : 'Enter again!' : 'Submit'}</Text>
                             </View>
                         </TouchableOpacity>
                     </TapGestureHandler>
@@ -234,18 +240,90 @@ const CourseLearnScreen = ({ route, navigation }) => {
         )
 }
 
-const styles = StyleSheet.create({
+const getStyles = (isDarkMode) => StyleSheet.create({
     vocabScreen: {
         paddingTop: Dimensions.get('window').height * 0.15,
         flex: 1,
         alignItems: 'center',
-        backgroundColor: '#CCE6FA',
+        backgroundColor: isDarkMode ? '#1c294a' : '#CCE6FA',
     },
     typeContainer: {
         paddingLeft: 10,
         paddingRight: 10,
         backgroundColor: '#7949FF',
         borderRadius: 15,
+    },
+    wordText: {
+        fontFamily: 'Poppins-Bold',
+        fontSize: 55,
+        color: isDarkMode ? 'white' : 'black',
+    },
+    typeText: {
+        fontFamily: 'Inter-Bold',
+        fontSize: 20,
+        color: 'white',
+    },
+    definitionText: {
+        textAlign: 'center',
+        fontFamily: 'Inter-Bold',
+        fontSize: 30,
+        margin: 20,
+        color: isDarkMode ? 'white' : 'black',
+    },
+    questionText: {
+        textAlign: 'center',
+        marginTop: 10,
+        fontFamily: 'Inter-Regular',
+        fontSize: 20,
+        color: isDarkMode ? 'white' : 'black',
+    },
+    nextButtonContainer: {
+        height: Dimensions.get('window').height * 0.25,
+        justifyContent: 'flex-end',
+    },
+    nextButton: {
+        width: Dimensions.get('window').width * 0.5,
+        height: Dimensions.get('window').height * 0.07,
+        marginBottom: Dimensions.get('window').height * 0.3,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 45,
+    },
+    nextButtonText: {
+        color: 'white',
+        fontFamily: 'Inter-Bold',
+        fontSize: 20,
+    },
+    completeButton: {
+        width: Dimensions.get('window').width * 0.5,
+        height: Dimensions.get('window').height * 0.07,
+        backgroundColor: 'green',
+        marginTop: Dimensions.get('window').width * 0.1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 45,
+    },
+    completeButtonText: {
+        color: 'white',
+        fontFamily: 'Inter-Bold',
+        fontSize: 20,
+    },
+    checkButtonContainer: {
+        height: Dimensions.get('window').height * 0.25,
+        justifyContent: 'flex-end',
+    },
+    checkButton: {
+        width: Dimensions.get('window').width * 0.5,
+        height: Dimensions.get('window').height * 0.07,
+        marginBottom: Dimensions.get('window').height * 0.3,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 45,
+    },
+    checkButtonText: {
+        color: 'white',
+        fontFamily: 'Inter-Bold',
+        fontSize: 20,
     },
 });
 

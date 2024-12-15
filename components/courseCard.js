@@ -28,7 +28,7 @@ const CourseCard = ({
           <Text style={styles.subtitle}>{subtitle}</Text>
         </View>
       </View>
-      <View style={{ height: 2, backgroundColor: isDarkMode ? '#4f54b4' : '#ccc', marginVertical: 10 }} />
+      <View style={{ height: 2, backgroundColor: isDarkMode ? '#1c294a' : '#ccc', marginVertical: 10 }} />
       <View style={styles.infoContainer}>
         <View style={styles.infoItem}>
           <Ionicons name="people-outline" size={16} color={ isDarkMode ? '#070778' : '#666' } />
@@ -70,7 +70,7 @@ const getStyles = (isDarkMode) => StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
-    color: isDarkMode ? '#191970' : 'black',
+    color: isDarkMode ? '#1c294a' : 'black',
   },
   subtitle: {
     fontSize: 14,
@@ -89,7 +89,7 @@ const getStyles = (isDarkMode) => StyleSheet.create({
   infoText: {
     marginLeft: 4,
     fontSize: 14,
-    color: isDarkMode ? '#070778' : '#666',
+    color: isDarkMode ? '#1c294a' : '#666',
   },
 });
 

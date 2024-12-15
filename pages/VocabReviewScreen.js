@@ -8,7 +8,7 @@ import WordInput from "../components/WordInput";
 import { addWordToLearned } from "../components/Database";
 import { GlobalContext } from "../components/context";
 
-const VocabReviewScreen = () => {
+const VocabReviewScreen = ({ navigation }) => {
     const [wordList, setWordList] = useState([]);
     const [currentWord, setWord] = useState({});
     const [index, setIndex] = useState(0);
@@ -16,6 +16,7 @@ const VocabReviewScreen = () => {
     const [loading, setLoading] = useState(true);
     const [checked, setChecked] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
+    const [finished, setFinished] = useState(false);
 
     const [inputs, setInputs] = useState([]);
     const [finalInput, setFinalInput] = useState('');
@@ -24,18 +25,20 @@ const VocabReviewScreen = () => {
     const [empty, setEmpty] = useState(false);
 
     const [seconds, setSeconds] = useState(0);
-    const{ saveTimeSpent } = useContext(GlobalContext);
+    const { saveTimeSpent, isDarkMode } = useContext(GlobalContext);
     const secondsRef = useRef(seconds);
+
+    const styles = getStyles(isDarkMode);
 
     useFocusEffect(
         React.useCallback(() => {
             const intervalId = setInterval(() => {
                 setSeconds(prevSeconds => {
-                secondsRef.current = prevSeconds + 1;
-                return secondsRef.current;
+                    secondsRef.current = prevSeconds + 1;
+                    return secondsRef.current;
                 });
             }, 1000);
-    
+
             return () => {
                 const currentSeconds = secondsRef.current; // Use the ref to get the latest seconds
                 saveTimeSpent(currentSeconds); // Call saveTimeSpent
@@ -43,7 +46,7 @@ const VocabReviewScreen = () => {
                 clearInterval(intervalId); // Clear the interval
             };
         }, [])
-    );    
+    );
 
     const updateInput = (input) => {
         setFinalInput(input);
@@ -71,6 +74,9 @@ const VocabReviewScreen = () => {
                     setInputs(Array(currentWord.word.length).fill(''));
                     setFinalInput('');
                     inputRefs.current.forEach(ref => ref && ref.clear());
+                    if (inputRefs.current[0]) {
+                        inputRefs.current[0].focus();
+                    }
                 }
             } else {
                 setChecked(true);
@@ -110,7 +116,7 @@ const VocabReviewScreen = () => {
             <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                 <Progress.Circle
                     indeterminate={true}
-                    color="#3A94E7"
+                    color={isDarkMode ? '#70b6bb' : '#3A94E7'}
                     size={30}
                 />
             </View>
@@ -120,7 +126,34 @@ const VocabReviewScreen = () => {
         return (
             <View style={styles.vocabScreen}>
                 <View style={{ alignItems: 'center', height: Dimensions.get('window').height * 0.6 }}>
-                    <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight: 30 }}>You've not learned anything yet!</Text>
+                    <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight: 30, color: isDarkMode ? 'white' : 'black' }}>You've not learned anything yet!</Text>
+                </View>
+            </View>
+        )
+
+    if (finished)
+        return (
+            <View style={styles.vocabScreen}>
+                <View style={{ alignItems: 'center', height: Dimensions.get('window').height * 0.6 }}>
+                    <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight: 30, color: isDarkMode ? 'white' : 'black' }}>
+                        You're finished here! Hooray!
+                    </Text>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <View
+                            style={{
+                                width: Dimensions.get('window').width * 0.5,
+                                height: Dimensions.get('window').height * 0.07,
+                                backgroundColor: 'green',
+                                marginTop: Dimensions.get('window').width * 0.1,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                borderRadius: 45,
+                            }}>
+                            <Text style={{ color: 'white', fontFamily: 'Inter-Bold', fontSize: 20 }}>
+                                Complete
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         )
@@ -128,25 +161,25 @@ const VocabReviewScreen = () => {
     return (
         <>
             <Pressable style={styles.vocabScreen} onPress={Keyboard.dismiss}>
-                <View style={{ alignItems: 'center', height: Dimensions.get('window').height * 0.6 }}>
-                    <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight: 30 }}>{currentWord.definition}</Text>
+                <View style={{ alignItems: 'center', minHeight: Dimensions.get('window').height * 0.3 }}>
+                    <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight: 30, color: isDarkMode ? 'white' : 'black' }}>{currentWord.definition}</Text>
 
                     <View style={styles.typeContainer}>
                         <Text style={{ fontFamily: 'Inter-Bold', fontSize: 20, color: 'white' }}>{currentWord.type}</Text>
                     </View>
 
                     <View style={{ paddingLeft: 30, paddingRight: 30 }}>
-                        <Text style={{ textAlign: 'center', marginTop: 10, fontFamily: 'Inter-Regular', fontSize: 20 }}>
+                        <Text style={{ textAlign: 'center', marginTop: 10, fontFamily: 'Inter-Regular', fontSize: 20, color: isDarkMode ? 'white' : 'black' }}>
                             What's the word?
                         </Text>
                     </View>
                     <WordInput value={currentWord.word} inputField={inputs} inputSetter={setInputs} reference={inputRefs} Function={updateInput} />
                 </View>
 
-                <View style={{ height: Dimensions.get('window').height * 0.25, justifyContent: 'flex-end' }}>
+                <View style={{ justifyContent: 'flex-end' }}>
                     {checked ?
                         (<View style={{ alignItems: 'center' }}>
-                            <Text style={{ fontFamily: 'Inter-Bold', fontSize: 20, }}>Answer: {currentWord.word}</Text>
+                            <Text style={{ fontFamily: 'Inter-Bold', fontSize: 20, color: isDarkMode ? 'white' : 'black' }}>Answer: {currentWord.word}</Text>
                         </View>)
                         :
                         (null)}
@@ -156,12 +189,12 @@ const VocabReviewScreen = () => {
                             <View
                                 style={{
                                     width: Dimensions.get('window').width * 0.5,
-                                    height: Dimensions.get('window').height * 0.07,
-                                    backgroundColor: checked ? (isCorrect ? 'green' : 'red') : '#3A94E7',
+                                    minHeight: Dimensions.get('window').height * 0.08,
+                                    backgroundColor: checked ? (isCorrect ? 'green' : 'red') : (isDarkMode ? '#70b6bb' : '#3A94E7'),
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     borderRadius: 45,
-                                    marginBottom: Dimensions.get('window').height * 0.3,
+                                    margin: Dimensions.get('window').height * 0.1,
                                 }}>
                                 <Text style={{ color: 'white', fontFamily: 'Inter-Bold', fontSize: 20 }}>{checked ? isCorrect ? 'Go to next word!' : 'Enter again!' : 'Check answers'}</Text>
                             </View>
@@ -173,12 +206,12 @@ const VocabReviewScreen = () => {
     )
 }
 
-const styles = StyleSheet.create({
+const getStyles = (isDarkMode) => StyleSheet.create({
     vocabScreen: {
         paddingTop: Dimensions.get('window').height * 0.15,
         flex: 1,
         alignItems: 'center',
-        backgroundColor: '#CCE6FA',
+        backgroundColor: isDarkMode ? '#1c294a' : '#CCE6FA',
     },
     typeContainer: {
         paddingLeft: 10,

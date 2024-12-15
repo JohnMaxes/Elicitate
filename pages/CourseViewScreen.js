@@ -26,7 +26,7 @@ const CourseViewScreen = ({ route, navigation }) => {
             showsText={true}
             size={100}
             progress={progressValue}
-            color={isDarkMode ? '#4f54b4' : '#3A94E7'}
+            color={isDarkMode ? '#70b6bb' : '#3A94E7'}
             unfilledColor={'#D0EFFF'}
             borderWidth={0}
             thickness={10}
@@ -36,14 +36,14 @@ const CourseViewScreen = ({ route, navigation }) => {
           />
           <View style={{ justifyContent: 'center', paddingLeft: 10 }}>
             <Text style={[styles.text, { fontFamily: 'Poppins-Regular', fontSize: 15, marginBottom: -5 }]}>Course</Text>
-            <Text style={[styles.text, { fontFamily: 'Poppins-Bold', fontSize: 20, maxWidth: '90%' }]} ellipsizeMode="tail">{title}</Text>
-            <Text style={[styles.text, { fontFamily: 'Poppins-Bold', fontSize: 15, color: level === 'Beginner' ? 'green' : level === 'Intermediate' ? '#ccae1b' : 'red' }]} numberOfLines={1} ellipsizeMode="tail">{level}</Text>
+            <Text style={[styles.text, { fontFamily: 'Poppins-Bold', fontSize: 25, maxWidth: '90%' }]} ellipsizeMode="tail">{title}</Text>
+            <Text style={[styles.text, { fontFamily: 'Poppins-Bold', fontSize: 20, color: level === 'Beginner' ? '#58af9c' : level === 'Intermediate' ? '#ccae1b' : 'red' }]} numberOfLines={1} ellipsizeMode="tail">{level}</Text>
           </View>
         </View>
 
         <View style={{ marginTop: 10 }}>
-          <Text style={[styles.text, { fontFamily: 'Poppins-Bold', fontSize: 20 }]}>Course Details</Text>
-          <Text style={[styles.text, { fontFamily: 'Poppins-Regular', fontSize: 15 }]} numberOfLines={3} ellipsizeMode="tail">{subtitle}</Text>
+          <Text style={[styles.text, { fontFamily: 'Poppins-Bold', fontSize: 22 }]}>Course Details</Text>
+          <Text style={[styles.text, { fontFamily: 'Poppins-Regular', fontSize: 18 }]} numberOfLines={3} ellipsizeMode="tail">{subtitle}</Text>
         </View>
 
         <TapGestureHandler onActivated={() => { navigation.navigate('CourseLearnScreen', { id: id }) }}>
@@ -71,13 +71,12 @@ const getStyles = (isDarkMode) => StyleSheet.create({
   },
   courseViewContainer: {
     width: '85%',
-    height: '50%',
-    backgroundColor: isDarkMode ? '#829ab1' : '#f2f5f5',
+    backgroundColor: isDarkMode ? '#4f54b3' : '#f2f5f5',
     borderRadius: 25,
     padding: 20,
   },
   button: {
-    backgroundColor: isDarkMode ? '#05045c' : '#3A94E7',
+    backgroundColor: isDarkMode ? '#58af9c' : '#3A94E7',
     borderRadius: 35,
     height: 50,
     marginBottom: 10,
@@ -91,7 +90,7 @@ const getStyles = (isDarkMode) => StyleSheet.create({
     fontSize: 20,
   },
   text: {
-    color: isDarkMode ? '#05045c' : 'black',
+    color: isDarkMode ? '#dbdfea' : 'black',
   },
 });
 

@@ -352,6 +352,19 @@ export const addWordToLearned = async (vocabulary_id) => {
   }
 };
 
+export const removeWordFromLearned = async (vocabulary_id) => {
+  const db = await getDatabaseInstance();
+  const query = 'UPDATE vocabulary SET learned_at = NULL WHERE id = ?';
+
+  try {
+    await db.runAsync(query, [vocabulary_id]);
+    return true;
+  } catch (error) {
+    console.error('Failed to execute SQL command', error);
+    throw error;
+  }
+};
+
 export const getQuestionToLearn = async (course_id) => {
   const db = await getDatabaseInstance();
   const query = `

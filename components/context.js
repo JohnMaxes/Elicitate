@@ -17,7 +17,7 @@ export const Context = ({ children }) => {
     const [contextEmail, setContextEmail] = useState('');
     const [timeSpent, setTimeSpent] = useState(0);
     const [pfp, setPfp] = useState(null);
-    const [isDarkMode, setIsDarkMode] = useState(true);
+    const [isDarkMode, setIsDarkMode] = useState(false);
 
     const resetPfp = async (base64string) => {
         try {
