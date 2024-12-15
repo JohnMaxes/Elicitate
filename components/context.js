@@ -4,8 +4,6 @@ import { getJWT, decodeJWT, removeJWT } from './jwt';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import qs from 'qs';
-import pako from 'pako';
-
 
 // KHÔNG ĐƯỢC SET useEffect Ở ĐÂY
 // MUỐN KHỞI TẠO FIRST TIME THÌ XÀI SETTER SET NÓ TRONG useEffect CỦA SCREEN CẦN XÀI CONTEXT
@@ -21,13 +19,14 @@ export const Context = ({ children }) => {
     const [pfp, setPfp] = useState(null);
     const [isDarkMode, setIsDarkMode] = useState(false);
 
+    const config = {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    };
+
     const resetPfp = async (uri) => {
         try {
-            const config = {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            };
             const response = await axios.post(
                 'https://59db-2402-800-6314-c5d1-35ea-fe23-8d7e-6bf8.ngrok-free.app/resetPfp',
                 qs.stringify({
@@ -73,17 +72,12 @@ export const Context = ({ children }) => {
                     setPfp(object.pfp);
                     console.log('set up last pfp!');
                 }
-
                 setTimeSpent(object.timeSpent);
                 setStreakCount(object.streak);
-
                 if(object.learnedWords !== '') {
                     await importWordsLearned(object.learnedWords, setWordCount);
                 }
-                
-                const time = await AsyncStorage.getItem('timeSpent');
-                if( time !== null) setTimeSpent(parseInt(time));
-                else AsyncStorage.setItem('timeSpent', '0');    
+                setTimeSpent(object.timeSpent);
             }
 
             const savedTheme = await AsyncStorage.getItem('theme');
@@ -99,22 +93,28 @@ export const Context = ({ children }) => {
     }
 
     const saveTimeSpent = async (currentTimeSpent) => {
+        setTimeSpent(timeSpent + currentTimeSpent);
         try {
-            const existingTimeSpent = await AsyncStorage.getItem('timeSpent');
-            const newTotalTimeSpent = existingTimeSpent 
-                ? parseInt(existingTimeSpent) + currentTimeSpent 
-                : currentTimeSpent;
-            setTimeSpent(newTotalTimeSpent)
-            await AsyncStorage.setItem('timeSpent', newTotalTimeSpent.toString());
-            console.log('Saved ' + currentTimeSpent + ' seconds and now have ' + newTotalTimeSpent + ' seconds total.');
+            console.log(currentTimeSpent);
+            await axios.post(
+                'https://59db-2402-800-6314-c5d1-35ea-fe23-8d7e-6bf8.ngrok-free.app/saveTimeSpent',
+                qs.stringify({
+                    username: contextUsername,
+                    email: contextEmail,
+                    timeSpent: currentTimeSpent
+                }),
+                config
+            );
+            console.log('Saved ' + currentTimeSpent + ' seconds and now have ' + (timeSpent + currentTimeSpent) + ' seconds total.');
         } catch (error) {
-            console.error("Error saving time: ", error);
+            console.error("Error saving time spent: ", error);
         }
     };
 
     const removeContext = async () => {
         setPfp(null);
-        //setTimeSpent(0);
+        setTimeSpent(0);
+        setWordCount(0);
         setCourseCount(0);
         setStreakCount(0);
         await clearWordsLearned();
