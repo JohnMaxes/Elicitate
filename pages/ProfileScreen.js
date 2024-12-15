@@ -1,30 +1,100 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Switch, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { GlobalContext } from '../components/context';
+import * as Notifications from 'expo-notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = ({ setIsLoggedIn }) => {
   const navigation = useNavigation();
   const { contextUsername, streakCount, timeSpent, pfp, removeContext, isDarkMode, setIsDarkMode } = useContext(GlobalContext);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
-  // Test data
-  const user = {
-    name: contextUsername,
-    username: contextUsername,
-    timeSpent: 'De dit me may',
-    wordsLearned: 69,
-    streakDays: 23,
-  };
+  useEffect(() => {
+    const getNotificationSettings = async () => {
+      const enabled = await AsyncStorage.getItem('notificationsEnabled');
+      setNotificationsEnabled(enabled === 'true');
+    };
+    getNotificationSettings();
+  }, []);
+
+  useEffect(() => {
+    const requestPermissions = async () => {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Permission to access notifications was denied');
+      }
+    };
+    requestPermissions();
+  }, []);
+
+  useEffect(() => {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: true,
+      }),
+    });
+  }, []);
 
   const handleLogout = async () => {
     setIsLoggedIn(false);
     console.log('logging out');
     await removeContext();
     await removeJWT();
-  }
+  };
 
-  const toggleDarkMode = () => setIsDarkMode((previousState) => !previousState);
+  const toggleDarkMode = async () => {
+    const newDarkModeState = !isDarkMode;
+    setIsDarkMode(newDarkModeState);
+    console.log(`Dark mode ${newDarkModeState ? 'enabled' : 'disabled'}`);
+
+    if (notificationsEnabled) {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Elicitate",
+          body: `Dark mode ${newDarkModeState ? 'enabled' : 'disabled'}!`,
+          priority: Notifications.AndroidNotificationPriority.HIGH,
+          sound: 'default',
+        },
+        trigger: {
+          seconds: 1,
+        },
+      });
+    }
+  };
+
+  const toggleNotifications = async () => {
+    const newValue = !notificationsEnabled;
+    setNotificationsEnabled(newValue);
+    await AsyncStorage.setItem('notificationsEnabled', newValue.toString());
+    console.log(`Notifications ${newValue ? 'enabled' : 'disabled'}`);
+
+    if (newValue) {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Permission to access notifications was denied');
+        setNotificationsEnabled(false);
+        await AsyncStorage.setItem('notificationsEnabled', 'false');
+      } else {
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: "Elicitate",
+            body: "Notifications enabled!",
+            priority: Notifications.AndroidNotificationPriority.HIGH,
+            sound: 'default',
+          },
+          trigger: {
+            seconds: 1,
+          },
+        });
+      }
+    } else {
+      await Notifications.cancelAllScheduledNotificationsAsync();
+    }
+  };
 
   const styles = getStyles(isDarkMode);
 
@@ -41,8 +111,8 @@ const ProfileScreen = ({ setIsLoggedIn }) => {
           <Image source={require('../assets/default-pfp.png')} style={styles.avatar} />
         )}
         <View>
-          <Text style={styles.name}>{user.name}</Text>
-          <Text style={styles.username}>{user.name}</Text>
+          <Text style={styles.name}>{contextUsername}</Text>
+          <Text style={styles.username}>{contextUsername}</Text>
         </View>
       </TouchableOpacity>
 
@@ -53,12 +123,12 @@ const ProfileScreen = ({ setIsLoggedIn }) => {
           }</Text>
           <Text style={styles.metricLabel}>Time spent</Text>
           <View style={{ height: 10 }} />
-          <Text style={styles.metricValue}>{user.wordsLearned}</Text>
+          <Text style={styles.metricValue}>{69}</Text>
           <Text style={styles.metricLabel}>Words learned</Text>
         </View>
         <View style={[styles.metricBox, styles.circleBox]}>
           <View style={styles.circle}>
-            <Text style={styles.circleNumberText}>{user.streakDays}</Text>
+            <Text style={styles.circleNumberText}>{23}</Text>
             <Text style={styles.circleDayText}>Days</Text>
           </View>
         </View>
@@ -67,9 +137,14 @@ const ProfileScreen = ({ setIsLoggedIn }) => {
       <View style={styles.settings}>
         <TouchableOpacity style={styles.settingRow}>
           <View style={styles.settingIcon}>
-            <Ionicons name='settings-outline' size={30} color={'black'} />
+            <Ionicons name='notifications-outline' size={30} color={'black'} />
           </View>
-          <Text style={styles.settingText}>Settings</Text>
+          <Text style={styles.settingText}>Notifications</Text>
+          <Switch
+            value={notificationsEnabled}
+            onValueChange={toggleNotifications}
+            style={styles.switch}
+          />
         </TouchableOpacity>
         <View style={styles.settingRow}>
           <View style={styles.settingIcon}>
