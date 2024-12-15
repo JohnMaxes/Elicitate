@@ -22,11 +22,11 @@ const LoginScreen = ({ togglePage, handleLogin }) => {
       return;
     }
     else 
-    {            handleLogin();
+    {            
       setLoading(true);
       try {
         const response = await axios.post(
-          'https://db53-123-21-150-101.ngrok-free.app/login',
+          'https://e283-113-161-81-171.ngrok-free.app/login',
           qs.stringify({
               usernameOrEmail: username,
               password: password
@@ -35,9 +35,9 @@ const LoginScreen = ({ togglePage, handleLogin }) => {
         );
 
         if (response.status === 200) {
-            let token = response.data.token; // Assuming the token is returned as { message: [token] }
+            let token = response.data.token;
             console.log(token);
-            await storeJWT(token); // Wait for the token to be added
+            await storeJWT(token);
             handleLogin();
             setLoading(false);
         } else {

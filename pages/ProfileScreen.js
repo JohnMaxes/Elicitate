@@ -32,7 +32,14 @@ const ProfileScreen = ({ handleLogout }) => {
     <View style={styles.container}>
       <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 30, textAlign: 'center', color: '#03174c', marginTop: 20, marginBottom: 10 }}>Profile Screen</Text>
       <TouchableOpacity style={styles.profileCard} onPress={() => navigation.navigate('ProfileDetails')}>
-        <Image style={styles.avatar} source={require('../assets/default-pfp.png')}/>
+          {pfp ? (
+            <Image
+              source={{ uri: `data:image/jpeg;base64,${pfp}` }} // Use Base64 string
+              style={styles.avatar}
+            />
+          ) : (
+            <Image source={require('../assets/default-pfp.png')} style={styles.avatar} />
+          )}
         <View>
           <Text style={styles.name}>{user.name}</Text>
           <Text style={styles.username}>{user.name}</Text>

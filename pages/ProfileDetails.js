@@ -1,25 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import CustomInput from '../components/customInput';
-import { launchImageLibrary } from 'react-native-image-picker';
-
+import * as ImagePicker from 'expo-image-picker';
+import { GlobalContext } from '../components/context';
+import qs from 'qs';
 
 const ProfileDetails = ({ navigation }) => {
-  const handleSave = () => {
-    // Handle save action
+  const {pfp, resetPfp} = useContext(GlobalContext);
+  const [profilePicture, setProfilePicture] = useState(null);
+
+  const handleSave = async () => {
+    await resetPfp(profilePicture);
     console.log('Profile saved!');
     navigation.goBack();
   };
 
+  const selectImage = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+    if (permissionResult.granted === false) {
+      alert('Permission to access camera roll is required!');
+      return;
+    }
 
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: 'images',
+      allowsEditing: true,
+      quality: 0.1,
+      base64: true,
+    });
+
+    if (!result.canceled) {
+      setProfilePicture(result.assets[0].base64);
+    } else {
+      console.log('User cancelled image picker');
+    }
+  }
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity 
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+              navigation.goBack();
+            }
+          }
           style={styles.backButton}
         >
           <Ionicons name="arrow-back" size={24} color="black" />
@@ -34,7 +61,21 @@ const ProfileDetails = ({ navigation }) => {
       </View>
 
       <View style={styles.profileImageContainer}>
-        <Image source={require('../assets/default-pfp.png')} style={styles.profileImage} />
+        <TouchableOpacity style={{alignItems:'center', justifyContent:'center'}} onPress={selectImage}>
+          {pfp ? (
+            <Image
+              source={{ uri: `data:image/jpeg;base64,${pfp}` }} // Use Base64 string
+              style={styles.profileImage}
+            />
+          ) : profilePicture? (
+            <Image
+              source={{ uri: `data:image/jpeg;base64,${profilePicture}` }} // Use Base64 string
+              style={styles.profileImage}
+            />
+          ) : (
+            <Image source={require('../assets/default-pfp.png')} style={styles.profileImage} />
+          )}
+        </TouchableOpacity>
         <Text style={styles.profileName}>Thinh dep trai vai</Text>
         <Text style={styles.profileEmail}>@thinhtucuto</Text>
       </View>

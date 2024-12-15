@@ -20,7 +20,8 @@ export const removeJWT = async () => {
 
 export const getJWT = async () => {
   try {
-    return await AsyncStorage.getItem('token');
+    let token = await AsyncStorage.getItem('token');
+    return (token);
   } catch (error) {
     console.error('Error getting JWT:', error);
   }
@@ -28,9 +29,11 @@ export const getJWT = async () => {
 
 export const decodeJWT = async () => {
     try {
-        const token = await AsyncStorage.getItem('token');
+        let token = await AsyncStorage.getItem('token');
+        console.log(token);
         return jwtDecode(token);
-    } catch (error) {
-        console.error('Error decoding: ', error);
+    }
+     catch (error) {
+        console.error('Error JWTdecoding: ', error);
     }
 }
