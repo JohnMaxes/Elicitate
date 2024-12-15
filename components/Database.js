@@ -491,5 +491,20 @@ export const clearWordsLearned = async () => {
   } catch (error) {
     console.error('Failed to execute SQL command', error);
     throw error;
-  }
+  };
+}
+
+export const importWordsLearned = async (string, setWordCount) => {
+  const db = await getDatabaseInstance();
+  const query = `UPDATE vocabulary SET learned_at = CURRENT_TIMESTAMP WHERE id IN (${string})`;
+  try {
+    const idsArray = string.split(',').map(Number);
+    setWordCount(idsArray.length);
+    await db.runAsync(query);
+    console.log('Imported words learned');
+    return true;
+  } catch (error) {
+    console.error('Failed while importing words', error);
+    throw error;
+  };
 }

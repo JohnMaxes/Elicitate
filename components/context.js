@@ -1,5 +1,5 @@
 import React, { createContext, useState } from 'react';
-import { getLearnedCourseNumber, getLearnedWordNumber, clearWordsLearned } from './Database';
+import { getLearnedCourseNumber, getLearnedWordNumber, clearWordsLearned, importWordsLearned } from './Database';
 import { getJWT, decodeJWT, removeJWT } from './jwt';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -73,8 +73,13 @@ export const Context = ({ children }) => {
                     setPfp(object.pfp);
                     console.log('set up last pfp!');
                 }
+
                 setTimeSpent(object.timeSpent);
                 setStreakCount(object.streak);
+
+                if(object.learnedWords !== '') {
+                    await importWordsLearned(object.learnedWords, setWordCount);
+                }
                 
                 const time = await AsyncStorage.getItem('timeSpent');
                 if( time !== null) setTimeSpent(parseInt(time));
