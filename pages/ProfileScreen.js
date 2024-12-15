@@ -24,14 +24,6 @@ const ProfileScreen = ({ setIsLoggedIn }) => {
     await removeJWT();
   }
 
-  const formattedTime = () => {
-    let finalTime;
-    let hours = timeSpent / 3600;
-    let minutes = timeSpent / 60;
-    if(hours == 0) return (minutes + 'm')
-    else return (hours + 'h' + minutes + 'm');
-  }
-
   const [isDarkMode, setIsDarkMode] = React.useState(false);
 
   const toggleDarkMode = () => setIsDarkMode((previousState) => !previousState);
@@ -56,7 +48,7 @@ const ProfileScreen = ({ setIsLoggedIn }) => {
       <View style={styles.metrics}>
         <View style={styles.metricBox}>
           <Text style={styles.metricValue}>{
-            (timeSpent / 3600 >= 1) ? (timeSpent / 3600 + 'h' + timeSpent / 60 + 'm') : (Math.floor(timeSpent / 60) + 'm')
+            (timeSpent / 3600 >= 1) ? (Math.floor(timeSpent / 3600) + 'h' + Math.floor(timeSpent / 60) + 'm') : (Math.floor(timeSpent / 60) + 'm')
           }</Text>
           <Text style={styles.metricLabel}>Time spent</Text>
           <View style={{ height: 10 }} />
