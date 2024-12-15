@@ -1,4 +1,6 @@
 import * as SQLite from 'expo-sqlite';
+import axios from 'axios';
+import qs from 'qs';
 
 let dbInstance = null;
 
@@ -339,15 +341,30 @@ export const queryCourseToDatabase = async (string) => {
   }
 };
 
-export const addWordToLearned = async (vocabulary_id) => {
+const config = {
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
+};
+
+export const addWordToLearned = async (vocabulary_id, username, email) => {
   const db = await getDatabaseInstance();
   const query = 'UPDATE vocabulary SET learned_at = CURRENT_TIMESTAMP WHERE id = ?';
-
   try {
     await db.runAsync(query, [vocabulary_id]);
+    await axios.post(
+      'https://59db-2402-800-6314-c5d1-35ea-fe23-8d7e-6bf8.ngrok-free.app/addLearnedWord',
+      qs.stringify({
+          username: username,
+          email: email,
+          learnedWordId: vocabulary_id
+      }),
+      config
+    );
+    console.log('added word to learn on db and fb');
     return true;
   } catch (error) {
-    console.error('Failed to execute SQL command', error);
+    console.error('Error encountered while adding word to learned: ', error);
     throw error;
   }
 };

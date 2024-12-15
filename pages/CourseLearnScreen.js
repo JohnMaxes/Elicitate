@@ -25,7 +25,7 @@ const CourseLearnScreen = ({ route, navigation }) => {
     const inputRefs = useRef([]);
 
     const [seconds, setSeconds] = useState(0);
-    const { saveTimeSpent, isDarkMode } = useContext(GlobalContext);
+    const { saveTimeSpent, isDarkMode, contextUsername, contextEmail } = useContext(GlobalContext);
     const secondsRef = useRef(seconds);
 
     const styles = getStyles(isDarkMode);
@@ -52,7 +52,7 @@ const CourseLearnScreen = ({ route, navigation }) => {
         setFinalInput(input);
     };
 
-    const handleButton = () => {
+    const handleButton = async () => {
         if (index < wordList.length) {
             if (checked) {
                 if (isCorrect) {
@@ -83,7 +83,8 @@ const CourseLearnScreen = ({ route, navigation }) => {
                 setChecked(true);
                 if (finalInput === currentWord.word) {
                     setIsCorrect(true);
-                    addWordToLearned(currentWord.id);
+                    console.log(contextUsername + ' ' + contextEmail)
+                    await addWordToLearned(currentWord.id, contextUsername, contextEmail);
                 } else {
                     setIsCorrect(false);
                 }
@@ -170,7 +171,7 @@ const CourseLearnScreen = ({ route, navigation }) => {
             <Pressable style={styles.vocabScreen} onPress={Keyboard.dismiss}>
                 <View style={{
                     alignItems: 'center',
-                    minHeight: Dimensions.get('window').height * 0.5
+                    minHeight: Dimensions.get('window').height * 0.6
                     }}
                 >
                     <Text style={styles.wordText}>{currentWord.word}</Text>
