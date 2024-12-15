@@ -119,7 +119,7 @@ export const Context = ({ children }) => {
         <GlobalContext.Provider value={{ streakCount, wordCount, setStreakCount, 
         setWordCount, setCourseCount, courseCount, currentCourse, setCurrentCourse, 
         contextUsername, contextEmail, timeSpent, pfp, resetPfp,
-        setUpContext, saveTimeSpent, isDarkMode, toggleTheme, removeContext }}>
+        setUpContext, saveTimeSpent, isDarkMode, setIsDarkMode, toggleTheme, removeContext }}>
             {children}
         </GlobalContext.Provider>
     );
