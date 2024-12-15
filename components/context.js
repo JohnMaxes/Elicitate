@@ -1,9 +1,11 @@
 import React, { createContext, useState } from 'react';
-import { getLearnedCourseNumber, getLearnedWordNumber } from './Database';
+import { getLearnedCourseNumber, getLearnedWordNumber, clearWordsLearned } from './Database';
 import { getJWT, decodeJWT, removeJWT } from './jwt';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import qs from 'qs';
+import pako from 'pako';
+
 
 // KHÔNG ĐƯỢC SET useEffect Ở ĐÂY
 // MUỐN KHỞI TẠO FIRST TIME THÌ XÀI SETTER SET NÓ TRONG useEffect CỦA SCREEN CẦN XÀI CONTEXT
@@ -19,36 +21,33 @@ export const Context = ({ children }) => {
     const [pfp, setPfp] = useState(null);
     const [isDarkMode, setIsDarkMode] = useState(true);
 
-    const resetPfp = async (base64string) => {
+    const resetPfp = async (uri) => {
         try {
             const config = {
                 headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded'
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
             };
             const response = await axios.post(
-              'https://e283-113-161-81-171.ngrok-free.app/resetPfp',
-              qs.stringify({
-                  username: contextUsername,
-                  email: contextEmail,
-                  pfp: base64string,
-              }),
-              config
+                'https://59db-2402-800-6314-c5d1-35ea-fe23-8d7e-6bf8.ngrok-free.app/resetPfp',
+                qs.stringify({
+                    username: contextUsername,
+                    email: contextEmail,
+                    pfp: uri,
+                }),
+                config
             );
-    
             if (response.status === 200) {
-                await AsyncStorage.setItem('pfp', base64string);
-                setPfp(base64string);
+                await AsyncStorage.setItem('pfp', uri);
+                setPfp(uri);
                 return true;
             } else {
-                setPfp(base64string)
                 return false;
             }
-          } catch (error) {
+        } catch (error) {
             console.log('Error saving pfp via API', error);
-            setPfp(base64string);
-        };    
-    }
+        }
+    };
 
     const toggleTheme = async () => {
         const newTheme = !isDarkMode ? 'dark' : 'light';
@@ -58,26 +57,24 @@ export const Context = ({ children }) => {
 
     const setUpContext = async () => {
         try {
+            setPfp(null);
             let result = await getLearnedWordNumber();
             setWordCount(result.total_words);
-            setStreakCount(15);
 
             result = await getLearnedCourseNumber();
             setCourseCount(result.total_courses);
 
             let token = await getJWT();
             if(token) {
-                console.log(token);
                 let object = await decodeJWT(token);
-                console.log('Username: ' + object.user);
-                console.log('Email: ' + object.email);
                 setContextUsername(object.user);
                 setContextEmail(object.email);
-
-                if(object.pfp !== undefined) {
-                    await AsyncStorage.setItem('pfp', object.pfp);
+                if(object.pfp !== '') {
                     setPfp(object.pfp);
+                    console.log('set up last pfp!');
                 }
+                setTimeSpent(object.timeSpent);
+                setStreakCount(object.streak);
                 
                 const time = await AsyncStorage.getItem('timeSpent');
                 if( time !== null) setTimeSpent(parseInt(time));
@@ -110,11 +107,19 @@ export const Context = ({ children }) => {
         }
     };
 
+    const removeContext = async () => {
+        setPfp(null);
+        //setTimeSpent(0);
+        setCourseCount(0);
+        setStreakCount(0);
+        await clearWordsLearned();
+    }
+
     return (
         <GlobalContext.Provider value={{ streakCount, wordCount, setStreakCount, 
         setWordCount, setCourseCount, courseCount, currentCourse, setCurrentCourse, 
         contextUsername, contextEmail, timeSpent, pfp, resetPfp,
-        setUpContext, saveTimeSpent, isDarkMode, toggleTheme }}>
+        setUpContext, saveTimeSpent, isDarkMode, toggleTheme, removeContext }}>
             {children}
         </GlobalContext.Provider>
     );
