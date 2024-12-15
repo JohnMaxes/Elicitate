@@ -462,3 +462,17 @@ export const getLearnedCourseNumber = async () => {
     throw error;
   }
 };
+
+export const clearWordsLearned = async () => {
+  const db = await getDatabaseInstance();
+  const query = `
+    UPDATE vocabulary SET learned_at = NULL
+  `
+  try {
+    await db.runAsync(query);
+    return true;
+  } catch (error) {
+    console.error('Failed to execute SQL command', error);
+    throw error;
+  }
+}

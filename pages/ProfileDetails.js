@@ -5,11 +5,12 @@ import { Picker } from '@react-native-picker/picker';
 import CustomInput from '../components/customInput';
 import * as ImagePicker from 'expo-image-picker';
 import { GlobalContext } from '../components/context';
-import qs from 'qs';
+import * as ImageManipulator from 'expo-image-manipulator';
+
 
 const ProfileDetails = ({ navigation }) => {
   const {pfp, resetPfp} = useContext(GlobalContext);
-  const [profilePicture, setProfilePicture] = useState(null);
+  const [profilePicture, setProfilePicture] = useState(pfp);
 
   const handleSave = async () => {
     await resetPfp(profilePicture);
@@ -28,12 +29,11 @@ const ProfileDetails = ({ navigation }) => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: 'images',
       allowsEditing: true,
-      quality: 0.1,
-      base64: true,
+      quality: 0,
     });
 
     if (!result.canceled) {
-      setProfilePicture(result.assets[0].base64);
+      setProfilePicture(result.assets[0].uri);
     } else {
       console.log('User cancelled image picker');
     }
@@ -62,14 +62,9 @@ const ProfileDetails = ({ navigation }) => {
 
       <View style={styles.profileImageContainer}>
         <TouchableOpacity style={{alignItems:'center', justifyContent:'center'}} onPress={selectImage}>
-          {pfp ? (
+          { profilePicture? (
             <Image
-              source={{ uri: `data:image/jpeg;base64,${pfp}` }} // Use Base64 string
-              style={styles.profileImage}
-            />
-          ) : profilePicture? (
-            <Image
-              source={{ uri: `data:image/jpeg;base64,${profilePicture}` }} // Use Base64 string
+              source={{ uri: profilePicture }} // Use Base64 string
               style={styles.profileImage}
             />
           ) : (

@@ -19,9 +19,7 @@ import { TapGestureHandler } from "react-native-gesture-handler";
 import * as Notifications from 'expo-notifications';
 import * as Progress from 'react-native-progress';
 
-import { removeJWT } from "./components/jwt.js";
-
-import { initDatabase, getLearnedWordNumber } from "./components/Database.js";
+import { initDatabase } from "./components/Database.js";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Context } from "./components/context.js";
 
@@ -53,11 +51,11 @@ const HomeVocabReviewStack = () => {
   )
 }
 
-const ProfileStack = ({ handleLogout }) => {
+const ProfileStack = ({ setIsLoggedIn }) => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="ProfileScreen">
-        {props => <ProfileScreen {...props} handleLogout={handleLogout} />}
+        {props => <ProfileScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
       </Stack.Screen>
       <Stack.Screen 
         name="ProfileDetails" 
@@ -72,7 +70,7 @@ const ProfileStack = ({ handleLogout }) => {
   );
 };
 
-const HomeBottomTab = ({ handleLogout }) => {
+const HomeBottomTab = ({ setIsLoggedIn }) => {
   return (
     <NavigationContainer>
         <BottomTab.Navigator
@@ -113,7 +111,7 @@ const HomeBottomTab = ({ handleLogout }) => {
           <BottomTab.Screen name="Course" component={CourseScreen} />
           <BottomTab.Screen name="Dictionary" component={DictionaryScreen} />
           <BottomTab.Screen name="Profile">
-            {props => <ProfileStack {...props} handleLogout={handleLogout} />}
+            {props => <ProfileStack {...props} setIsLoggedIn={setIsLoggedIn} />}
           </BottomTab.Screen>
         </BottomTab.Navigator>
     </NavigationContainer>
@@ -186,11 +184,7 @@ export default function App() {
 
   const togglePage = () => setIsMember(!isMember);
   const handleLogin = () => setIsLoggedIn(true);
-  const handleLogout = async () => {
-    console.log('logging out');
-    await removeJWT();
-    setIsLoggedIn(false);
-  }
+
   if (isLoading) {
     return (
       <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
@@ -204,7 +198,7 @@ export default function App() {
     <GestureHandlerRootView>
       <View style={{ flex: 1, justifyContent: 'center' }}>
         {isLoggedIn ? (
-          <HomeBottomTab handleLogout={handleLogout} />
+          <HomeBottomTab setIsLoggedIn={setIsLoggedIn} />
         ) : isMember ? (
           <LoginScreen handleLogin={handleLogin} togglePage={togglePage} />
         ) : (

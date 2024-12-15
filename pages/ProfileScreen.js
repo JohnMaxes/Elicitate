@@ -5,9 +5,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { GlobalContext } from '../components/context';
 
 
-const ProfileScreen = ({ handleLogout }) => {
+const ProfileScreen = ({ setIsLoggedIn }) => {
   const navigation = useNavigation();
-  const {contextUsername, streakCount, timeSpent} = useContext(GlobalContext);
+  const {contextUsername, streakCount, timeSpent, pfp, removeContext} = useContext(GlobalContext);
   // Test data
   const user = {
     name: contextUsername,
@@ -16,6 +16,13 @@ const ProfileScreen = ({ handleLogout }) => {
     wordsLearned: 69,
     streakDays: 23,
   };
+
+  const handleLogout = async () => {
+    setIsLoggedIn(false);
+    console.log('logging out');
+    await removeContext();
+    await removeJWT();
+  }
 
   const formattedTime = () => {
     let finalTime;
@@ -34,7 +41,7 @@ const ProfileScreen = ({ handleLogout }) => {
       <TouchableOpacity style={styles.profileCard} onPress={() => navigation.navigate('ProfileDetails')}>
           {pfp ? (
             <Image
-              source={{ uri: `data:image/jpeg;base64,${pfp}` }} // Use Base64 string
+              source={{ uri: pfp }} // Use Base64 string
               style={styles.avatar}
             />
           ) : (

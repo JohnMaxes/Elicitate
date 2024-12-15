@@ -30,7 +30,6 @@ export const getJWT = async () => {
 export const decodeJWT = async () => {
     try {
         let token = await AsyncStorage.getItem('token');
-        console.log(token);
         return jwtDecode(token);
     }
      catch (error) {

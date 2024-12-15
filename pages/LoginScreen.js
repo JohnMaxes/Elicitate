@@ -26,7 +26,7 @@ const LoginScreen = ({ togglePage, handleLogin }) => {
       setLoading(true);
       try {
         const response = await axios.post(
-          'https://e283-113-161-81-171.ngrok-free.app/login',
+          'https://59db-2402-800-6314-c5d1-35ea-fe23-8d7e-6bf8.ngrok-free.app/login',
           qs.stringify({
               usernameOrEmail: username,
               password: password
@@ -35,9 +35,8 @@ const LoginScreen = ({ togglePage, handleLogin }) => {
         );
 
         if (response.status === 200) {
-            let token = response.data.token;
-            console.log(token);
-            await storeJWT(token);
+            console.log(response.data);
+            await storeJWT(response.data.token);
             handleLogin();
             setLoading(false);
         } else {
