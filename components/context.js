@@ -28,7 +28,7 @@ export const Context = ({ children }) => {
     const resetPfp = async (uri) => {
         try {
             const response = await axios.post(
-                'https://59db-2402-800-6314-c5d1-35ea-fe23-8d7e-6bf8.ngrok-free.app/resetPfp',
+                'https://7a11-171-226-41-182.ngrok-free.app/resetPfp',
                 qs.stringify({
                     username: contextUsername,
                     email: contextEmail,
@@ -48,6 +48,33 @@ export const Context = ({ children }) => {
         }
     };
 
+    const editUsernameEmail = async (editedUsername, editedEmail) => {
+        try {
+            const response = await axios.post(
+                'https://7a11-171-226-41-182.ngrok-free.app/editUsernameEmail',
+                qs.stringify({
+                    username: contextUsername,
+                    email: contextEmail,
+                    newUsername: editedUsername,
+                    newEmail: editedEmail,
+                }),
+                config
+            );
+            if (response.status === 200) {
+                await AsyncStorage.setItem('updatedUsername', newUsername);
+                await AsyncStorage.setItem('updatedEmail', newEmail);
+                console.log('Async storage updated');
+                console.log(await AsyncStorage.getItem('updatedEmail'));
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.log('Error saving pfp via API', error);
+        }
+    };
+
+
     const toggleTheme = async () => {
         const newTheme = !isDarkMode ? 'dark' : 'light';
         setIsDarkMode(!isDarkMode);
@@ -66,8 +93,13 @@ export const Context = ({ children }) => {
             let token = await getJWT();
             if(token) {
                 let object = await decodeJWT(token);
-                setContextUsername(object.user);
-                setContextEmail(object.email);
+                let updatedUsername = await AsyncStorage.getItem('updatedUsername');
+                let updatedEmail = await AsyncStorage.getItem('updatedEmail');
+                if (updatedUsername) setContextUsername(updatedUsername);
+                else setContextUsername(object.user);
+                if (updatedEmail) setContextEmail(updatedEmail);
+                else setContextEmail(object.email);
+
                 if(object.pfp !== '') {
                     setPfp(object.pfp);
                     console.log('set up last pfp!');
@@ -97,7 +129,7 @@ export const Context = ({ children }) => {
         try {
             console.log(currentTimeSpent);
             await axios.post(
-                'https://59db-2402-800-6314-c5d1-35ea-fe23-8d7e-6bf8.ngrok-free.app/saveTimeSpent',
+                'https://7a11-171-226-41-182.ngrok-free.app/saveTimeSpent',
                 qs.stringify({
                     username: contextUsername,
                     email: contextEmail,
@@ -106,6 +138,7 @@ export const Context = ({ children }) => {
                 config
             );
             console.log('Saved ' + currentTimeSpent + ' seconds and now have ' + (timeSpent + currentTimeSpent) + ' seconds total.');
+            setTimeSpent(lastTimeSpent => lastTimeSpent + currentTimeSpent);
         } catch (error) {
             console.error("Error saving time spent: ", error);
         }
@@ -116,15 +149,16 @@ export const Context = ({ children }) => {
         setTimeSpent(0);
         setWordCount(0);
         setCourseCount(0);
-        setStreakCount(0);
+        setStreakCount(1);
         await clearWordsLearned();
     }
 
     return (
         <GlobalContext.Provider value={{ streakCount, wordCount, setStreakCount, 
         setWordCount, setCourseCount, courseCount, currentCourse, setCurrentCourse, 
-        contextUsername, contextEmail, timeSpent, pfp, resetPfp,
-        setUpContext, saveTimeSpent, isDarkMode, setIsDarkMode, toggleTheme, removeContext }}>
+        contextUsername, setContextUsername, setContextEmail, contextEmail, timeSpent, pfp, resetPfp,
+        setUpContext, saveTimeSpent, isDarkMode, setIsDarkMode, toggleTheme, removeContext, 
+        editUsernameEmail}}>
             {children}
         </GlobalContext.Provider>
     );

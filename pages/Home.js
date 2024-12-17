@@ -114,7 +114,7 @@ function HomeScreen({ navigation }) {
       <View style={styles.statusBarContent}>
         <View><Icon name={'flame'} size={24} color={'red'} /></View>
         <View style={styles.statusBarTextContainer}>
-          <Text style={ styles.statusBarText }>{streakCount + ' ' + timeSpent}</Text>
+          <Text style={ styles.statusBarText }>{streakCount}</Text>
         </View>
       </View>
 
@@ -126,7 +126,7 @@ function HomeScreen({ navigation }) {
               <Progress.Circle
                 showsText={true}
                 size={Dimensions.get('window').width * 0.23}
-                progress={0.9} // Update this with actual progress value
+                progress={0.9}
                 color={ isDarkMode ? '#4f54b4' : '#3A94E7'}
                 unfilledColor={'#D0EFFF'}
                 borderWidth={0}

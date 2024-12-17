@@ -7,7 +7,7 @@ import axios from 'axios';
 import qs from 'qs';
 
 const SignUpScreen = ({ togglePage, handleLogin }) => {
-    const [registUsername, setRUsername] = useState(''); // Initialize as empty string
+    const [registUsername, setRUsername] = useState('');
     const [registEmail, setREmail] = useState('');
     const [registPassword, setRPassword] = useState('');
     const [registConfirm, setRConfirm] = useState('');
@@ -33,7 +33,7 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
         let c = registPassword;
         try {
             const response = await axios.post(
-                'https://59db-2402-800-6314-c5d1-35ea-fe23-8d7e-6bf8.ngrok-free.app/register',
+                'https://7a11-171-226-41-182.ngrok-free.app/register',
                 qs.stringify({
                     username: a,
                     email: b,

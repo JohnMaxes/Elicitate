@@ -5,17 +5,32 @@ import { Picker } from '@react-native-picker/picker';
 import CustomInput from '../components/customInput';
 import * as ImagePicker from 'expo-image-picker';
 import { GlobalContext } from '../components/context';
+import * as Progress from 'react-native-progress';
 import * as ImageManipulator from 'expo-image-manipulator';
 
 
 const ProfileDetails = ({ navigation }) => {
-  const {pfp, resetPfp} = useContext(GlobalContext);
+  const {pfp, resetPfp, contextUsername, contextEmail, setContextUsername, setContextEmail, editUsernameEmail} = useContext(GlobalContext);
   const [profilePicture, setProfilePicture] = useState(pfp);
+  const [newUsername, setNewUsername] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSave = async () => {
-    await resetPfp(profilePicture);
-    console.log('Profile saved!');
-    navigation.goBack();
+    try {
+      setLoading(true);
+      if(profilePicture !== pfp) await resetPfp(profilePicture);
+      if(newUsername !== '' || newEmail !== '') await editUsernameEmail(newUsername,newEmail);
+      if(newUsername !== '') setContextUsername(newUsername);
+      if(newEmail !== '') setContextEmail(newEmail);
+      setNewUsername(''); setNewEmail('');
+      setLoading(false);
+      alert('Profile saved!');
+    }
+    catch (error) {
+      console.log(error);
+      alert(error);
+    }
   };
 
   const selectImage = async () => {
@@ -56,7 +71,15 @@ const ProfileDetails = ({ navigation }) => {
           onPress={handleSave}
           style={styles.saveButton}
         >
-          <Text style={styles.saveButtonText}>Save</Text>
+          {loading ? (
+            <Progress.Circle
+              indeterminate={true}
+              color="blue"
+              size={20}
+            />
+          ) : (
+            <Text style={styles.saveButtonText}>Save</Text>
+          )}
         </TouchableOpacity>
       </View>
 
@@ -64,43 +87,37 @@ const ProfileDetails = ({ navigation }) => {
         <TouchableOpacity style={{alignItems:'center', justifyContent:'center'}} onPress={selectImage}>
           { profilePicture? (
             <Image
-              source={{ uri: profilePicture }} // Use Base64 string
+              source={{ uri: profilePicture }}
               style={styles.profileImage}
             />
           ) : (
             <Image source={require('../assets/default-pfp.png')} style={styles.profileImage} />
           )}
         </TouchableOpacity>
-        <Text style={styles.profileName}>Thinh dep trai vai</Text>
-        <Text style={styles.profileEmail}>@thinhtucuto</Text>
+        <Text style={styles.profileName}>{contextUsername}</Text>
+        <Text style={styles.profileEmail}>{contextEmail}</Text>
       </View>
 
       <View style={styles.formContainer}>
-        <Text style={styles.label}>doi ten?</Text>
+        <Text style={styles.label}>Edit Username</Text>
         <CustomInput
-          placeholder="thinh cu bu"
+          placeholder={contextUsername}
           placeholderTextColor="grey"
           iconUri="https://img.icons8.com/name"
+          onChangeText={setNewUsername}
+          value={newUsername}
         />
 
-        <Text style={styles.label}>doi sdt?</Text>
+        <Text style={styles.label}>Edit Email</Text>
         <CustomInput
-          placeholder="0123456789"
+          placeholder={contextEmail}
           placeholderTextColor="grey"
-          iconUri="https://img.icons8.com/phone"
-          keyboardType="phone-pad"
+          iconUri="https://img.icons8.com/mail"
+          keyboardType="email-address"
           maxLength={15}
+          onChangeText={setNewEmail}
+          value={newEmail}
         />
-
-        <Text style={styles.label}>Gender</Text>
-        <View style={styles.pickerContainer}>
-          <Picker style={styles.picker}>
-            <Picker.Item label="Select Gender" value="" />
-            <Picker.Item label="Male" value="male" />
-            <Picker.Item label="Female" value="female" />
-            <Picker.Item label="gay = bao dang" value="gay" />
-          </Picker>
-        </View>
       </View>
     </ScrollView>
   );

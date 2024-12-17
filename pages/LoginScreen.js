@@ -26,7 +26,7 @@ const LoginScreen = ({ togglePage, handleLogin }) => {
       setLoading(true);
       try {
         const response = await axios.post(
-          'https://59db-2402-800-6314-c5d1-35ea-fe23-8d7e-6bf8.ngrok-free.app/login',
+          'https://7a11-171-226-41-182.ngrok-free.app/login',
           qs.stringify({
               usernameOrEmail: username,
               password: password

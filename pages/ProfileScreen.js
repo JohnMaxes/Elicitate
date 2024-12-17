@@ -104,7 +104,7 @@ const ProfileScreen = ({ setIsLoggedIn }) => {
       <TouchableOpacity style={styles.profileCard} onPress={() => navigation.navigate('ProfileDetails')}>
         {pfp ? (
           <Image
-            source={{ uri: pfp }} // Use Base64 string
+            source={{ uri: pfp }}
             style={styles.avatar}
           />
         ) : (
