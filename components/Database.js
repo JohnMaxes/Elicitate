@@ -508,3 +508,44 @@ export const importWordsLearned = async (string, setWordCount) => {
     throw error;
   };
 }
+
+export const getCourseLearnedPercentage = async (course_id) => {
+  const db = await getDatabaseInstance();
+
+  // SQL queries
+  const totalWordsQuery = `
+    SELECT COUNT(vocabulary_id) AS total_words
+    FROM course_vocabulary
+    WHERE course_id = ?;
+  `;
+
+  const learnedWordsQuery = `
+    SELECT COUNT(vocabulary_id) AS learned_words
+    FROM course_vocabulary
+    JOIN vocabulary ON course_vocabulary.vocabulary_id = vocabulary.id
+    WHERE course_vocabulary.course_id = ? AND vocabulary.learned_at IS NOT NULL;
+  `;
+
+  try {
+    // Get total words
+    const totalResult = await db.getFirstAsync(totalWordsQuery, [course_id]);
+    const totalWords = totalResult?.total_words || 0;
+
+    if (totalWords === 0) {
+      return 0; // Avoid division by zero
+    }
+
+    // Get learned words
+    const learnedResult = await db.getFirstAsync(learnedWordsQuery, [course_id]);
+    const learnedWords = learnedResult?.learned_words || 0;
+
+    // Calculate percentage
+    const percentage = (learnedWords / totalWords) * 100;
+
+    // Round to 2 decimal places for better readability
+    return parseFloat(percentage.toFixed(2));
+  } catch (error) {
+    console.error('Failed to calculate course learned percentage', error);
+    throw error;
+  }
+};

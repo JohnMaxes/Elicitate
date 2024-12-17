@@ -1,22 +1,32 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-import { TapGestureHandler } from 'react-native-gesture-handler';
 import * as Progress from 'react-native-progress';
 import { GlobalContext } from '../components/context';
+import { getCourseLearnedPercentage } from '../components/Database';
 
 const CourseViewScreen = ({ route, navigation }) => {
   const { title, subtitle, level, id } = route.params;
   const [progressValue, setProgressValue] = useState(0);
-  const { isDarkMode } = useContext(GlobalContext);
+  const { isDarkMode, setCurrentCourse } = useContext(GlobalContext);
 
   const styles = getStyles(isDarkMode);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setProgressValue(0.7);
-    }, 100);
-    return () => clearTimeout(timer);
-  }, []);
+    const fetchProgress = async () => {
+      try {
+        const percentage = await getCourseLearnedPercentage(id);
+        setProgressValue(percentage / 100);
+      } catch (error) {
+        console.error('Error fetching course progress:', error);
+      }
+    };
+    fetchProgress();
+  }, [id]);
+
+  const handleNavigation = (screen) => {
+    setCurrentCourse({ title, subtitle, level, id });
+    navigation.navigate(screen, { id: id });
+  };
 
   return (
     <View style={styles.courseViewScreen}>
@@ -46,17 +56,13 @@ const CourseViewScreen = ({ route, navigation }) => {
           <Text style={[styles.text, { fontFamily: 'Poppins-Regular', fontSize: 18 }]} numberOfLines={3} ellipsizeMode="tail">{subtitle}</Text>
         </View>
 
-        <TapGestureHandler onActivated={() => { navigation.navigate('CourseLearnScreen', { id: id }) }}>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Learn Course</Text>
-          </TouchableOpacity>
-        </TapGestureHandler>
+        <TouchableOpacity style={styles.button} onPress={() => handleNavigation('CourseLearnScreen')}>
+          <Text style={styles.buttonText}>Learn Course</Text>
+        </TouchableOpacity>
 
-        <TapGestureHandler onActivated={() => { navigation.navigate('CourseReviewScreen', { id: id }) }}>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Review Course</Text>
-          </TouchableOpacity>
-        </TapGestureHandler>
+        <TouchableOpacity style={styles.button} onPress={() => handleNavigation('CourseReviewScreen')}>
+          <Text style={styles.buttonText}>Review Course</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

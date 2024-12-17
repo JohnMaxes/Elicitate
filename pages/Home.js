@@ -5,8 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useFocusEffect } from '@react-navigation/native';
 import * as Font from 'expo-font';
 import * as Progress from 'react-native-progress';
-import { queryCourseToDatabase, getLearnedWordNumber, getLearnedCourseNumber } from '../components/Database';
-
+import { queryCourseToDatabase, getLearnedWordNumber, getLearnedCourseNumber, getCourseLearnedPercentage } from '../components/Database';
 import { GlobalContext } from '../components/context';
 
 const loadFonts = async () => {
@@ -22,6 +21,7 @@ function HomeScreen({ navigation }) {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [staticCourses, setStaticCourses] = useState([]);
+  const [currentCourseProgress, setCurrentCourseProgress] = useState(0);
   const {
     isDarkMode,
     streakCount,
@@ -36,6 +36,16 @@ function HomeScreen({ navigation }) {
   } = useContext(GlobalContext);
 
   const styles = getStyles(isDarkMode);
+  // Fetch the current course progress dynamically
+  const updateCurrentCourseProgress = async (courseId) => {
+    try {
+      const progress = await getCourseLearnedPercentage(courseId);
+      setCurrentCourseProgress(progress / 100); // Convert to a decimal for Progress.Circle
+    } catch (error) {
+      console.error('Error fetching course progress:', error);
+      setCurrentCourseProgress(0); // Default to 0% if there's an error
+    }
+  };
 
   const CourseCard = ({ item }) => (
     <View style={ styles.courseCard }>
@@ -94,12 +104,16 @@ function HomeScreen({ navigation }) {
         setFontsLoaded(true);
         await setUpContext();
         setLoading(false);
+        // Update progress if a current course is available
+        if (currentCourse) {
+          await updateCurrentCourseProgress(currentCourse.id);
+        }
       } catch (error) {
         console.error('Error initializing:', error);
       }
     }
     initialize();
-  }, []);
+  }, [currentCourse]);
 
   if (loading)
     return (
@@ -126,7 +140,7 @@ function HomeScreen({ navigation }) {
               <Progress.Circle
                 showsText={true}
                 size={Dimensions.get('window').width * 0.23}
-                progress={0.9}
+                progress={currentCourseProgress}
                 color={ isDarkMode ? '#4f54b4' : '#3A94E7'}
                 unfilledColor={'#D0EFFF'}
                 borderWidth={0}
