@@ -18,6 +18,30 @@ export const Context = ({ children }) => {
     const [timeSpent, setTimeSpent] = useState(0);
     const [pfp, setPfp] = useState(null);
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const [interactedToday, setInteractedToday] = useState(false);
+
+    const getCurrentDateString = () => {
+        const date = new Date();
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+      
+        return `${day}/${month}/${year}`;
+    };
+
+    const calculateDateDifference = (dateString1, dateString2) => {
+        const parseDate = (dateString) => {
+            const [day, month, year] = dateString.split('/').map(Number);
+            return new Date(year, month - 1, day); // Month is zero-indexed
+        };
+        const date1 = parseDate(dateString1);
+        const date2 = parseDate(dateString2);
+        
+        const differenceInTime = Math.abs(date2.getTime() - date1.getTime());
+        const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+        
+        return differenceInDays;
+    };    
 
     const config = {
         headers: {
@@ -81,6 +105,36 @@ export const Context = ({ children }) => {
         await AsyncStorage.setItem('theme', newTheme);
     };
 
+    const setStreakToBackend = async () => {
+        if(interactedToday == false)
+        {
+            let today = getCurrentDateString();
+            try {
+                const response = await axios.post(
+                    'https://7a11-171-226-41-182.ngrok-free.app/recordStreak',
+                    qs.stringify({
+                        username: contextUsername,
+                        email: contextEmail,
+                        interactionDate: today,
+                    }),
+                    config
+                );
+                if (response.status === 200) {
+                    let newStreakCount = response.data.newStreak;
+                    setStreakCount(newStreakCount);
+                    await AsyncStorage.setItem('streak', newStreakCount);
+                    await AsyncStorage.setItem('lastInteraction', today);
+                    setInteractedToday(true);
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (error) {
+                console.log('Error saving pfp via API', error);
+            }    
+        }
+    }
+
     const setUpContext = async () => {
         try {
             setPfp(null);
@@ -88,15 +142,18 @@ export const Context = ({ children }) => {
             setWordCount(result.total_words);
 
             result = await getLearnedCourseNumber();
-            setCourseCount(result.total_courses);
+            setCourseCount(result.total_courses);            
 
             let token = await getJWT();
             if(token) {
                 let object = await decodeJWT(token);
+
                 let updatedUsername = await AsyncStorage.getItem('updatedUsername');
                 let updatedEmail = await AsyncStorage.getItem('updatedEmail');
+
                 if (updatedUsername) setContextUsername(updatedUsername);
                 else setContextUsername(object.user);
+
                 if (updatedEmail) setContextEmail(updatedEmail);
                 else setContextEmail(object.email);
 
@@ -104,12 +161,37 @@ export const Context = ({ children }) => {
                     setPfp(object.pfp);
                     console.log('set up last pfp!');
                 }
-                setTimeSpent(object.timeSpent);
-                setStreakCount(object.streak);
+
+                let onMachineTimeSpent = await AsyncStorage.getItem('timeSpent');
+                if(onMachineTimeSpent) {
+                    setTimeSpent(onMachineTimeSpent);
+                }
+                else {
+                    setTimeSpent(object.timeSpent);
+                    AsyncStorage.setItem('timeSpent', object.timeSpent)
+                } 
+
+                let onMachineLastInteraction = await AsyncStorage.getItem('lastInteraction');
+                if (onMachineLastInteraction) {
+                    if(calculateDateDifference(onMachineLastInteraction, getCurrentDateString) > 1)
+                    {
+                        setStreakCount(1);
+                        AsyncStorage.setItem('streak', 1);
+                        await setStreakToBackend(getCurrentDateString);
+                    }
+                }
+
+                let onMachineStreak = await AsyncStorage.getItem('streak');
+                if(onMachineStreak) setStreakCount(onMachineStreak);
+                else {
+                    setStreakCount(object.streak);
+                    AsyncStorage.setItem('streak', object.streak); // this becomes onMachineStreak
+                    AsyncStorage.setItem('lastInteraction', getCurrentDateString);
+                }
+
                 if(object.learnedWords !== '') {
                     await importWordsLearned(object.learnedWords, setWordCount);
                 }
-                setTimeSpent(object.timeSpent);
             }
 
             const savedTheme = await AsyncStorage.getItem('theme');
@@ -125,7 +207,6 @@ export const Context = ({ children }) => {
     }
 
     const saveTimeSpent = async (currentTimeSpent) => {
-        setTimeSpent(timeSpent + currentTimeSpent);
         try {
             console.log(currentTimeSpent);
             await axios.post(
@@ -139,6 +220,7 @@ export const Context = ({ children }) => {
             );
             console.log('Saved ' + currentTimeSpent + ' seconds and now have ' + (timeSpent + currentTimeSpent) + ' seconds total.');
             setTimeSpent(lastTimeSpent => lastTimeSpent + currentTimeSpent);
+            await AsyncStorage.setItem('timeSpent', timeSpent + currentTimeSpent);
         } catch (error) {
             console.error("Error saving time spent: ", error);
         }
@@ -150,7 +232,12 @@ export const Context = ({ children }) => {
         setWordCount(0);
         setCourseCount(0);
         setStreakCount(1);
+        setInteractedToday(false);
         await clearWordsLearned();
+        
+        await AsyncStorage.removeItem('timeSpent');
+        await AsyncStorage.removeItem('streak');
+        await AsyncStorage.removeItem('interactedToday');
     }
 
     return (
