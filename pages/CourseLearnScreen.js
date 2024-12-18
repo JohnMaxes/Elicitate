@@ -25,7 +25,7 @@ const CourseLearnScreen = ({ route, navigation }) => {
     const inputRefs = useRef([]);
 
     const [seconds, setSeconds] = useState(0);
-    const { saveTimeSpent, isDarkMode, contextUsername, contextEmail } = useContext(GlobalContext);
+    const { saveTimeSpent, isDarkMode, contextUsername, contextEmail, setStreakToBackend } = useContext(GlobalContext);
     const secondsRef = useRef(seconds);
 
     const styles = getStyles(isDarkMode);
@@ -101,6 +101,7 @@ const CourseLearnScreen = ({ route, navigation }) => {
             setWordList(words);
             if (words.length > 0) {
                 setWord(words[0]);
+                await setStreakToBackend();
             }
             setLoading(false);
         }

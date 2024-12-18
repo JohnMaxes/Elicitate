@@ -133,6 +133,7 @@ export const Context = ({ children }) => {
                 console.log('Error saving pfp via API', error);
             }    
         }
+        else console.log('Interacted today!');
     }
 
     const setUpContext = async () => {
@@ -174,12 +175,13 @@ export const Context = ({ children }) => {
                 let onMachineLastInteraction = await AsyncStorage.getItem('lastInteraction');
                 if (onMachineLastInteraction) {
                     let currentDate = getCurrentDateString();
-                    if(calculateDateDifference(onMachineLastInteraction, currentDate) > 1)
+                    if(calculateDateDifference(onMachineLastInteraction, currentDate) >= 1)
                     {
                         setStreakCount(1);
                         AsyncStorage.setItem('streak', '1');
                         await setStreakToBackend(getCurrentDateString);
                     }
+                    else setInteractedToday(true);
                 }
 
                 let onMachineStreak = await AsyncStorage.getItem('streak');
@@ -247,7 +249,7 @@ export const Context = ({ children }) => {
         setWordCount, setCourseCount, courseCount, currentCourse, setCurrentCourse, 
         contextUsername, setContextUsername, setContextEmail, contextEmail, timeSpent, pfp, resetPfp,
         setUpContext, saveTimeSpent, isDarkMode, setIsDarkMode, toggleTheme, removeContext, 
-        editUsernameEmail}}>
+        editUsernameEmail, setStreakToBackend, setInteractedToday}}>
             {children}
         </GlobalContext.Provider>
     );

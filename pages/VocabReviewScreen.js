@@ -25,7 +25,7 @@ const VocabReviewScreen = ({ navigation }) => {
     const [empty, setEmpty] = useState(false);
 
     const [seconds, setSeconds] = useState(0);
-    const { saveTimeSpent, isDarkMode } = useContext(GlobalContext);
+    const { saveTimeSpent, isDarkMode, setStreakToBackend} = useContext(GlobalContext);
     const secondsRef = useRef(seconds);
 
     const styles = getStyles(isDarkMode);
@@ -98,6 +98,7 @@ const VocabReviewScreen = ({ navigation }) => {
             if (words.length > 0) {
                 setEmpty(false);
                 setWord(words[0]);
+                await setStreakToBackend();
             }
             else setEmpty(true);
             setLoading(false);
