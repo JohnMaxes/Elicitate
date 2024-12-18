@@ -52,7 +52,7 @@ export const Context = ({ children }) => {
     const resetPfp = async (uri) => {
         try {
             const response = await axios.post(
-                'https://7a11-171-226-41-182.ngrok-free.app/resetPfp',
+                'https://64b5-2405-4803-c695-c620-2d6e-f4e-f6c5-112c.ngrok-free.app/resetPfp',
                 qs.stringify({
                     username: contextUsername,
                     email: contextEmail,
@@ -75,7 +75,7 @@ export const Context = ({ children }) => {
     const editUsernameEmail = async (editedUsername, editedEmail) => {
         try {
             const response = await axios.post(
-                'https://7a11-171-226-41-182.ngrok-free.app/editUsernameEmail',
+                'https://64b5-2405-4803-c695-c620-2d6e-f4e-f6c5-112c.ngrok-free.app/editUsernameEmail',
                 qs.stringify({
                     username: contextUsername,
                     email: contextEmail,
@@ -111,7 +111,7 @@ export const Context = ({ children }) => {
             let today = getCurrentDateString();
             try {
                 const response = await axios.post(
-                    'https://7a11-171-226-41-182.ngrok-free.app/recordStreak',
+                    'https://64b5-2405-4803-c695-c620-2d6e-f4e-f6c5-112c.ngrok-free.app/recordStreak',
                     qs.stringify({
                         username: contextUsername,
                         email: contextEmail,
@@ -122,7 +122,7 @@ export const Context = ({ children }) => {
                 if (response.status === 200) {
                     let newStreakCount = response.data.newStreak;
                     setStreakCount(newStreakCount);
-                    await AsyncStorage.setItem('streak', newStreakCount);
+                    await AsyncStorage.setItem('streak', newStreakCount.toString());
                     await AsyncStorage.setItem('lastInteraction', today);
                     setInteractedToday(true);
                     return true;
@@ -173,10 +173,11 @@ export const Context = ({ children }) => {
 
                 let onMachineLastInteraction = await AsyncStorage.getItem('lastInteraction');
                 if (onMachineLastInteraction) {
-                    if(calculateDateDifference(onMachineLastInteraction, getCurrentDateString) > 1)
+                    let currentDate = getCurrentDateString();
+                    if(calculateDateDifference(onMachineLastInteraction, currentDate) > 1)
                     {
                         setStreakCount(1);
-                        AsyncStorage.setItem('streak', 1);
+                        AsyncStorage.setItem('streak', '1');
                         await setStreakToBackend(getCurrentDateString);
                     }
                 }
@@ -184,9 +185,10 @@ export const Context = ({ children }) => {
                 let onMachineStreak = await AsyncStorage.getItem('streak');
                 if(onMachineStreak) setStreakCount(onMachineStreak);
                 else {
+                    let currentDate = getCurrentDateString();
                     setStreakCount(object.streak);
-                    AsyncStorage.setItem('streak', object.streak); // this becomes onMachineStreak
-                    AsyncStorage.setItem('lastInteraction', getCurrentDateString);
+                    AsyncStorage.setItem('streak', object.streak.toString()); // this becomes onMachineStreak
+                    AsyncStorage.setItem('lastInteraction', currentDate);
                 }
 
                 if(object.learnedWords !== '') {
@@ -210,7 +212,7 @@ export const Context = ({ children }) => {
         try {
             console.log(currentTimeSpent);
             await axios.post(
-                'https://7a11-171-226-41-182.ngrok-free.app/saveTimeSpent',
+                'https://64b5-2405-4803-c695-c620-2d6e-f4e-f6c5-112c.ngrok-free.app/saveTimeSpent',
                 qs.stringify({
                     username: contextUsername,
                     email: contextEmail,
