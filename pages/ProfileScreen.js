@@ -128,7 +128,7 @@ const ProfileScreen = ({ setIsLoggedIn }) => {
         </View>
         <View style={[styles.metricBox, styles.circleBox]}>
           <View style={styles.circle}>
-            <Text style={styles.circleNumberText}>{23}</Text>
+            <Text style={styles.circleNumberText}>{streakCount}</Text>
             <Text style={styles.circleDayText}>Days</Text>
           </View>
         </View>

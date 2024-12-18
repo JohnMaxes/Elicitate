@@ -353,7 +353,7 @@ export const addWordToLearned = async (vocabulary_id, username, email) => {
   try {
     await db.runAsync(query, [vocabulary_id]);
     await axios.post(
-      'https://59db-2402-800-6314-c5d1-35ea-fe23-8d7e-6bf8.ngrok-free.app/addLearnedWord',
+      'https://64b5-2405-4803-c695-c620-2d6e-f4e-f6c5-112c.ngrok-free.app/addLearnedWord',
       qs.stringify({
           username: username,
           email: email,

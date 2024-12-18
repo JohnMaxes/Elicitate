@@ -46,7 +46,7 @@ const CourseViewScreen = ({ route, navigation }) => {
           />
           <View style={{ justifyContent: 'center', paddingLeft: 10 }}>
             <Text style={[styles.text, { fontFamily: 'Poppins-Regular', fontSize: 15, marginBottom: -5 }]}>Course</Text>
-            <Text style={[styles.text, { fontFamily: 'Poppins-Bold', fontSize: 25, maxWidth: '90%' }]} ellipsizeMode="tail">{title}</Text>
+            <Text style={[styles.text, { fontFamily: 'Poppins-Bold', fontSize: 22, maxWidth: '90%' }]} ellipsizeMode="tail">{title}</Text>
             <Text style={[styles.text, { fontFamily: 'Poppins-Bold', fontSize: 20, color: level === 'Beginner' ? '#58af9c' : level === 'Intermediate' ? '#ccae1b' : 'red' }]} numberOfLines={1} ellipsizeMode="tail">{level}</Text>
           </View>
         </View>

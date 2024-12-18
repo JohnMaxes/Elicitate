@@ -164,12 +164,12 @@ export const Context = ({ children }) => {
 
                 let onMachineTimeSpent = await AsyncStorage.getItem('timeSpent');
                 if(onMachineTimeSpent) {
-                    setTimeSpent(onMachineTimeSpent);
+                    setTimeSpent(parseInt(onMachineTimeSpent));
                 }
                 else {
                     setTimeSpent(object.timeSpent);
-                    AsyncStorage.setItem('timeSpent', object.timeSpent)
-                } 
+                    AsyncStorage.setItem('timeSpent', object.timeSpent.toString())
+                }
 
                 let onMachineLastInteraction = await AsyncStorage.getItem('lastInteraction');
                 if (onMachineLastInteraction) {
@@ -222,7 +222,7 @@ export const Context = ({ children }) => {
             );
             console.log('Saved ' + currentTimeSpent + ' seconds and now have ' + (timeSpent + currentTimeSpent) + ' seconds total.');
             setTimeSpent(lastTimeSpent => lastTimeSpent + currentTimeSpent);
-            await AsyncStorage.setItem('timeSpent', timeSpent + currentTimeSpent);
+            await AsyncStorage.setItem('timeSpent', (timeSpent + currentTimeSpent).toString());
         } catch (error) {
             console.error("Error saving time spent: ", error);
         }
