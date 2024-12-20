@@ -33,7 +33,7 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
         let c = registPassword;
         try {
             const response = await axios.post(
-                'https://7a11-171-226-41-182.ngrok-free.app/register',
+                'https://90fa-14-161-6-190.ngrok-free.app/register',
                 qs.stringify({
                     username: a,
                     email: b,

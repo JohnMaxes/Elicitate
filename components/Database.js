@@ -18,7 +18,7 @@ export const initDatabase = async () => {
     // Ensure a clean slate for testing (remove these lines in production)
     await db.closeAsync();
     await SQLite.deleteDatabaseAsync('elicitate');
-    dbInstance = await SQLite.openDatabaseAsync('elicitate'); // Reopen the database
+    db = await SQLite.openDatabaseAsync('elicitate');
 
     // Set up the schema
     await db.execAsync(`
@@ -353,7 +353,7 @@ export const addWordToLearned = async (vocabulary_id, username, email) => {
   try {
     await db.runAsync(query, [vocabulary_id]);
     await axios.post(
-      'https://64b5-2405-4803-c695-c620-2d6e-f4e-f6c5-112c.ngrok-free.app/addLearnedWord',
+      'https://90fa-14-161-6-190.ngrok-free.app/addLearnedWord',
       qs.stringify({
           username: username,
           email: email,
