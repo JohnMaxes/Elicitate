@@ -41,6 +41,7 @@ function DictionaryScreen() {
 
 const DictionaryVocabScreenAddButton = ({ id, learned }) => {
   const [isLearned, setIsLearned] = useState(learned);
+  const {contextUsername, contextEmail} = useContext(GlobalContext);
 
   const handleToggleLearned = async () => {
     if (isLearned) {
@@ -51,7 +52,7 @@ const DictionaryVocabScreenAddButton = ({ id, learned }) => {
         alert('Something has gone wrong');
       }
     } else {
-      if (await addWordToLearned(id)) {
+      if (await addWordToLearned(id, contextUsername, contextEmail)) {
         alert('Word added to learned list');
         setIsLearned(true);
       } else {
@@ -161,8 +162,7 @@ const DictionaryVocabScreen = ({route}) => {
       </View>
 
       <View style={{ paddingLeft: 30, paddingRight: 30 }}>
-        <Text style={{ textAlign: 'center', marginTop: 10, fontFamily: 'Inter-Regular', fontSize: 20, color: isDarkMode ? 'white' : 'black' }}>{definition}</Text>
-        <Text style={{ textAlign: 'center', marginTop: 10, fontFamily: 'Inter-Regular', fontSize: 20, color: isDarkMode ? 'white' : 'black' }}>{id}</Text>
+        <Text style={{ textAlign: 'center', marginTop: Dimensions.get('window').height * 0.03, fontFamily: 'Inter-Regular', fontSize: 25, color: isDarkMode ? 'white' : 'black' }}>{definition}</Text>
       </View>
     </View>
   );

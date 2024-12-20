@@ -13,6 +13,10 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
     const [registConfirm, setRConfirm] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    };
     const processRequest = async () => {
         if (!registUsername || !registEmail || !registPassword || !registConfirm) {
             alert('Please fill out all fields.');
@@ -20,6 +24,10 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
         }
         if (registPassword !== registConfirm) {
             alert('Passwords do not match.');
+            return;
+        }
+        if (!validateEmail(registEmail)) {
+            alert('Invalid Email.');
             return;
         }
         setLoading('true');
@@ -94,7 +102,7 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
                 iconUri="https://img.icons8.com/?id=94&format=png"
                 onChangeText={setRPassword}
                 value={registPassword}
-                
+
             />
             <CustomInput
                 placeholder="Confirm Password"
@@ -107,17 +115,17 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
             />
             <TouchableOpacity style={styles.button} onPress={processRequest}>
                 {!loading ? (<Text style={styles.buttonText}>SIGN UP</Text>)
-                : (        
-                <Progress.Circle
-                    indeterminate={true}
-                    color="white"
-                    size={20}
-                />)}
+                    : (
+                        <Progress.Circle
+                            indeterminate={true}
+                            color="white"
+                            size={20}
+                        />)}
             </TouchableOpacity>
             <View style={styles.signupContainer}>
-                <Text style={{fontSize: 16, fontStyle: 'italic'}}>Already have an account? </Text>
+                <Text style={{ fontSize: 16, fontStyle: 'italic' }}>Already have an account? </Text>
                 <TouchableOpacity onPress={togglePage}>
-                    <Text style={[styles.signupText, {fontSize: 16}]}>Log in</Text>
+                    <Text style={[styles.signupText, { fontSize: 16 }]}>Log in</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>
@@ -126,59 +134,59 @@ const SignUpScreen = ({ togglePage, handleLogin }) => {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      padding: 16,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#f1f4ff',
+        flex: 1,
+        padding: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f1f4ff',
     },
     logo: {
-      width: 250,
-      height: 250,
-      marginTop: '15%',
-      alignContent: 'center',
+        width: 250,
+        height: 250,
+        marginTop: '15%',
+        alignContent: 'center',
     },
     textContainer: {
         width: '100%',
         alignItems: 'flex-start',
         marginLeft: 40,
-      },
+    },
     title: {
-      fontSize: 40,
-      fontWeight: 'bold',
-      marginBottom: 8,
-      color: '#2a4dbf',
+        fontSize: 40,
+        fontWeight: 'bold',
+        marginBottom: 8,
+        color: '#2a4dbf',
     },
     subtitle: {
-      fontSize: 20,
-      marginBottom: 16,
-      fontStyle: 'italic',
+        fontSize: 20,
+        marginBottom: 16,
+        fontStyle: 'italic',
     },
     button: {
-      backgroundColor: "#2a4dbf",
-      padding: 10,
-      alignItems:'center',
-      justifyContent:'center',
-      borderRadius: 15,
-      width: "50%",
-      alignSelf: "flex-end",
-      marginTop: 20,
-      marginRight: 20,
+        backgroundColor: "#2a4dbf",
+        padding: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 15,
+        width: "50%",
+        alignSelf: "flex-end",
+        marginTop: 20,
+        marginRight: 20,
     },
     buttonText: {
-      color: "white",
-      fontSize: 20,
-      paddingVertical: 5,
-      textAlign: "center",
+        color: "white",
+        fontSize: 20,
+        paddingVertical: 5,
+        textAlign: "center",
     },
     signupContainer: {
-      flexDirection: 'row',
-      marginTop: 20,
-      marginBottom: 50,
+        flexDirection: 'row',
+        marginTop: 20,
+        marginBottom: 50,
     },
     signupText: {
-      color: '#007BFF',
-      fontWeight: 'bold',
+        color: '#007BFF',
+        fontWeight: 'bold',
     },
 });
 

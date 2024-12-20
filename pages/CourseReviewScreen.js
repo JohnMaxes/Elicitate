@@ -190,7 +190,7 @@ const CourseReviewScreen = ({ route, navigation }) => {
                         <Text style={styles.typeText}>{currentWord.type}</Text>
                     </View>
 
-                    <View style={{ paddingLeft: 30, paddingRight: 30 }}>
+                    <View style={{ padding: 10}}>
                         <Text style={styles.definitionText}>
                             {currentWord.definition}
                         </Text>

@@ -331,10 +331,10 @@ const getStyles = (isDarkMode) => StyleSheet.create({
   },
   currentCourseName: {
     alignSelf: 'left',
-    paddingLeft: 12,
+    paddingLeft: 10,
     fontSize: 25,
     fontFamily: 'Poppins-Bold',
-    maxWidth: '98%',
+    maxWidth: '80%',
     color: 'white',
   },
   currentCourseButton: {

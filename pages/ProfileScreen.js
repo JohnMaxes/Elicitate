@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = ({ setIsLoggedIn }) => {
   const navigation = useNavigation();
-  const { contextUsername, streakCount, timeSpent, pfp, removeContext, isDarkMode, setIsDarkMode } = useContext(GlobalContext);
+  const { contextUsername, streakCount, timeSpent, pfp, removeContext, wordCount, isDarkMode, setIsDarkMode } = useContext(GlobalContext);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
   useEffect(() => {
@@ -119,11 +119,11 @@ const ProfileScreen = ({ setIsLoggedIn }) => {
       <View style={styles.metrics}>
         <View style={styles.metricBox}>
           <Text style={styles.metricValue}>{
-            (timeSpent / 3600 >= 1) ? (Math.floor(timeSpent / 3600) + 'h' + Math.floor(timeSpent / 60) + 'm') : (Math.floor(timeSpent / 60) + 'm')
+            (timeSpent / 3600 >= 1) ? (Math.floor(timeSpent / 3600) + ' hour' + Math.floor(timeSpent / 60) + ' min') : (Math.floor(timeSpent / 60) + ' min')
           }</Text>
           <Text style={styles.metricLabel}>Time spent</Text>
           <View style={{ height: 10 }} />
-          <Text style={styles.metricValue}>{69}</Text>
+          <Text style={styles.metricValue}>{wordCount}</Text>
           <Text style={styles.metricLabel}>Words learned</Text>
         </View>
         <View style={[styles.metricBox, styles.circleBox]}>

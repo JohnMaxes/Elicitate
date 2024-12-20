@@ -163,7 +163,7 @@ const VocabReviewScreen = ({ navigation }) => {
         <>
             <Pressable style={styles.vocabScreen} onPress={Keyboard.dismiss}>
                 <View style={{ alignItems: 'center', minHeight: Dimensions.get('window').height * 0.3 }}>
-                    <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, paddingLeft: 30, paddingRight: 30, color: isDarkMode ? 'white' : 'black' }}>{currentWord.definition}</Text>
+                    <Text style={{ textAlign: 'center', fontFamily: 'Poppins-Bold', fontSize: 30, padding: 10, color: isDarkMode ? 'white' : 'black' }}>{currentWord.definition}</Text>
 
                     <View style={styles.typeContainer}>
                         <Text style={{ fontFamily: 'Inter-Bold', fontSize: 20, color: 'white' }}>{currentWord.type}</Text>
