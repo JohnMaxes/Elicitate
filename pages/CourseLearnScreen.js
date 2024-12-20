@@ -1,6 +1,6 @@
 import { Text, View, StyleSheet, Dimensions, TouchableOpacity, Keyboard } from "react-native";
 import { useFocusEffect } from '@react-navigation/native';
-import React , { useEffect, useState, useRef, useContext } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { getQuestionToLearn } from "../components/Database";
 import * as Progress from 'react-native-progress';
 import { Pressable, TapGestureHandler } from "react-native-gesture-handler";
@@ -34,11 +34,11 @@ const CourseLearnScreen = ({ route, navigation }) => {
         React.useCallback(() => {
             const intervalId = setInterval(() => {
                 setSeconds(prevSeconds => {
-                secondsRef.current = prevSeconds + 1;
-                return secondsRef.current;
+                    secondsRef.current = prevSeconds + 1;
+                    return secondsRef.current;
                 });
             }, 1000);
-    
+
             return () => {
                 const currentSeconds = secondsRef.current; // Use the ref to get the latest seconds
                 saveTimeSpent(currentSeconds); // Call saveTimeSpent
@@ -131,10 +131,10 @@ const CourseLearnScreen = ({ route, navigation }) => {
         return (
             <View style={styles.vocabScreen}>
                 <View style={{
-                    justifyContent:'center',
+                    justifyContent: 'center',
                     alignItems: 'center',
                     minHeight: Dimensions.get('window').height * 0.6
-                    }}
+                }}
                 >
                     <Text style={{
                         textAlign: 'center',
@@ -142,27 +142,27 @@ const CourseLearnScreen = ({ route, navigation }) => {
                         fontSize: 30,
                         paddingHorizontal: 30,
                         color: isDarkMode ? 'white' : 'black'
-                        }}
+                    }}
                     >You've finished learning this course!</Text>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <View
-                                style={{
-                                    width: Dimensions.get('window').width * 0.5,
-                                    minHeight: Dimensions.get('window').height * 0.07,
-                                    backgroundColor: 'green',
-                                    marginTop: Dimensions.get('window').width * 0.1,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    borderRadius: 45,
-                                }}>
-                                <Text style={{
-                                    color: 'white',
-                                    fontFamily: 'Inter-Bold',
-                                    fontSize: 20
-                                    }}
-                                >Complete</Text>
+                            style={{
+                                width: Dimensions.get('window').width * 0.5,
+                                minHeight: Dimensions.get('window').height * 0.07,
+                                backgroundColor: 'green',
+                                marginTop: Dimensions.get('window').width * 0.1,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                borderRadius: 45,
+                            }}>
+                            <Text style={{
+                                color: 'white',
+                                fontFamily: 'Inter-Bold',
+                                fontSize: 20
+                            }}
+                            >Complete</Text>
                         </View>
-                        </TouchableOpacity>
+                    </TouchableOpacity>
                 </View>
             </View>
         )
@@ -173,7 +173,7 @@ const CourseLearnScreen = ({ route, navigation }) => {
                 <View style={{
                     alignItems: 'center',
                     minHeight: Dimensions.get('window').height * 0.6
-                    }}
+                }}
                 >
                     <Text style={styles.wordText}>{currentWord.word}</Text>
 
@@ -181,7 +181,7 @@ const CourseLearnScreen = ({ route, navigation }) => {
                         <Text style={styles.typeText}>{currentWord.type}</Text>
                     </View>
 
-                    <View style={{ padding: 10}}>
+                    <View style={{ padding: 10 }}>
                         <Text style={styles.definitionText}>
                             {currentWord.definition}
                         </Text>
@@ -189,22 +189,24 @@ const CourseLearnScreen = ({ route, navigation }) => {
                 </View>
 
                 <View style={styles.nextButtonContainer}>
-                    <TapGestureHandler
-                        onActivated={() => {
-                            if (index >= wordList.length - 1) {
-                                setFinished(true);
-                              } else if (currentWord.learned_at === null) {
-                                setIsReading(false);
-                              } else {
-                                setIndex(index + 1);
-                              }
-                        }}>
-                        <TouchableOpacity>
+
+                    <TouchableOpacity>
+                        <TapGestureHandler
+                            onActivated={() => {
+                                if (index >= wordList.length - 1) {
+                                    setFinished(true);
+                                } else if (currentWord.learned_at === null) {
+                                    setIsReading(false);
+                                } else {
+                                    setIndex(index + 1);
+                                }
+                            }}>
                             <View style={[styles.nextButton, { backgroundColor: (currentWord.learned_at !== null) ? 'green' : (isDarkMode ? '#70b6bb' : '#3A94E7') }]}>
                                 <Text style={styles.nextButtonText}>{currentWord.learned_at !== null ? 'Learned before' : 'Next'}</Text>
                             </View>
-                        </TouchableOpacity>
-                    </TapGestureHandler>
+
+                        </TapGestureHandler>
+                    </TouchableOpacity>
                 </View>
             </Pressable>
         );
@@ -229,14 +231,14 @@ const CourseLearnScreen = ({ route, navigation }) => {
                 </View>
 
                 <View style={styles.checkButtonContainer}>
-                    <TapGestureHandler
-                        onActivated={handleButton}>
-                        <TouchableOpacity>
+                    <TouchableOpacity>
+                        <TapGestureHandler
+                            onActivated={handleButton}>
                             <View style={[styles.checkButton, { backgroundColor: checked ? (isCorrect ? 'green' : 'red') : (isDarkMode ? '#70b6bb' : '#3A94E7') }]}>
                                 <Text style={styles.checkButtonText}>{checked ? isCorrect ? 'Go to next word!' : 'Enter again!' : 'Submit'}</Text>
                             </View>
-                        </TouchableOpacity>
-                    </TapGestureHandler>
+                        </TapGestureHandler>
+                    </TouchableOpacity>
                 </View>
             </Pressable>
         )

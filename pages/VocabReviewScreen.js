@@ -184,9 +184,10 @@ const VocabReviewScreen = ({ navigation }) => {
                         </View>)
                         :
                         (null)}
-                    <TapGestureHandler
-                        onActivated={handleButton}>
-                        <TouchableOpacity>
+
+                    <TouchableOpacity>
+                        <TapGestureHandler
+                            onActivated={handleButton}>
                             <View
                                 style={{
                                     width: Dimensions.get('window').width * 0.5,
@@ -199,8 +200,8 @@ const VocabReviewScreen = ({ navigation }) => {
                                 }}>
                                 <Text style={{ color: 'white', fontFamily: 'Inter-Bold', fontSize: 20 }}>{checked ? isCorrect ? 'Go to next word!' : 'Enter again!' : 'Check answers'}</Text>
                             </View>
-                        </TouchableOpacity>
-                    </TapGestureHandler>
+                        </TapGestureHandler>
+                    </TouchableOpacity>
                 </View>
             </Pressable>
         </>

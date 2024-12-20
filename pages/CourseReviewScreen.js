@@ -190,7 +190,7 @@ const CourseReviewScreen = ({ route, navigation }) => {
                         <Text style={styles.typeText}>{currentWord.type}</Text>
                     </View>
 
-                    <View style={{ padding: 10}}>
+                    <View style={{ padding: 10 }}>
                         <Text style={styles.definitionText}>
                             {currentWord.definition}
                         </Text>
@@ -198,16 +198,18 @@ const CourseReviewScreen = ({ route, navigation }) => {
                 </View>
 
                 <View style={styles.nextButtonContainer}>
-                    <TapGestureHandler
-                        onActivated={() => {
-                            setIsReading(false);
-                        }}>
-                        <TouchableOpacity>
+
+                    <TouchableOpacity>
+                        <TapGestureHandler
+                            onActivated={() => {
+                                setIsReading(false);
+                            }}>
                             <View style={styles.nextButton}>
                                 <Text style={styles.nextButtonText}>Next</Text>
                             </View>
-                        </TouchableOpacity>
-                    </TapGestureHandler>
+
+                        </TapGestureHandler>
+                    </TouchableOpacity>
                 </View>
             </Pressable>
         );
@@ -232,14 +234,14 @@ const CourseReviewScreen = ({ route, navigation }) => {
                 </View>
 
                 <View style={styles.checkButtonContainer}>
-                    <TapGestureHandler
-                        onActivated={handleButton}>
-                        <TouchableOpacity>
+                    <TouchableOpacity>
+                        <TapGestureHandler
+                            onActivated={handleButton}>
                             <View style={[styles.checkButton, { backgroundColor: checked ? (isCorrect ? 'green' : 'red') : (isDarkMode ? '#70b6bb' : '#3A94E7') }]}>
                                 <Text style={styles.checkButtonText}>{checked ? isCorrect ? 'Go to next word!' : 'Enter again!' : 'Check answers'}</Text>
                             </View>
-                        </TouchableOpacity>
-                    </TapGestureHandler>
+                        </TapGestureHandler>
+                    </TouchableOpacity>
                 </View>
             </Pressable>
         )
