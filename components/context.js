@@ -111,7 +111,7 @@ export const Context = ({ children }) => {
             let today = getCurrentDateString();
             try {
                 const response = await axios.post(
-                    'https://90fa-14-161-6-190.ngrok-free.app/recordStreak',
+                    'https://90fa-14-161-6-190.ngrok-free.app/setStreak',
                     qs.stringify({
                         username: contextUsername,
                         email: contextEmail,
