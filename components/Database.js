@@ -383,7 +383,7 @@ export const removeWordFromLearned = async (vocabulary_id) => {
 export const getQuestionToLearn = async (course_id) => {
   const db = await getDatabaseInstance();
   const query = `
-    SELECT id, word, type, definition, learned_at
+    SELECT id, word, type, definition, learned_at, pronunciation
     FROM vocabulary 
     WHERE id IN (
       SELECT vocabulary_id 

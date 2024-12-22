@@ -2,12 +2,12 @@ import React, { useContext } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { GlobalContext } from './context';
 
-const VocabCard = ({ id, word, type, definition, learned, navigation }) => {
+const VocabCard = ({ id, word, type, definition, learned, navigation, pronunciation }) => {
   const { isDarkMode } = useContext(GlobalContext);
   const styles = getStyles(isDarkMode);
 
   return (
-    <TouchableOpacity style={styles.cardContainer} onPress={() => { navigation.navigate("DictionaryVocabScreen", { id, word, type, definition, learned }) }}>
+    <TouchableOpacity style={styles.cardContainer} onPress={() => { navigation.navigate("DictionaryVocabScreen", { id, word, type, definition, learned, pronunciation }) }}>
       <Text style={ styles.wordText }>{word}</Text>
       <View style={[styles.typeContainer, { backgroundColor: learned ? '#4CAF50' : '#7949FF' }]}>
         <Text style={styles.typeText}>{type}</Text>

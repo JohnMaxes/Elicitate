@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-nati
 import * as Progress from 'react-native-progress';
 import { GlobalContext } from '../components/context';
 import { getCourseLearnedPercentage } from '../components/Database';
+import { TapGestureHandler } from 'react-native-gesture-handler';
 
 const CourseViewScreen = ({ route, navigation }) => {
   const { title, subtitle, level, id } = route.params;
@@ -56,13 +57,17 @@ const CourseViewScreen = ({ route, navigation }) => {
           <Text style={[styles.text, { fontFamily: 'Poppins-Regular', fontSize: 18 }]} numberOfLines={3} ellipsizeMode="tail">{subtitle}</Text>
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={() => handleNavigation('CourseLearnScreen')}>
-          <Text style={styles.buttonText}>Learn Course</Text>
-        </TouchableOpacity>
+        <TapGestureHandler onActivated={() => handleNavigation('CourseLearnScreen')}>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Learn Course</Text>
+          </TouchableOpacity>
+        </TapGestureHandler>
 
-        <TouchableOpacity style={styles.button} onPress={() => handleNavigation('CourseReviewScreen')}>
-          <Text style={styles.buttonText}>Review Course</Text>
-        </TouchableOpacity>
+        <TapGestureHandler onActivated={() => handleNavigation('CourseReviewScreen')}>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Review Course</Text>
+          </TouchableOpacity>
+        </TapGestureHandler>
       </View>
     </View>
   );

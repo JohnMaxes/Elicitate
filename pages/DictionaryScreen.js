@@ -137,7 +137,7 @@ const DictionarySearchScreen = ({ navigation }) => {
       <FlatList
         data={vocab}
         renderItem={({item}) => (
-          <VocabCard id={item.id} word={item.word} type={item.type} definition={item.definition} learned={item.learned_at} navigation={navigation} />
+          <VocabCard id={item.id} word={item.word} type={item.type} definition={item.definition} learned={item.learned_at} navigation={navigation} pronunciation={item.pronunciation} />
         )}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.contentScroll}
@@ -148,7 +148,7 @@ const DictionarySearchScreen = ({ navigation }) => {
 };
 
 const DictionaryVocabScreen = ({route}) => {
-  const { id, word, type, definition, learned } = route.params;
+  const { id, word, type, definition, learned, pronunciation } = route.params;
   const { isDarkMode } = useContext(GlobalContext);
 
   const styles = getStyles(isDarkMode);
@@ -157,9 +157,15 @@ const DictionaryVocabScreen = ({route}) => {
     <View style={styles.vocabScreen}>
       <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 55, color: isDarkMode ? 'white' : 'black' }}>{word}</Text>
 
-      <View style={styles.typeContainer}>
-        <Text style={{ fontFamily: 'Inter-Bold', fontSize: 20, color:'white' }}>{type}</Text>
+      <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
+        <View style={styles.typeContainer}>
+          <Text style={{ fontFamily: 'Inter-Bold', fontSize: 20, color:'white' }}>{type}</Text>
+        </View>
+        <View style={styles.pronunciationContainer}>
+          <Text style={{ fontFamily: 'Inter-Bold', fontSize: 20, color:'white' }}>{pronunciation}</Text>
+        </View>
       </View>
+
 
       <View style={{ paddingLeft: 30, paddingRight: 30 }}>
         <Text style={{ textAlign: 'center', marginTop: Dimensions.get('window').height * 0.03, fontFamily: 'Inter-Regular', fontSize: 25, color: isDarkMode ? 'white' : 'black' }}>{definition}</Text>
@@ -190,6 +196,13 @@ const getStyles = (isDarkMode) => StyleSheet.create({
     paddingRight: 10,
     backgroundColor: '#7949FF',
     borderRadius: 15,
+  },
+  pronunciationContainer: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    backgroundColor: 'black',
+    borderRadius: 15,
+    marginLeft: 10,
   },
 });
 

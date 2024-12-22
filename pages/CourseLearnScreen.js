@@ -177,8 +177,13 @@ const CourseLearnScreen = ({ route, navigation }) => {
                 >
                     <Text style={styles.wordText}>{currentWord.word}</Text>
 
-                    <View style={styles.typeContainer}>
-                        <Text style={styles.typeText}>{currentWord.type}</Text>
+                    <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
+                        <View style={styles.typeContainer}>
+                            <Text style={{ fontFamily: 'Inter-Bold', fontSize: 20, color:'white' }}>{currentWord.type}</Text>
+                        </View>
+                        <View style={styles.pronunciationContainer}>
+                            <Text style={{ fontFamily: 'Inter-Bold', fontSize: 20, color:'white' }}>{currentWord.pronunciation}</Text>
+                        </View>
                     </View>
 
                     <View style={{ padding: 10 }}>
@@ -328,6 +333,13 @@ const getStyles = (isDarkMode) => StyleSheet.create({
         color: 'white',
         fontFamily: 'Inter-Bold',
         fontSize: 20,
+    },
+    pronunciationContainer: {
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: 'black',
+        borderRadius: 15,
+        marginLeft: 10,
     },
 });
 
