@@ -16,10 +16,6 @@ export const initDatabase = async () => {
   const db = await getDatabaseInstance();
   try {
     // Ensure a clean slate for testing (remove these lines in production)
-    await db.closeAsync();
-    await SQLite.deleteDatabaseAsync('elicitate');
-    db = await SQLite.openDatabaseAsync('elicitate');
-
     // Set up the schema
     await db.execAsync(`
       PRAGMA journal_mode = WAL;

@@ -52,7 +52,7 @@ export const Context = ({ children }) => {
     const resetPfp = async (uri) => {
         try {
             const response = await axios.post(
-                'https://90fa-14-161-6-190.ngrok-free.app/resetPfp',
+                'https://8614-2402-800-6314-c5d1-bcae-f7f5-4412-f3d.ngrok-free.app/resetPfp',
                 qs.stringify({
                     username: contextUsername,
                     email: contextEmail,
@@ -75,7 +75,7 @@ export const Context = ({ children }) => {
     const editUsernameEmail = async (editedUsername, editedEmail) => {
         try {
             const response = await axios.post(
-                'https://90fa-14-161-6-190.ngrok-free.app/editUsernameEmail',
+                'https://8614-2402-800-6314-c5d1-bcae-f7f5-4412-f3d.ngrok-free.app/editUsernameEmail',
                 qs.stringify({
                     username: contextUsername,
                     email: contextEmail,
@@ -111,7 +111,7 @@ export const Context = ({ children }) => {
             let today = getCurrentDateString();
             try {
                 const response = await axios.post(
-                    'https://90fa-14-161-6-190.ngrok-free.app/setStreak',
+                    'https://8614-2402-800-6314-c5d1-bcae-f7f5-4412-f3d.ngrok-free.app/setStreak',
                     qs.stringify({
                         username: contextUsername,
                         email: contextEmail,
@@ -214,7 +214,7 @@ export const Context = ({ children }) => {
         try {
             console.log(currentTimeSpent);
             await axios.post(
-                'https://90fa-14-161-6-190.ngrok-free.app/saveTimeSpent',
+                'https://8614-2402-800-6314-c5d1-bcae-f7f5-4412-f3d.ngrok-free.app/saveTimeSpent',
                 qs.stringify({
                     username: contextUsername,
                     email: contextEmail,

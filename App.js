@@ -127,6 +127,7 @@ export default function App() {
   useEffect(() => {
     const setup = async () => {
       try {
+        await AsyncStorage.removeItem('init');
         const init = await AsyncStorage.getItem('init');
         if (init === null) {
           await initDatabase();
