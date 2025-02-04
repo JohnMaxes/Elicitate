@@ -6,7 +6,9 @@ const { getFirestore, collection, getDocs, addDoc, doc, setDoc, query, where, se
 const db = getFirestore(app);
 
 var encryption = require('../functions/passwordEncrypt');
-var createToken = require('../functions/token')
+var createToken = require('../functions/token');
+var {getCurrentDateString} = require('../functions/dateOps');
+
 
 router.post('/', async(req, res, next) => { 
   const { usernameOrEmail, password } = req.body;
@@ -23,12 +25,18 @@ router.post('/', async(req, res, next) => {
           const userDoc = snapshot1.docs[0];
           const userData = userDoc.data();
           const userPassword = userData.password;
-          if(encryption.compare(password, userPassword)) 
+          if(await encryption.compare(password, userPassword)) 
           {
-              userEmail = userData.email;
-              let token = await createToken(usernameOrEmail, userEmail);
-              console.log('Login success!');
-              res.status(200).json({ token: token });
+            const userUser = userData.username;
+            const email = userData.email;
+            const pfpField = userData.pfp;
+            const learnedWords = userData.learnedWords;
+            const timeSpent = userData.timeSpent;
+            const coursesLearned = userData.coursesLearned;
+            const streak = userData.streak;
+            const lastInteracted = userData.lastInteracted;
+            const token = await createToken(userUser.toString(), email, pfpField, learnedWords, timeSpent, coursesLearned, streak, lastInteracted);
+            res.status(200).json({ 'token': token });
           }
           else {
             res.status(400).json({ message: 'Wrong password!'});
@@ -50,9 +58,16 @@ router.post('/', async(req, res, next) => {
             const userData = userDoc.data();
             const userPassword = userData.password;
             if(encryption.compare(password, userPassword)) {
-              userUser = userData.username;
-              token = createToken(userUser, usernameOrEmail);
-              res.status(200).json({ token: token });
+              console.log(userData.timeSpent);
+              const userUser = userData.username;
+              const pfpField = userData.pfp;
+              const email = userData.email;
+              const learnedWords = userData.learnedWords;
+              const timeSpent = userData.timeSpent;
+              const coursesLearned = userData.coursesLearned;
+              const streak = userData.streak;
+              const token = await createToken(userUser.toString(), email, pfpField, learnedWords, timeSpent, coursesLearned, streak);
+              res.status(200).json({ 'token': token });
             }
             else res.status(400).json({ message: 'Wrong password!'});
             console.log('Wrong password!');

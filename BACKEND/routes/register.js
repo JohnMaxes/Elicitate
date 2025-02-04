@@ -7,7 +7,7 @@ const db = getFirestore(app);
 
 var encryption = require('../functions/passwordEncrypt');
 var createToken = require('../functions/token')
-
+var {getCurrentDateString} = require('../functions/dateOps');
 
 router.post('/', async (req, res, next) => {
     const { username, email, password } = req.body;
@@ -26,8 +26,13 @@ router.post('/', async (req, res, next) => {
                 username: username,
                 createdAt: serverTimestamp(),
                 pfp: '',
+                learnedWords: '',
+                timeSpent: 0,
+                coursesLearned: 0,
+                streak: 1,
+                lastInteracted: getCurrentDateString(),
             });
-            const token = await createToken(username, email);
+            const token = await createToken(username, email, '', '', 0, 0, 1, getCurrentDateString());
             res.status(201).json({ token: token });
         } else {
             res.status(409).json({ message: 'Username already taken.' });

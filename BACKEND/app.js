@@ -9,6 +9,12 @@ var loginRouter = require('./routes/login');
 var userInfoRouter = require('./routes/user');
 var showRequestRouter = require('./routes/showReq');
 var registerRouter = require('./routes/register');
+var resetPfp = require('./routes/resetPfp');
+var addLearnedWord = require('./routes/addLearnedWord');
+var saveTimeSpent = require('./routes/saveTimeSpent');
+var editUsernameEmail = require('./routes/editUsernameEmail');
+var setStreak = require('./routes/setStreak');
+var sync = require('./routes/sync');
 
 var app = express();
 
@@ -27,6 +33,13 @@ app.use('/login', loginRouter);
 app.use('/user', userInfoRouter);
 app.use('/showReq', showRequestRouter);
 app.use('/register', registerRouter);
+app.use('/resetPfp', resetPfp);
+app.use('/addLearnedWord', addLearnedWord);
+app.use('/saveTimeSpent', saveTimeSpent);
+app.use('/editUsernameEmail', editUsernameEmail);
+app.use('/setStreak', setStreak);
+app.use('/sync', sync);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
